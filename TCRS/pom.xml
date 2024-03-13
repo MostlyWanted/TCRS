@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>Software3506</groupId>
+  <artifactId>TCRS</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Traffic Watch</name>
+  
+    <!-- Add the dependencies section -->
+  <dependencies>
+    <!-- H2 Database -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.2.224</version> <!-- You can adjust the version number if needed -->
+    </dependency>
+    <!-- Add other dependencies here if needed -->
+  </dependencies>
+</project>
