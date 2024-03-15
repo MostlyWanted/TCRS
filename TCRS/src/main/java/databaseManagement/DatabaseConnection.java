@@ -1,15 +1,19 @@
+package databaseManagement;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:h2:~/src/main/resources/trcs_script"; // Modify this URL based on your database configuration
-    private static final String USER = "tcrs"; // Modify this
-    private static final String PASSWORD = ""; // Modify this
+    private static final String URL = "jdbc:h2:~/src/main/resources/trcs_script"; // Database URL
+    private static final String USER = "tcrs"; // Database user name
+    private static final String PASSWORD = ""; // Database password
+    public Connection connection = null;
 
-    public static void main(String[] args) {
-        try {
+    
+    public DatabaseConnection() {
+    	try {
             // Load the H2 JDBC driver
             Class.forName("org.h2.Driver");
 
@@ -23,13 +27,8 @@ public class DatabaseConnection {
             } else {
                 System.out.println("Failed to connect to the database!");
             }
-
-            // Close the connection
-            connection.close();
-
-            // Close the connection when done
-            connection.close();
-        } catch (ClassNotFoundException | SQLException e) {
+            
+    	} catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
