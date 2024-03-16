@@ -2,8 +2,10 @@ package databaseManagement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.time.Year;
 
 
 public class DataValidation {
@@ -17,28 +19,32 @@ public class DataValidation {
 
 	public boolean validateVIN(String vin) {
 		
+		String type = "VIN";
+		int vinLength = 17;
+		String table = "VEHICLEINFO";
+		
 		// Check the length of the VIN
-		if (!isValidLength(vin,17)) {
-			System.out.println("VIN is the wrong length!");
+		if (!isValidLength(vin,vinLength, type)) {
 			return false;
 		}
-		else if (specialChar(vin)) {
-			System.out.println("Invalid character in VIN!");
+		else if (containsSpecialChar(vin, type)) {
 			return false;
 		}
 
-		return isUnique(vin, "VIN", "VEHICLEINFO");
+		return isUnique(vin, type, table);
 		
 	}
 	public boolean validateLicensePlate(String plate) {
 		
+		String type = "License plate";
+		int plateLength = 7;
+		String table = "VEHICLEINFO";
+		
 		// Check the length of the VIN
-		if (plate.length() != 7) {
-			System.out.println("License plate  is the wrong length!");
+		if (!isValidLength(plate, plateLength,type)){
 			return false;
 		}
-		else if (specialChar(plate)) {
-			System.out.println("Invalid character in license plate!");
+		else if (containsSpecialChar(plate, type)) {
 			return false;
 		}
 		else if (!isAlpha(plate, 0, 3) || !isNumber(plate, 4, 6)) {
@@ -47,31 +53,82 @@ public class DataValidation {
 			return false;
 		}
 
-		return isUnique(plate, "LICENSEPLATE", "VEHICLEINFO");
+		return isUnique(plate, type, table);
 	}
 	
-	public void validateMake(String make) {
+	public boolean validateMake(String make) {
+		
+		// Check make input contains only letters
+		return isAlpha(make);
 		
 	}
-	public void validateModel(String model) {
+	
+	public boolean validateModel(String model) {
+		
+		String type = "model";
+		
+		// Check no special characters
+		return !containsSpecialChar(model, type);
 		
 	}
 	public void validateYear(int year) {
 		
-	}
-	public void validateFirstName(int firstName) {
+		if (year < 1960 || 2024 < year) {
+			System.out.println("Incorrect year! \nPleae enter corect year of car");
+		}
 		
 	}
-	public void validateLastName(int lastName) {
+	public boolean validateFirstName(String firstName) {
+		
+		// Check if only letters entered
+		return isAlpha(firstName);
 		
 	}
-	public void validateLicenseNumber(String licenseNumber) {
+	public boolean validateLastName(String lastName) {
+		
+		// Check if only letters entered
+		return isAlpha(lastName);
+				
+	}
+	public boolean validateLicenseNumber(String licenseNumber) {
+		
+		String type = "LICENSENUMBER";
+		int licenseLength = 15;
+		String table = "DRIVERINFO";
+		
+		// Check length
+		if (!isValidLength(licenseNumber, licenseLength, type)) {
+			return false;
+		}
+		else if (!isAlpha(licenseNumber, 0, 1)) {
+			return false;
+		}
+		else if (!isNumber(licenseNumber, 1, licenseLength - 1)) {
+			return false;
+		}
+		return isUnique(licenseNumber, type, table);
 		
 	}
-	public void validateDemeritPoints(int demeritPoints) {
+	public boolean validateDemeritPoints(int demeritPoints) {
+		
+		if (demeritPoints < 0 || 99 < demeritPoints)
+			return false;
+		
+		return true;
 		
 	}
-	public void validateBadgeNumber(int badgeNumber) {
+	public boolean validateBadgeNumber(int badgeNumber) {
+		
+		String type = "BADGENUMBER";
+		int badgeStart = 10000;
+		String table = "OFFICERINFO";
+		
+		if (badgeNumber < badgeStart )
+			return false;
+		
+		String badge = String.valueOf(badgeNumber);
+		
+		return isUnique(badge, type, table);
 		
 	}
 	public void validateCitationID(int citationID) {
@@ -80,7 +137,15 @@ public class DataValidation {
 	public void validateFineAmount(double fineAmount) {
 		
 	}
-	public void validateDate(String date) {
+	public boolean validateDate(String date) {
+		
+		String type = "date";
+		
+		if(!isValidLength(date, 10, type)){
+			return false;
+		}
+		
+		return dateFormat(date);
 		
 	}
 	public void validateWarrantID(int warrantID) {
@@ -99,7 +164,7 @@ public class DataValidation {
 		// If there is no next, then the VIN is not in the database and therefore valid
 		try {
 			if(result.next()) {
-				System.out.println(String.format("%s: %s is already on the system!", column, entry));
+				System.out.println(String.format("%s: %s is already in the system!", column, entry));
 				return false;
 			}
 			else
@@ -112,28 +177,49 @@ public class DataValidation {
 	}
 	
 	// Check if the length is the correct
-	private boolean isValidLength(String data, int length) {
+	private boolean isValidLength(String data, int length, String category) {
 		
 		if (data.length() == length)
 			return true;
 		
+		System.out.println(String.format("%s is the wrong length!", category));
 		return false;
 	}
 	
 	// Check for special characters
-	private boolean specialChar(String str) {
+	private boolean containsSpecialChar(String str, String category) {
 		
 		Matcher m = p.matcher(str);
 		
-		return m.find();
+		if (m.find()) {
+			System.out.println(String.format("Invalid character in %s!", category));
+			return true;
+		}
+		return false;
 	}
 	
 	// Check if only letters
+	
+	private boolean isAlpha(String str) {
+	    char[] chars = str.toCharArray();
+
+	    for (char c: chars) {
+	        if(!Character.isLetter(c)) {
+	        	System.out.println("Character other than letters was entered!\nPlease review");
+	            return false;
+	        }
+	    }
+
+	    return true;
+	}
+	
+	// Check if only letters, with range
 	private boolean isAlpha(String str, int begin, int end) {
 	    char[] c = str.toCharArray();
 
 	    for (int i = begin; i < end; i++ ) {
 	        if(!Character.isLetter(c[i])) {
+	        	System.out.println("Incorrect character was entered!\nPlease review");
 	            return false;
 	        }
 	    }
@@ -142,16 +228,102 @@ public class DataValidation {
 	}
 	
 	// Check if only numbers
-	private boolean isNumber(String str, int begin, int end) {
-	    char[] c = str.toCharArray();
+	
+	private boolean isNumber(String str) {
+	    char[] chars = str.toCharArray();
 
-	    for (int i = begin; i < end; i++ ) {
-	        if(!Character.isLetter(c[i])) {
+	    for (char c: chars) {
+	        if(!Character.isDigit(c)) {
+	        	System.out.println("Non number was entered!");
 	            return false;
 	        }
 	    }
 
 	    return true;
+	}
+	
+	// Check if only numbers, with range
+	private boolean isNumber(String str, int begin, int end) {
+	    char[] c = str.toCharArray();
+
+	    for (int i = begin; i < end; i++ ) {
+	        if(!Character.isDigit(c[i])) {
+	        	System.out.println("Non number was found in incorrect position!");
+	            return false;
+	        }
+	    }
+
+	    return true;
+	}
+	
+	private boolean dateFormat(String date) {
+		
+		char seperator = '-';
+		String monthString = date.substring(0,2);
+		String dayString = date.substring(3,5);
+		String yearString = date.substring(6);
+		
+		int month = Integer.valueOf(monthString);
+		int day = Integer.valueOf(dayString);
+		int year = Integer.valueOf(yearString);
+		int numDays = 31;  
+				
+		int firstYear = 2024;
+		
+		String invalid = "Invalid date input";
+		
+		if (month < 1 || month > 12) {
+			System.out.println(invalid);
+			return false;
+		}
+		
+		numDays = numOfDays(month, year);
+		
+		if (day < 1 || numDays < day || year < firstYear) {
+			System.out.println(invalid);
+			return false;
+		}
+	
+		
+		return Character.isDigit(date.charAt(0)) &&
+        Character.isDigit(date.charAt(1)) &&
+        Objects.equals(date.charAt(2), seperator) &&
+        Character.isDigit(date.charAt(3)) &&
+        Character.isDigit(date.charAt(4)) &&
+        Objects.equals(date.charAt(5), seperator) &&
+        Character.isDigit(date.charAt(6)) &&
+        Character.isDigit(date.charAt(7)) &&
+        Character.isDigit(date.charAt(8));
+		
+	}
+	
+	private int numOfDays(int month, int year) {
+		int days = 31;
+		
+		switch (month) {
+				
+				case 1: case 3: case 5: 
+				case 7: case 8: case 10: 
+				case 12:{
+					days = 31;
+					break;
+				}
+				case 4: case 6: case 9:
+				case 11:{
+					days = 30;
+					break;
+				}
+				case 2:{
+					if (Year.of(year).isLeap())
+						days = 29;
+					else
+						days = 28;
+					break;
+				}
+					
+				}
+		
+		return days;
 	}
 
 }

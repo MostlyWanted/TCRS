@@ -40,12 +40,13 @@ public class Account {
 	}
 	public void findAccount (String username) {
 			
-			String sqlQuery = String.format("SELECT * FROM TCRS.ACCOUNTS WHERE USERNAME='%s'", username);
-			
-	    	ResultSet result = databaseManager.executeQuery(sqlQuery);
-	    	
-			logData(result);
-		}
+		String sqlQuery = String.format("SELECT * FROM TCRS.ACCOUNTS WHERE USERNAME='%s'", username);
+		
+    	ResultSet result = databaseManager.executeQuery(sqlQuery);
+    	
+		logData(result);
+	}
+	
 	public void autoInputAccount (int accountID) {
 		
 	}
