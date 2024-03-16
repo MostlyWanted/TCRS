@@ -101,13 +101,5 @@ public class DatabaseManager {
     	e.printStackTrace();
     }
     
-    // Create account SQL query using user name
-    private String accountSQL(String sql) {
-    	
-    	String sqlQuery = String.format("SELECT * FROM TCRS.ACCOUNTS WHERE USERNAME='%s'", sql);
-    	
-    	return sqlQuery;
-    }
-    
 
 }
