@@ -1,6 +1,7 @@
 package databaseManagement;
 
 import java.sql.*;
+import CRUD.*;
 
 public class SelectStatement {
 	
@@ -9,28 +10,19 @@ public class SelectStatement {
         // Connect to the database
             
 		DatabaseManager connection = new DatabaseManager();
+		DataValidation validate = new DataValidation(connection);
 		
 		connection.connectToDatabase();
 
-		ResultSet result = connection.executeQuery("badewale");;
+		//ResultSet result = connection.executeQuery("badewale");;
 
-		try {
-    		while (result.next()) {
-			     //Retrieve data by column index or name
-			    int id = result.getInt("accountid");
-			    String username = result.getString("username");
-			    String password = result.getString("passwordacc");
-			    String firstName = result.getString("firstname");
-			    String lastName = result.getString("lastname");
-			    String agency = result.getString("agency");
-			    
-			    System.out.println("ID " + id + " username: " + username + " password: " + password + " First Name: " + firstName + " Last Name: " + lastName + " agency: " + agency);
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Account user = new Account(connection);
+		user.findAccount(2);
+		
+		String vin = "123456789ABCDEFGH";
+		Boolean check = validate.validateVIN(vin);
+		
+		System.out.println("Validity of vin: " + check);
            connection.disconnectFromDatabase();
            
 	}

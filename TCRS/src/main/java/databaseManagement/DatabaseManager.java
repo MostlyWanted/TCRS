@@ -53,6 +53,7 @@ public class DatabaseManager {
         }
     }
     
+    // Used for searching the database with SELECT command
     public ResultSet executeQuery(String sql) {
     	
     	//Initialize resultSet for executing queries
@@ -64,7 +65,8 @@ public class DatabaseManager {
 			Statement statement = connection.createStatement();
 			
 			// Execute a query
-			resultSet = statement.executeQuery(accountSQL(sql));			
+			resultSet = statement.executeQuery(sql);	
+			
        
         } catch (SQLException e) {
         	handleSQLException(e);
@@ -73,8 +75,25 @@ public class DatabaseManager {
         return resultSet;
     }
     
+    
+    // Updates the database, INSERT, DELETE, UPDATE commands
     public void executeUpdate(String sql) {
     	
+        // Attempt to query database
+        try {
+        	
+        	//Initialize resultSet for executing queries
+        	
+			Statement statement = connection.createStatement();
+			
+			// Execute a query
+			statement.executeUpdate(sql);	
+			
+       
+        } catch (SQLException e) {
+        	handleSQLException(e);
+		}
+    	    	
     }
     
     public void handleSQLException(SQLException e) {
