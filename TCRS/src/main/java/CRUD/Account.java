@@ -46,7 +46,6 @@ public class Account {
     	
 		logData(result);
 	}
-	
 	public void autoInputAccount (int accountID) {
 		
 	}

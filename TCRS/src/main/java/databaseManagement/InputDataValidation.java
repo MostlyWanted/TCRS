@@ -1,27 +1,22 @@
 package databaseManagement;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.time.Year;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.time.Year;
 
+public class InputDataValidation {
 
-public class DataValidation {
-	
-	private DatabaseManager databaseManager;
 	private Pattern p = Pattern.compile("[^a-z0-9]", Pattern.CASE_INSENSITIVE);
 	
-	public DataValidation(DatabaseManager databaseManager) {
-		this.databaseManager = databaseManager;
+	public InputDataValidation() {
+		
 	}
 
 	public boolean validateVIN(String vin) {
 		
 		String type = "VIN";
 		int vinLength = 17;
-		String table = "VEHICLEINFO";
 		
 		// Check the length of the VIN
 		if (!isValidLength(vin,vinLength, type)) {
@@ -31,14 +26,13 @@ public class DataValidation {
 			return false;
 		}
 
-		return isUnique(vin, type, table);
+		return true;
 		
 	}
 	public boolean validateLicensePlate(String plate) {
 		
 		String type = "License plate";
 		int plateLength = 7;
-		String table = "VEHICLEINFO";
 		
 		// Check the length of the VIN
 		if (!isValidLength(plate, plateLength,type)){
@@ -53,7 +47,7 @@ public class DataValidation {
 			return false;
 		}
 
-		return isUnique(plate, type, table);
+		return true;
 	}
 	
 	public boolean validateMake(String make) {
@@ -94,7 +88,6 @@ public class DataValidation {
 		
 		String type = "LICENSENUMBER";
 		int licenseLength = 15;
-		String table = "DRIVERINFO";
 		
 		// Check length
 		if (!isValidLength(licenseNumber, licenseLength, type)) {
@@ -106,7 +99,7 @@ public class DataValidation {
 		else if (!isNumber(licenseNumber, 1, licenseLength - 1)) {
 			return false;
 		}
-		return isUnique(licenseNumber, type, table);
+		return true;
 		
 	}
 	public boolean validateDemeritPoints(int demeritPoints) {
@@ -119,45 +112,23 @@ public class DataValidation {
 	}
 	public boolean validateBadgeNumber(int badgeNumber) {
 		
-		String type = "BADGENUMBER";
 		int badgeStart = 10000;
-		String table = "OFFICERINFO";
 		
 		if (badgeNumber < badgeStart )
 			return false;
 		
-		String badge = String.valueOf(badgeNumber);
 		
-		return isUnique(badge, type, table);
+		return true;
 		
 	}
 	public boolean validateCitationID(int citationID) {
-		
-		String type = "CITATIONID";
-		
-		String drivMun = "DRIVINGCITATIONSMUN";
-		String drivProv = "DRIVINGCITATIONSPROV";
-		String vehMun = "VEHICLECITATIONSMUN";
-		String vehProv = "VEHICLECITATIONSPROV";
-		
-		String trafficSchool = "TRAFFICSCHOOL";
-		String trafficSchCit = "CITATIONIDTS";
-	
-		
-		String citation = String.valueOf(citationID);
 		
 		// Ensure number is valid
 		if (negativeNum(citationID) || citationID == 0) {
 			return false;
 		}
 		
-		// Check if value is in municipal or provincial records
-		if (!uniqueMunandProv(citation, type, drivMun, vehMun, drivProv, vehProv)) {
-			return false;
-		}
-		
-		// Check traffic school
-		return (isUnique(citation, trafficSchCit, trafficSchool));
+		return true;
 		
 	}
 	public boolean validateFineAmount(double fineAmount) {
@@ -177,22 +148,12 @@ public class DataValidation {
 	}
 	public boolean validateWarrantID(int warrantID) {
 		
-		String type = "WARRANTID";
-		
-		String drivMun = "DRIVERWARRANTSMUNICIPLE";
-		String drivProv = "DRIVERWARRANTSPROV";
-		String vehMun = "VEHICLEWARRANTSMUNICIPLE";
-		String vehProv = "VEHICLEWARRANTSPROV";
-		
-		String warrant = String.valueOf(warrantID);
-		
 		// Ensure number is valid
 		if (negativeNum(warrantID) || warrantID == 0) {
 			return false;
 		}
 		
-		// Check if value is in municipal or provincial records
-		return uniqueMunandProv(warrant, type, drivMun, vehMun, drivProv, vehProv);
+		return true;
 		
 	}
 	public boolean validateSessionNumber(int sessionNumber) {
@@ -207,25 +168,6 @@ public class DataValidation {
 	}
 	
 	//************************ Helper Methods **********************
-	// Check if unique
-	private boolean isUnique(String entry, String column, String table) {
-		
-		String query = String.format("SELECT %s FROM TCRS.%s WHERE %s='%s'", column, table, column, entry);
-		
-		ResultSet result = this.databaseManager.executeQuery(query);
-		// If there is no next, then the VIN is not in the database and therefore valid
-		try {
-			if(result.next()) {
-				System.out.println(String.format("%s: %s is already in the system!", column, entry));
-				return false;
-			}
-			else
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
 	
 	// Check if the length is the correct
 	private boolean isValidLength(String data, int length, String category) {
@@ -277,6 +219,7 @@ public class DataValidation {
 
 	    return true;
 	}
+	
 	
 	// Check if only numbers, with range
 	private boolean isNumber(String str, int begin, int end) {
@@ -382,24 +325,5 @@ private boolean negativeNum(double value) {
 		return false;
 	}
 
-private boolean uniqueMunandProv(String citation, String type, String drivMun, String vehMun, String drivProv, String vehProv) {
-	
-	// Check municipal
-
-	if (!isUnique(citation, type, drivMun) || !isUnique(citation, type, vehMun)) {
-		System.out.println(String.format("%s: %s is already in municipal system!", type, citation));
-		return false;
-	}
-	
-	// Check provincial
-	
-	if (!isUnique(citation, type, drivProv) || !isUnique(citation, type, vehProv)) {
-		System.out.println(String.format("%s: %s is already in provincial system!", type, citation));
-		return false;
-	}
-	
-	return true;
-			
-}
 
 }
