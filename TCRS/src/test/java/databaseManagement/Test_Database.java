@@ -16,7 +16,7 @@ public class Test_Database {
 		//ResultSet result = connection.executeQuery("badewale");;
 
 		Account user = new Account(connection);
-		user.findAccount(3);
+		user = user.findAccount(3);
 		
 		String vin = "A89012345689012";
 		String date = "02-29-2024";

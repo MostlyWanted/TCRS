@@ -120,6 +120,53 @@ public class DatabaseManager {
     	    	
     }
     
+    // Execute parameterized queries for security and flexibility
+    public void executeParameterizedUpdate(String sql, Object... params) {
+    	
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        	
+            // Set parameters dynamically
+            for (int i = 0; i < params.length; i++) {
+            	
+                statement.setObject(i + 1, params[i]);
+                
+            }
+            
+            statement.executeUpdate();
+            
+        } catch (SQLException e) {
+        	
+            handleSQLException(e);
+            
+        }
+    }
+    
+    // Execute parameterized queries for security and flexibility
+    public ResultSet executeParameterizedQuery(String sql, Object... params) {
+    	
+    	//Initialize resultSet for executing queries
+    	ResultSet resultSet = null;
+    	
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        	
+            // Set parameters dynamically
+            //for (int i = 0; i < params.length; i++) {
+            	
+            //	 statement.setObject(i + 1, params[i]);
+            //}
+            
+            resultSet =  statement.executeQuery();
+            
+        } catch (SQLException e) {
+        	
+            handleSQLException(e);
+        }
+        
+        return resultSet;
+    }
+    
+
+    
     public void handleSQLException(SQLException e) {
     	System.err.println("SQL Exception occurred:");
     	e.printStackTrace();
