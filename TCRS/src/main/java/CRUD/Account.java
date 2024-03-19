@@ -12,36 +12,74 @@ public class Account {
 	public String firstName;
 	public String lastName;
 	public String agency;
-	private String table = "ACCOUNTS";
 	
 	public Account(DatabaseManager databaseManager) {
 		this.databaseManager = databaseManager;
 	}
 
-
-	
+	// Insert account object into database
 	public void insertAccount(Account account) {
 		
+		
+		// Validate correct formats of input data
+		 if (!validName(account.firstName, account.lastName)) {
+			 System.out.println("Unable to add account to system!");
+			 return;
+		 }
+				 
+		
 		// Create SQL query string
-	    String sql = String.format("INSERT INTO TCRS." + account.table + " (USERNAME, PASSWORDACC, FIRSTNAME, LASTNAME, AGENCY) "
-	    		+ "VALUES (%s, %s, %s, %s, %s", account.username, account.password, account.firstName, 
+	    String sql = String.format("INSERT INTO TCRS.ACCOUNTS (USERNAME , PASSWORDACC , FIRSTNAME , LASTNAME , AGENCY ) "
+	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s')", account.username, account.password, account.firstName, 
 	    		account.lastName, account.agency);
 	    
 	    // Pass prepared statement to databaseManager for execution
 	    databaseManager.executeUpdate(sql);
+	    
+	    System.out.println("Account added to the database!");
+	}
+	
+	// Create and insert account into database given parameters
+	public void insertAccount(String agency, String first, String last, String username, String password) {
+		
+		Account account = new Account(databaseManager);
+		
+		account.agency = agency; account.firstName = first; account.lastName = last; account.username = username; 
+		account.password = password;
+		
+		// Validate correct formats of input data
+		 if (!validName(account.firstName, account.lastName)) {
+			 System.out.println("Unable to add account to system!");
+			 return;
+		 }
+				 
+		
+		// Create SQL query string
+	    String sql = String.format("INSERT INTO TCRS.ACCOUNTS (USERNAME , PASSWORDACC , FIRSTNAME , LASTNAME , AGENCY ) "
+	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s')", account.username, account.password, account.firstName, 
+	    		account.lastName, account.agency);
+	    
+	    // Pass prepared statement to databaseManager for execution
+	    databaseManager.executeUpdate(sql);
+	    
+	    System.out.println("Account added to the database!");
 	}
 
 	
-	public void editAccount (int accountID) {
+	public void editAccount (int accountID, Account newAcc) {
 		
 		// First confirm account exist, and if so return account information
 		Account findAcc = findAccount(accountID);
 		
-		String sqlQuery = String.format("UPDATE TCRS.%s SET USERNAME = %s, PASSWORDACC = %s, FIRSTNAME = %s, LASTNAME = %s,"
-				+ "AGENCY = %s WHERE ACCOUNTID = %s", findAcc.table, findAcc.username, findAcc.password, 
-				 findAcc.firstName, findAcc.lastName, findAcc.agency, findAcc.accountID);
+		// Build edit query in system based on account ID
+		String sqlQuery = String.format("UPDATE TCRS.ACCOUNTS SET USERNAME = '%s', PASSWORDACC = '%s', FIRSTNAME = '%s', LASTNAME = '%s',"
+				+ " AGENCY = '%s' WHERE ACCOUNTID = '%s'", newAcc.username, newAcc.password, 
+				newAcc.firstName, newAcc.lastName, newAcc.agency, findAcc.accountID);
 
+		// Execute query
 		databaseManager.executeUpdate(sqlQuery);
+		
+		System.out.println("Account edited");
 	}
 	
 	// Delete account based on the account ID
@@ -74,9 +112,6 @@ public class Account {
 			return;
 		}
 		
-		// First confirm account exist, and if so return account information
-		findAccount(username);
-		
 		// Create query to delete account
 		String sqlDelete = String.format("DELETE FROM TCRS.ACCOUNTS WHERE USERNAME='%s'", username);
 		
@@ -94,16 +129,13 @@ public class Account {
 		
 		/// Create query to delete account
 		String sqlQuery = String.format("SELECT * FROM TCRS.ACCOUNTS WHERE ACCOUNTID = %d", accountID);
-		
-		System.out.println(sqlQuery);
-		
+				
 		// Execute finding account SELECT query
 		ResultSet result = databaseManager.executeQuery(sqlQuery);
 		
-		// Check if the query did not match  in the system
+		// Check if the query did not match  in the system, return empty account
 		if (nullCheck(result)) {
-			System.out.println("null!!");
-    		return null;
+    		return findAcc;
 		}
     	
     	// Return the found account logged into findAcc
@@ -189,6 +221,24 @@ public class Account {
     	
     	return false;
     	
+	}
+	
+	private boolean validName(String first, String last) {
+		
+		// Create validation object
+		InputDataValidation valid = new InputDataValidation();
+		
+		// Validate correct formats of input data
+		 if (!valid.validateFirstName(first)) {
+			 System.out.println("Unable to add account to database!\nCheck first name!");
+			 return false;
+		 }
+		 else if (!valid.validateLastName(last)) {
+			 System.out.println("Unable to add account to database!\nCheck last name!");
+			 return false;
+		 }
+		 
+		 return true;
 	}
 }
 
