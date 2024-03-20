@@ -1,4 +1,6 @@
-package Assignments;
+package VisualDesign;
+
+// import Assignments;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -20,7 +22,7 @@ import javafx.stage.Stage;
 public class VisualDesignComponents extends Application {
 
 
-//Buttons	
+	//Buttons	
 	//Basic buttons
 	public Button btClear = new Button ("Clear");
 	public Button btSubmit = new Button ("Submit");
@@ -58,7 +60,8 @@ public class VisualDesignComponents extends Application {
 	public Button btCitationSummary = new Button("Citation Summary");
 	public Button btOutstandingWarrants = new Button("Outstanding Warrants");
 	public Button btBoth = new Button("Both");
-//Labels
+	
+	//Labels
 	//Login page labels
 	Label lbTrafficWatch = new Label ("Traffic Watch: ");
 	Label lbAppDescription = new Label ("The provincial and municipal system for traffic citations and reporting");
@@ -116,7 +119,7 @@ public class VisualDesignComponents extends Application {
 	Label lbUsername = new Label ("Username:");
 	Label lbPassword = new Label ("Password:");
 	Label lbAgency = new Label ("Agency:");	
-//Text fields
+	//Text fields
 	TextField tfEnterVin = new TextField();
     TextField tfEnterLic = new TextField();
     TextField tfEnterStart = new TextField();
@@ -149,7 +152,7 @@ public class VisualDesignComponents extends Application {
     TextField tfPassword = new TextField(); 
     TextField tfUsernameLogin = new TextField();
     PasswordField tfPasswordLogin = new PasswordField();
-//Combo boxes
+    //Combo boxes
     ComboBox<String> cbAgencyLogin = new ComboBox<>(FXCollections.observableArrayList(
             "Provincial", "Municipal", "Administration"));
     ComboBox<String> cbAgency = new ComboBox<>(FXCollections.observableArrayList(
@@ -176,21 +179,21 @@ public class VisualDesignComponents extends Application {
             "Yes", "No", "TBD"));
     ComboBox<String> cbSessAtt4 = new ComboBox<>(FXCollections.observableArrayList(
             "Yes", "No", "TBD"));  
-//Report text 
+    //Report text 
     TextArea taReport = new TextArea();
-//Bottom rectangle  
+    //Bottom rectangle  
     Rectangle bottomRectangle = new Rectangle(100,100);
     
-//Method to assign styles to components
+    //Method to assign styles to components
 	public void styleVisualComponents () {	
-	//Adding warning icon to warning messages
+		//Adding warning icon to warning messages
 		ImageView warningIcon = new ImageView(new Image(getClass().getResourceAsStream("icons8-warning-32.png")));
 		lbEmptyFields.setGraphic(warningIcon);
 		lbWrongFormat.setGraphic(warningIcon);
         lbNoRecord.setGraphic(warningIcon);
         lbLoginError.setGraphic(warningIcon);
         lbSuccessText.setGraphic(warningIcon);
-    //Styling buttons 
+        //Styling buttons 
         //Basic buttons
         btClear.getStyleClass().add("small-buttons");
         btSubmit.getStyleClass().add("small-buttons");
@@ -228,7 +231,7 @@ public class VisualDesignComponents extends Application {
         btCitationSummary.getStyleClass().add("big-buttons");
         btOutstandingWarrants.getStyleClass().add("big-buttons");
         btBoth.getStyleClass().add("big-buttons");
-    //Styling labels
+        //Styling labels
     	//Login page labels
         lbTrafficWatch.getStyleClass().add("title");
         lbAppDescription.getStyleClass().add("app-description");
@@ -286,7 +289,7 @@ public class VisualDesignComponents extends Application {
         lbUsername.getStyleClass().add("small-label");
         lbPassword.getStyleClass().add("small-label");
         lbAgency.getStyleClass().add("small-label");
-    //Styling text fields 
+        //Styling text fields 
         tfEnterVin.getStyleClass().add("text-fields");
         tfEnterLic.getStyleClass().add("text-fields");
         tfEnterStart.getStyleClass().add("text-fields");
@@ -321,7 +324,7 @@ public class VisualDesignComponents extends Application {
         tfUsernameLogin.setPromptText("Username");
         tfPasswordLogin.getStyleClass().add("big-text-fields");
         tfPasswordLogin.setPromptText("Password");
-    //Styling combo boxes
+        //Styling combo boxes
         cbAgency.getStyleClass().add("combo-boxes");
         cbAgencyLogin.getStyleClass().add("big-combo-boxes");
         cbAgencyLogin.setPromptText("Agency");
@@ -336,9 +339,9 @@ public class VisualDesignComponents extends Application {
         cbSessAtt2.getStyleClass().add("combo-boxes");
         cbSessAtt3.getStyleClass().add("combo-boxes");
         cbSessAtt4.getStyleClass().add("combo-boxes");
-    //Styling report text
+        //Styling report text
         taReport.getStyleClass().add("small-label");
-    //Styling bottom rectangle 
+        //Styling bottom rectangle 
         bottomRectangle.getStyleClass().add("bottom-rectangle");
     
 	}
@@ -520,7 +523,7 @@ public class VisualDesignComponents extends Application {
 		loginPane.setBottom(bottomRectangle);
 		bottomRectangle.widthProperty().bind(loginPane.widthProperty());
 	
-//Repetitive containers
+		//Repetitive containers
 		//submit clear
 		HBox submitClearB = new HBox(btClear, btSubmit);
 		submitClearB.setSpacing(40);
@@ -542,15 +545,13 @@ public class VisualDesignComponents extends Application {
 		manageReportB.setSpacing(30);
 		lbChoose.setPadding(new Insets(100));
 		manageReportB.setPadding(new Insets(100,0,300,0));
-		
-		
-		
-		
-		
-		
-
-
-		
+		// Enroll Attend button
+		VBox EnrolAttB = new VBox(lbManage, btEnrollment, btAttendance);
+		EnrolAttB.setAlignment(Pos.CENTER);
+		EnrolAttB.setSpacing(30);
+        lbManage.setPadding(new Insets(100));
+        EnrolAttB.setPadding(new Insets(100, 0, 300, 0));
+				
 		//Main options pane
 		BorderPane proMainPane = new BorderPane();
 		proMainPane.setStyle("-fx-background-color: white;");
@@ -562,11 +563,6 @@ public class VisualDesignComponents extends Application {
 		proManagePane.setTop(backLogoutB);
 		proManagePane.setCenter(EnrolAttB);
 		
-		
-		
-		
-	
-	
 	
 		Scene scene = new Scene	(proManagePane, 1440,1024);
 		scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
