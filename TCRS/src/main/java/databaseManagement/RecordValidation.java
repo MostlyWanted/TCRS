@@ -19,7 +19,7 @@ public class RecordValidation {
 		String type = "VIN";
 		String table = "VEHICLEINFO";
 
-		return isUnique(vin, type, table);
+		return !isUnique(vin, type, table);
 		
 	}
 	public boolean checkDriverRecordExistence(String licenseNumber) {
@@ -27,7 +27,7 @@ public class RecordValidation {
 		String type = "LICENSENUMBER";
 		String table = "DRIVERINFO";
 
-		return isUnique(licenseNumber, type, table);
+		return !isUnique(licenseNumber, type, table);
 	}
 	public boolean checkVehWarrRecordExistence(int vehicleWarrantID) {
 		
@@ -39,7 +39,7 @@ public class RecordValidation {
 		String warrant = String.valueOf(vehicleWarrantID);
 		
 		// Check if value is in municipal or provincial records
-		return isUnique(warrant, type, vehMun, vehProv);
+		return !isUnique(warrant, type, vehMun, vehProv);
 		
 	}
 	public boolean checkDriWarrRecordExistence(int driverWarrantID) {
@@ -53,7 +53,7 @@ public class RecordValidation {
 		String warrant = String.valueOf(driverWarrantID);
 		
 		// Check if value is in municipal or provincial records
-		return isUnique(warrant, type, drivMun, drivProv);
+		return !isUnique(warrant, type, drivMun, drivProv);
 		
 	}
 	public boolean checkVehCitRecordExistence(int vehicleCitationID) {
@@ -66,7 +66,7 @@ public class RecordValidation {
 		String citation = String.valueOf(vehicleCitationID);
 		
 		// Check if value is in municipal or provincial records
-		return isUnique(citation, type, vehMun, vehProv);
+		return !isUnique(citation, type, vehMun, vehProv);
 		
 	}
 	public boolean checkDriCitRecordExistence(int driverCitationID) {
@@ -80,7 +80,7 @@ public class RecordValidation {
 		String citation = String.valueOf(driverCitationID);
 		
 		// Check if value is in municipal or provincial records
-		return isUnique(citation, type, drivMun, drivProv);
+		return !isUnique(citation, type, drivMun, drivProv);
 		
 	}
 	public boolean checkOfficerRecordExistence(int badgeNumber) {
@@ -90,7 +90,7 @@ public class RecordValidation {
 		
 		String badge = String.valueOf(badgeNumber);
 		
-		return isUnique(badge, type, table);
+		return !isUnique(badge, type, table);
 		
 	}
 	public boolean checkTrafficSchoolRecordExistence(int citationID) {
@@ -102,7 +102,7 @@ public class RecordValidation {
 		String citation = String.valueOf(citationID);
 		
 		// Check traffic school
-		return (isUnique(citation, trafficSchCit, trafficSchool));
+		return (!isUnique(citation, trafficSchCit, trafficSchool));
 		
 	}
 	public boolean checkAccountRecordExistence(int accountID) {
@@ -114,9 +114,20 @@ public class RecordValidation {
 		String account = String.valueOf(accountID);
 		
 		// Check traffic school
-		return (isUnique(account, type, table));
+		return (!isUnique(account, type, table));
 		
 	}
+	
+	public boolean checkAccountRecordExistence(String username) {
+		
+		String type = "USERNAME";
+		String table = "ACCOUNTS";
+		
+		// Check traffic school
+		return (!isUnique(username, type, table));
+		
+	}
+	
 	public boolean checkAccountRecordDuplication(String username, String password, String agency) {
 		
 		return false;
@@ -176,13 +187,4 @@ public class RecordValidation {
 				
 	}
 	
-	private boolean checkAccountRecordExistence(String username) {
-		
-		String type = "USERNAME";
-		String table = "ACCOUNTS";
-		
-		// Check traffic school
-		return (isUnique(username, type, table));
-		
-	}
 }

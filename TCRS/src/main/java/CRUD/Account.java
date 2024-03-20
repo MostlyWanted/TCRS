@@ -20,23 +20,7 @@ public class Account {
 	// Insert account object into database
 	public void insertAccount(Account account) {
 		
-		
-		// Validate correct formats of input data
-		 if (!validName(account.firstName, account.lastName)) {
-			 System.out.println("Unable to add account to system!");
-			 return;
-		 }
-				 
-		
-		// Create SQL query string
-	    String sql = String.format("INSERT INTO TCRS.ACCOUNTS (USERNAME , PASSWORDACC , FIRSTNAME , LASTNAME , AGENCY ) "
-	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s')", account.username, account.password, account.firstName, 
-	    		account.lastName, account.agency);
-	    
-	    // Pass prepared statement to databaseManager for execution
-	    databaseManager.executeUpdate(sql);
-	    
-	    System.out.println("Account added to the database!");
+		insertAccount(account.agency, account.firstName, account.lastName, account.username, account.password);
 	}
 	
 	// Create and insert account into database given parameters
@@ -44,15 +28,21 @@ public class Account {
 		
 		Account account = new Account(databaseManager);
 		
-		account.agency = agency; account.firstName = first; account.lastName = last; account.username = username; 
+		account.agency = agency; 
+		account.firstName = first; 
+		account.lastName = last; 
+		account.username = username; 
 		account.password = password;
 		
-		// Validate correct formats of input data
-		 if (!validName(account.firstName, account.lastName)) {
-			 System.out.println("Unable to add account to system!");
+		// Check if any fields are empty
+		if (emptyField(account)) {
 			 return;
 		 }
-				 
+		
+		// Validate correct formats of input data
+		 if (!validateAccount(account)) {
+			 return;
+		 }	 
 		
 		// Create SQL query string
 	    String sql = String.format("INSERT INTO TCRS.ACCOUNTS (USERNAME , PASSWORDACC , FIRSTNAME , LASTNAME , AGENCY ) "
@@ -71,6 +61,11 @@ public class Account {
 		// First confirm account exist, and if so return account information
 		Account findAcc = findAccount(accountID);
 		
+		// Check to see if the account is in the system
+		if (!inSystem(findAcc)) {
+			return;
+		}
+		
 		// Build edit query in system based on account ID
 		String sqlQuery = String.format("UPDATE TCRS.ACCOUNTS SET USERNAME = '%s', PASSWORDACC = '%s', FIRSTNAME = '%s', LASTNAME = '%s',"
 				+ " AGENCY = '%s' WHERE ACCOUNTID = '%s'", newAcc.username, newAcc.password, 
@@ -88,8 +83,8 @@ public class Account {
 		// First confirm account exist, and if so return account information
 		Account findAcc = findAccount(accountID);
 		
-		if (findAcc == null) {
-			System.out.println("Account not in the system!");
+		// Check to see if the account is in the system
+		if (!inSystem(findAcc)) {
 			return;
 		}
 				
@@ -107,8 +102,8 @@ public class Account {
 		// First confirm account exist, and if so return account information
 		Account findAcc = findAccount(username);
 		
-		if (findAcc == null) {
-			System.out.println("Account not in the system!");
+		// Check to see if the account is in the system
+		if (!inSystem(findAcc)) {
 			return;
 		}
 		
@@ -135,7 +130,7 @@ public class Account {
 		
 		// Check if the query did not match  in the system, return empty account
 		if (nullCheck(result)) {
-    		return findAcc;
+    		return null;
 		}
     	
     	// Return the found account logged into findAcc
@@ -165,11 +160,20 @@ public class Account {
     	
 	}
 	
+	// Auto fill data
 	public void autoInputAccount (int accountID) {
 		
 	}
+	
+	// Override to String method
+	public String toString() {
+		return "ID " + accountID + " username: " + username + " password: " + password + " First Name: " + firstName + " Last Name: " + lastName + " agency: " + agency;
+
+	}
 
 	//**************************** Private Helper Methods ********************************************
+	
+	// Log found account into specified account
 	private Account logData(ResultSet result, Account foundAcc) {
 		
 		try {
@@ -181,9 +185,7 @@ public class Account {
 				foundAcc.firstName = result.getString("firstname");
 				foundAcc.lastName = result.getString("lastname");
 				foundAcc.agency = result.getString("agency");
-			    
-			    System.out.println("ID " + foundAcc.accountID + " username: " + foundAcc.username + " password: " + foundAcc.password + " First Name: " + foundAcc.firstName + " Last Name: " + foundAcc.lastName + " agency: " + foundAcc.agency);
-			
+			    			
 			return foundAcc;
 			}
 		} catch (SQLException e) {
@@ -204,6 +206,7 @@ public class Account {
 		return null;
 	}
 	
+	// Check if account is in the system
 	private boolean nullCheck(ResultSet result) {
 		
 		// Check if the select statement returned a value
@@ -223,23 +226,79 @@ public class Account {
     	
 	}
 	
-	private boolean validName(String first, String last) {
+	// Ensure none of the fields are empty
+	private boolean emptyField(Account account) {
 		
-		// Create validation object
-		InputDataValidation valid = new InputDataValidation();
-		
-		// Validate correct formats of input data
-		 if (!valid.validateFirstName(first)) {
-			 System.out.println("Unable to add account to database!\nCheck first name!");
-			 return false;
-		 }
-		 else if (!valid.validateLastName(last)) {
-			 System.out.println("Unable to add account to database!\nCheck last name!");
-			 return false;
-		 }
-		 
-		 return true;
+		return emptyField(account.agency, account.firstName, account.lastName, account.username, account.password);
 	}
+	
+	// Helper method for empty field
+	private boolean emptyField(String agency, String first, String last, String username, String password) {
+		
+		// Check if any of the fields (except accountID) are empty
+	    if (username == null || username.isEmpty()) {
+			 System.out.println("Cannot leave username field blank!");
+	        return true;
+	    }
+	    if (password == null || password.isEmpty()) {
+			 System.out.println("Cannot leave password field blank!");
+
+	        return true;
+	    }
+	    if (firstName == null || firstName.isEmpty()) {
+			 System.out.println("Cannot leave first name field blank!");
+
+	        return true;
+	    }
+	    if (lastName == null || lastName.isEmpty()) {
+			 System.out.println("Cannot leave last name field blank!");
+	        return true;
+	    }
+	    if (agency == null || agency.isEmpty()) {
+			 System.out.println("Cannot leave agency field blank!");
+	        return true;
+	    }
+	    // All fields are non-empty, so return true
+	    return false;
+	}
+	
+	// Check to ensure the account information is valid
+	private boolean validateAccount(Account account) {
+		
+		// Create validation objects
+		InputDataValidation format = new InputDataValidation();
+		RecordValidation records = new RecordValidation(this.databaseManager);
+
+	    if (!format.validateFirstName(firstName)) {
+			 System.out.println("Unable to add account to database!\nCheck first name!");
+
+	        return false;
+	    }
+	    if (!format.validateLastName(lastName)) {
+			 System.out.println("Unable to add account to database!\nCheck last name!");
+	        return false;
+	    }
+	    
+	    // Check if any of the fields (except accountID) are empty
+ 		if(records.checkAccountRecordExistence(account.username)) {
+ 		        return false;
+ 		}
+	 		
+	    // All fields are non-empty, so return true
+	    return true;
+	}
+	
+	private boolean inSystem(Account account) {
+		
+		if (account == null) {
+			System.out.println("Account not in the system!");
+			return false;
+		}
+		
+		return true;
+	}
+	
+		
 }
 
 
