@@ -340,6 +340,7 @@ public class VisualDesignComponents extends Application {
     //Styling report text
         taReport.getStyleClass().add("report-text");
         taReport.setWrapText(true);
+	taReport.setEditable(false);
     //Styling bottom rectangle 
         bottomRectangle.getStyleClass().add("bottom-rectangle");
     
