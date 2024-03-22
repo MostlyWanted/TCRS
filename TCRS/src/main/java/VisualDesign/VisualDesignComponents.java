@@ -1,10 +1,11 @@
-package VisualDesign;
-
+package Assignments;
+import java.util.Stack;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -23,7 +24,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class VisualDesignComponents extends Application {
+	
 
+	Stack <Scene> sceneStack = new Stack<>();
+	Stage primaryStage;
+	 HBox backLogoutHBox;
 //Buttons	
 	//Basic buttons
 	Button btClear = new Button ("Clear");
@@ -186,6 +191,10 @@ public class VisualDesignComponents extends Application {
     
 //Method to assign styles to components
 	public void styleVisualComponents () {	
+		backLogoutHBox = new HBox(btBack, btLogout);
+		    backLogoutHBox.setSpacing(40);
+		    backLogoutHBox.setAlignment(Pos.CENTER_RIGHT);
+		    backLogoutHBox.setPadding(new Insets(50));
 	//Adding warning icon to warning messages
 		ImageView warningIcon = new ImageView(new Image(getClass().getResourceAsStream("icons8-warning-32.png")));
 		lbEmptyFields.setGraphic(new ImageView(warningIcon.getImage()));
@@ -194,7 +203,7 @@ public class VisualDesignComponents extends Application {
         lbLoginError.setGraphic(new ImageView(warningIcon.getImage()));
     //Styling buttons 
         //Basic buttons
-        btClear.getStyleClass().add("small-buttons");
+        btClear.getStyleClass().add("small-buttons");   
         btSubmit.getStyleClass().add("small-buttons");
         btLogout.getStyleClass().add("small-buttons");
         btExit.getStyleClass().add("small-buttons");
@@ -306,12 +315,9 @@ public class VisualDesignComponents extends Application {
         tfDate.getStyleClass().add("text-fields");
         tfReason.getStyleClass().add("text-fields");
         tfOutstanding.getStyleClass().add("text-fields");
-        tfCitID.getStyleClass().add("text-fields");
-        tfCitID.setEditable(false);
+        tfCitID.getStyleClass().add("text-fields");       
         tfWarID.getStyleClass().add("text-fields"); 
-        tfWarID.setEditable(false);
-        tfAccID.getStyleClass().add("text-fields");
-        tfAccID.setEditable(false);
+        tfAccID.getStyleClass().add("text-fields");   
         tfFine.getStyleClass().add("text-fields");
         tfIssuingOff.getStyleClass().add("text-fields");
         tfSess1.getStyleClass().add("text-fields");
@@ -322,8 +328,7 @@ public class VisualDesignComponents extends Application {
         tfUsername.getStyleClass().add("text-fields");
         tfPassword.getStyleClass().add("text-fields");
         pfPassword.getStyleClass().add("big-text-fields");
-        pfPassword.setPromptText("Password");
-      
+        pfPassword.setPromptText("Password");     
     //Styling combo boxes
         cbAgency.getStyleClass().add("combo-boxes");
         cbAgencyLogin.getStyleClass().add("big-combo-boxes");
@@ -341,16 +346,31 @@ public class VisualDesignComponents extends Application {
         cbSessAtt4.getStyleClass().add("combo-boxes");
     //Styling report text
         taReport.getStyleClass().add("report-text");
-        taReport.setWrapText(true);
-	taReport.setEditable(false);
     //Styling bottom rectangle 
         bottomRectangle.getStyleClass().add("bottom-rectangle");
     
 	}
 	
-	public BorderPane createLoginPane() {
+	public void visualComponentSettings() {
+		taReport.setWrapText(true);
+		tfCitID.setEditable(false);
+		tfWarID.setEditable(false);
+        tfAccID.setEditable(false);  
+        taReport.setEditable(false);
+        lbLoginError.setVisible(false);
+        lbEmptyFields.setVisible(false);
+		lbWrongFormat.setVisible(false);
+		lbNoRecord.setVisible(false);
+		lbSuccessText.setVisible(false);
+	}
+	
+	
+	
+	
+	public Scene createLoginScene() {
 		
 		styleVisualComponents();
+		visualComponentSettings();
 		
 		tfUsername.getStyleClass().remove("text-fields");
 		tfUsername.getStyleClass().add("big-text-fields");
@@ -377,21 +397,21 @@ public class VisualDesignComponents extends Application {
 		pane.setCenter(login);
 		pane.setTop(exit);
 		pane.setBottom(bottomRectangle);
-		lbLoginError.setVisible(false);
+		
 		bottomRectangle.widthProperty().bind(pane.widthProperty());
 		
-		
-		return pane;
+		 Scene scene = new Scene (pane,1440, 1024);
+		    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+		    sceneStack.push(scene);
+		    return scene;
 	}
 	
-	public BorderPane createOptionPane(String centerContent) {
+	public Scene createOptionScene(String centerContent) {
 		
 		styleVisualComponents();
+		visualComponentSettings();
 		
-	    HBox backLogoutHBox = new HBox(btBack, btLogout);
-	    backLogoutHBox.setSpacing(40);
-	    backLogoutHBox.setAlignment(Pos.CENTER_RIGHT);
-	    backLogoutHBox.setPadding(new Insets(50));
+	   
 
 	    VBox centerContentVBox=null;
 
@@ -487,22 +507,25 @@ public class VisualDesignComponents extends Application {
 	    pane.setStyle("-fx-background-color: white;");
 	    pane.setTop(backLogoutHBox);
 	    pane.setCenter(centerContentVBox);
-
-	    return pane;
+	    
+	    Scene scene = new Scene (pane,1440, 1024);
+	    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+	    sceneStack.push(scene);
+	    return scene;
 	}
 	
-	public BorderPane createSearchPane(String centerContent) {
+	public Scene createSearchScene(String centerContent) {
 		
 		styleVisualComponents();
+		visualComponentSettings();
+		
 		HBox backLogoutHBox = new HBox(btBack, btLogout);
 		backLogoutHBox.setSpacing(40);
 		backLogoutHBox.setAlignment(Pos.CENTER_RIGHT);
 		backLogoutHBox.setPadding(new Insets(50));
 		
 		StackPane feedbackStackSearch = new StackPane(lbEmptyFields, lbWrongFormat, lbNoRecord);
-		lbEmptyFields.setVisible(false);
-		lbWrongFormat.setVisible(false);
-		lbNoRecord.setVisible(false);
+		
 		
 
 		VBox centerContentVBox=null;
@@ -578,11 +601,15 @@ public class VisualDesignComponents extends Application {
 		pane.setTop(backLogoutHBox);
 		pane.setCenter(centerContentVBox);
 		
-		return pane;
+		 Scene scene = new Scene (pane,1440, 1024);
+		    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+		    sceneStack.push(scene);
+		    return scene;
 	}
-	public BorderPane createDataPane(String prompt, String fields) {
+	public Scene createDataScene(String prompt, String fields) {
 		
 		styleVisualComponents();
+		visualComponentSettings();
 		
 		HBox backLogoutHBox = new HBox(btBack, btLogout);
 		backLogoutHBox.setSpacing(40);
@@ -599,9 +626,8 @@ public class VisualDesignComponents extends Application {
 		StackPane feedbackStackSubmit = new StackPane(lbEmptyFields, lbWrongFormat, lbSuccessText);
 		
 		feedbackStackSubmit.setAlignment(Pos.CENTER_RIGHT);
-		lbEmptyFields.setVisible(false);
-		lbWrongFormat.setVisible(false);
-		lbSuccessText.setVisible(false);
+	
+	
 		
 		HBox submitClearFeedbackHBox = new HBox(submitClearHBox, feedbackStackSubmit);
 		submitClearFeedbackHBox.setPadding(new Insets(50));
@@ -636,7 +662,6 @@ public class VisualDesignComponents extends Application {
 				feedbackStackDelete.setAlignment(Pos.CENTER_RIGHT);
 				HBox deleteFeedbackHBox = new HBox(deleteHBox, feedbackStackDelete);
 				deleteFeedbackHBox.setPadding(new Insets(50));
-				lbSuccessText.setVisible(false);
 				bottomHBox = deleteFeedbackHBox;
 				break;
 		}
@@ -698,6 +723,7 @@ public class VisualDesignComponents extends Application {
 				fieldsVBox = new VBox(tfCitID, tfDate, tfVin, tfPlate, cbReasonVeh, tfFine, cbPaid, tfIssuingOff);
 				fieldsVBox.setSpacing(30);
 				fieldsVBox.setAlignment(Pos.TOP_LEFT);
+				
 				break;
 				
 			case("Driver Citation Info"):
@@ -789,11 +815,15 @@ public class VisualDesignComponents extends Application {
 		pane.setRight(labelsAndFieldsHBox);
 		pane.setBottom(bottomHBox);
 		
-		return pane;
+		 Scene scene = new Scene (pane,1440, 1024);
+		    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+		    sceneStack.push(scene);
+		    return scene;
 	}
 	
-	public BorderPane createReportPane() {
+	public Scene createReportScene() {
 		styleVisualComponents();
+		visualComponentSettings();
 		 
 		HBox backLogoutHBox = new HBox(btBack, btLogout);
 		backLogoutHBox.setSpacing(40);
@@ -813,20 +843,74 @@ public class VisualDesignComponents extends Application {
 		pane.setTop(backLogoutHBox);
 		pane.setCenter(reportScroll);
 		
-		
-		return pane;
+		 Scene scene = new Scene (pane,1440, 1024);
+		    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+		    sceneStack.push(scene);
+		    return scene;
 		
 	}
 	
+	public void setButtonActions () {
+		 btClear.setOnAction(event -> clearFields(primaryStage.getScene().getRoot()));
+		 btBack.setOnAction(event -> navigateBack());
+		 btManageRecords.setOnAction(event -> {
+			 primaryStage.setScene(createOptionScene("Vehicle/Driver"));
+			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+			 
+		 });
+	}
 	
+	public void clearFields (Node rootNode) {
+		
+		BorderPane currentPane = (BorderPane) rootNode;
+		HBox LabelsAndFieldsHBox = (HBox) currentPane.getRight();
+		VBox FieldsVBox = (VBox) LabelsAndFieldsHBox.getChildren().get(1);
+		
+	    for (Node node : FieldsVBox.getChildren()) {
+	        if (node instanceof TextField ) {
+	        	TextField textField = (TextField) node;
+	        	 if (textField.isEditable()) {
+	        		 textField.clear();	
+	        	 }
+	        }
+	        
+	        if (node instanceof ComboBox ) {
+	        	ComboBox<?> comboBox = (ComboBox<?>) node;
+	        	comboBox.setValue(null);
+	        }
+	    }    
+	}      
+	
+           
+            
+     public void navigateBack() {
+    	 if (!sceneStack.isEmpty()) {
+             sceneStack.pop();
+             if (!sceneStack.isEmpty()) {
+                 Scene previousScene = sceneStack.peek();
+                 primaryStage.setScene(previousScene);
+             } else {
+                 createLoginScene();
+             }
+         }
+     }
+        
+
 	
 	@Override
 	public void start (Stage primaryStage) {
 		
-		primaryStage.setTitle("TrafficWatch");		
-		primaryStage.setScene(new Scene	(createReportPane (), 1440,1024));
+		this.primaryStage=primaryStage;
+		setButtonActions ();
+		
+		
+		primaryStage.setTitle("TrafficWatch");	
+		
+	
+		primaryStage.setScene(createOptionScene("Manage/Report"));
 		primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
 		primaryStage.show();	
+		
 	}
 	
 	public static void main(String[] args) {
