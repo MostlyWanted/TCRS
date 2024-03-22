@@ -1,4 +1,4 @@
-package VisualDesignComponents;
+package VisualDesign;
 import java.util.Stack;
 
 import javafx.application.Application;
