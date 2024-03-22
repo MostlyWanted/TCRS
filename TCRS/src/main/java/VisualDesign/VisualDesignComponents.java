@@ -1,4 +1,5 @@
 package VisualDesign;
+
 import java.util.Stack;
 
 import javafx.application.Application;
@@ -22,6 +23,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
 
 public class VisualDesignComponents extends Application {
 	

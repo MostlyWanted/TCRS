@@ -124,6 +124,7 @@ public class Officer {
 	}
 	
 	//**************************** Private Helper Methods ********************************************
+	
 		private Officer logData(ResultSet result, Officer officer) {
 			
 			try {

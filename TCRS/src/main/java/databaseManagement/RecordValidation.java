@@ -93,6 +93,7 @@ public class RecordValidation {
 		return !isUnique(badge, type, table);
 		
 	}
+
 	public boolean checkTrafficSchoolRecordExistence(int citationID) {
 		
 		String trafficSchool = "TRAFFICSCHOOL";
