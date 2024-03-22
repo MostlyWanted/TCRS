@@ -1,4 +1,4 @@
-package Assignments;
+package VisualDesignComponents;
 import java.util.Stack;
 
 import javafx.application.Application;
