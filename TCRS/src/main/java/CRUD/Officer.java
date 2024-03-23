@@ -90,6 +90,8 @@ public class Officer {
 		
 		// Execute deleting of account
 		databaseManager.executeUpdate(sqlDelete);
+		
+		System.out.println("Officer " + badgeNumber + " removed from system");
 				
 	}
 	

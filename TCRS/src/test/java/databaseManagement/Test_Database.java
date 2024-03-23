@@ -15,26 +15,28 @@ public class Test_Database {
 
 		//ResultSet result = connection.executeQuery("badewale");;
 
-		VehicleCitationMun citation = new VehicleCitationMun(connection);
+		DriverCitation citation = new DriverCitation(connection);
 		//officer.firstName = "Elon";
 		//officer.lastName = "Musk";
 		//officer.badgeNumber = 10060;
 		
-		citation.vin = "FGHI1234567890125";
-		citation.issuingOfficerBadgeNumber = 10030; 
+		//citation = citation.findCitation(1);
+		
+		citation.license = "M34567890134567";
+		citation.ISSUINGOFFICERIDP = 10030; 
 		citation.dateIssued = "02-14-2024";
-		citation.reason = "Speeding";
-		citation.fineAmount = 150.00; 
+		citation.reason = "DUI";
+		citation.fineAmount = 1000.00; 
 		citation.Paid = true;
 
-
-		citation.insertVehicleCitation(citation);
+		//citation.editVehicleCitation(35, citation);
+		citation.insertDriverCitation(citation);
 		
-		//System.out.println(citation.toString());
+		System.out.println(citation.toString());
 				
 		//VehicleCitationMun test = citation.findCitation(5);
 		
-		System.out.println(citation.toString());
+		//System.out.println(citation.toString());
 		
 		//user.firstName = "Kanye";
 		//user.lastName = "Ye";

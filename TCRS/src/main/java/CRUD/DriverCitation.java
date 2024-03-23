@@ -7,35 +7,36 @@ import databaseManagement.DatabaseManager;
 import databaseManagement.InputDataValidation;
 import databaseManagement.RecordValidation;
 
-public class VehicleCitationMun {
+
+public class DriverCitation {
 	
 	private DatabaseManager databaseManager;
 
 	private int citationId;
-	public String vin;
-	public int issuingOfficerBadgeNumber;
+	public String license;
+	public int ISSUINGOFFICERIDP;
 	public String dateIssued;
 	public String reason;
 	public Double fineAmount;
 	public boolean Paid;
 	
-	public VehicleCitationMun(DatabaseManager databaseManager) {
+	public DriverCitation(DatabaseManager databaseManager) {
 		this.databaseManager = databaseManager;
 	}
 	
-	public void insertVehicleCitation (VehicleCitationMun citation) {
+	public void insertDriverCitation (DriverCitation citation) {
 		
-		insertVehicleCitation(citation.vin, citation.issuingOfficerBadgeNumber, citation.dateIssued,
+		insertDriverCitation(citation.license, citation.ISSUINGOFFICERIDP, citation.dateIssued,
 				citation.reason, citation.fineAmount, citation.Paid);
 
 		
 	}
 	
-	public void insertVehicleCitation (String vin, int officerBadge, String dateIssued, String reason,  Double fineAmount, boolean Paid) {		
-		VehicleCitationMun citation = new VehicleCitationMun(databaseManager);
+	public void insertDriverCitation (String license, int officerBadge, String dateIssued, String reason,  Double fineAmount, boolean Paid) {		
+		DriverCitation citation = new DriverCitation(databaseManager);
 		
-		citation.vin = vin;
-		citation.issuingOfficerBadgeNumber = officerBadge; 
+		citation.license = license;
+		citation.ISSUINGOFFICERIDP = officerBadge; 
 		citation.dateIssued = dateIssued;
 		citation.reason = reason;
 		citation.fineAmount = fineAmount; 
@@ -49,8 +50,8 @@ public class VehicleCitationMun {
 		// Create validation object
 		InputDataValidation valid = new InputDataValidation();
 		
-		// Ensure the VIN is valid
-		if(!valid.validateVIN(vin)) {
+		// Ensure the license is valid
+		if(!valid.validateLicenseNumber(license)) {
 			return;
 		}
 		
@@ -88,9 +89,9 @@ public class VehicleCitationMun {
 		 fineStr = "$" + fineStr;
 		 
 		// Create SQL query string
-	    String sql = String.format("INSERT INTO TCRS.VEHICLECITATIONSMUN (ISSUINGOFFICERIDM , VINCITATIONM , "
-	    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS ) "
-	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", badgenumber, citation.vin, 
+	    String sql = String.format("INSERT INTO TCRS.DRIVINGCITATIONSMUN (ISSUINGOFFICERIDP , DRIVERIDCITATIONP , "
+	    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS )"
+	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", badgenumber, citation.license, 
 				citation.reason, citation.dateIssued, fineStr, paidStr);
 	    
 	    // Pass prepared statement to databaseManager for execution
@@ -99,10 +100,10 @@ public class VehicleCitationMun {
 	    System.out.println("Account added to the database!");
 		
 	}
-	public void editVehicleCitation (int citationID, VehicleCitationMun citationNew) {
+	public void editDriverCitation (int citationID, DriverCitation citationNew) {
 		
 		// First confirm account exist, and if so return account information
-		VehicleCitationMun citation = findCitation(citationID);
+		DriverCitation citation = findCitation(citationID);
 		
 		// Check to see if the account is in the system
 		if (!inSystem(citation)) {
@@ -120,14 +121,14 @@ public class VehicleCitationMun {
 			}
 		 
 		 // Convert numbers to string
-		 String badgenumber = Integer.toString(citationNew.issuingOfficerBadgeNumber);
-		 String fineStr = citationNew.toString();
+		 String badgenumber = Integer.toString(citationNew.ISSUINGOFFICERIDP);
+		 String fineStr = Double.toString(citationNew.fineAmount);
 		 fineStr = "$" + fineStr;
 		
-		// Build edit query in system based on account ID
-		String sqlQuery = String.format("UPDATE TCRS.ACCOUNTS SET USERNAME = '%s', PASSWORDACC = '%s', FIRSTNAME = '%s', LASTNAME = '%s',"
-				+ " AGENCY = '%s' WHERE CITATIONID = '%s'", citationNew.username, citationNew.password, 
-				citationNew.firstName, citationNew.lastName, citationNew.agency, citation.accountID);
+		// Build edit query in system based on citation ID
+		String sqlQuery = String.format("UPDATE TCRS.DRIVINGCITATIONSMUN SET ISSUINGOFFICERIDP = '%s', DRIVERIDCITATIONP = '%s', CITATIONREASON = '%s', "
+				+ "CITATIONDATE = '%s', FINEAMOUNT = '%s', PAYMENTSTATUS = '%s' WHERE CITATIONID = %d", 
+				 badgenumber, citationNew.license, citationNew.reason, citationNew.dateIssued, fineStr, paidStr, citationNew.citationId);
 
 		// Execute query
 		databaseManager.executeUpdate(sqlQuery);
@@ -135,31 +136,45 @@ public class VehicleCitationMun {
 		System.out.println("Account edited");
 	}
 	
-	}
-	public void deleteVehicleCitation (int citationID) {
+	public void deleteDriverCitation (int citationID) {
 		
-	}
-	public void findVehicleCitation (int citationID) {
+
+		// First confirm account exist, and if so return account information
+		DriverCitation citation = findCitation(citationID);
 		
+		// Check to see if the account is in the system
+		if (!inSystem(citation)) {
+			return;
+		}
+				
+		// Create query to delete account
+		String sqlDelete = String.format("DELETE FROM TCRS.DRIVINGCITATIONSMUN WHERE CITATIONID= %d", citationID);
+		
+		// Execute deleting of account
+		databaseManager.executeUpdate(sqlDelete);
+		
+		System.out.println("Citation " + citationID + " removed from system!");
+
 	}
-	public void autoInputVehicleCitation(int citationID) {
+
+	public void autoInputDriverCitation(int citationID) {
 		
 	}
 	
 	public String toString() {
 		
-		return "VIN Number " + this.vin + " Officer Badge Number: " + this.issuingOfficerBadgeNumber + " Date Issued: " + this.dateIssued
+		return "License Number " + this.license + " Officer Badge Number: " + this.ISSUINGOFFICERIDP + " Date Issued: " + this.dateIssued
 				+ " Reason:" + this.reason + " Fine Amount: $" + this.fineAmount + " Paid: " + this.Paid;
 	}
 	
 	// Find account using account user name
-	public VehicleCitationMun findCitation (int citationID) {
+	public DriverCitation findCitation (int citationID) {
 		
 		// Create account to hold new found account information
-		VehicleCitationMun findCitation = new VehicleCitationMun(this.databaseManager);
+		DriverCitation findCitation = new DriverCitation(this.databaseManager);
 		
 		// Build SQL query using static method
-		String sqlQuery = String.format("SELECT * FROM TCRS.VEHICLECITATIONSMUN WHERE CITATIONID=%d", citationID);
+		String sqlQuery = String.format("SELECT * FROM TCRS.DRIVINGCITATIONSMUN WHERE CITATIONID='%d'", citationID);
 
 		// Execute finding account SELECT query
 		ResultSet result = databaseManager.executeQuery(sqlQuery);
@@ -175,13 +190,13 @@ public class VehicleCitationMun {
 	}
 	
 	// Find account using account user name
-	public VehicleCitationMun findCitation (String vin) {
+	public DriverCitation findCitation (String license) {
 		
 		// Create account to hold new found account information
-		VehicleCitationMun findCitation = new VehicleCitationMun(this.databaseManager);
+		DriverCitation findCitation = new DriverCitation(this.databaseManager);
 		
 		// Build SQL query using static method
-		String sqlQuery = String.format("SELECT * FROM TCRS.VEHICLECITATIONSMUN WHERE VINCITATIONM='%s'", vin);
+		String sqlQuery = String.format("SELECT * FROM TCRS.DRIVINGCITATIONSMUN WHERE DRIVERIDCITATIONP='%s'", license);
 
 		// Execute finding account SELECT query
 		ResultSet result = databaseManager.executeQuery(sqlQuery);
@@ -199,21 +214,21 @@ public class VehicleCitationMun {
 	
 	//**************************** Private Helper Methods ********************************************
 	
-	private VehicleCitationMun logData(ResultSet result, VehicleCitationMun citation) {
+	private DriverCitation logData(ResultSet result, DriverCitation citation) {
 		
 		try {
 			while (result.next()) {
 			     //Retrieve data by column index or name
 				citation.citationId = result.getInt("CITATIONID");
-				citation.vin = result.getString("VINCITATIONM");
-				citation.issuingOfficerBadgeNumber = result.getInt("ISSUINGOFFICERIDM");
+				citation.license = result.getString("DRIVERIDCITATIONP");
+				citation.ISSUINGOFFICERIDP = result.getInt("ISSUINGOFFICERIDP");
 				citation.dateIssued = result.getString("CITATIONDATE");
 				citation.reason = result.getString("CITATIONREASON");
 				String fine = result.getString("FINEAMOUNT");
 				String paid = result.getString("PAYMENTSTATUS");
 				
 				//covert fine amount to double
-				citation.fineAmount = Double.parseDouble(fine.substring(1));
+				citation.fineAmount = Double.valueOf(fine.substring(1));
 				
 				// convert payment status to boolean
 				if(paid.equalsIgnoreCase("Yes")) {
@@ -248,7 +263,7 @@ public class VehicleCitationMun {
 		// Check if the select statement returned a value
     	try {
 			if (!result.isBeforeFirst()) {
-				System.out.println("Officer not in the system!");
+				System.out.println("Citation not in the system!");
 				return true;
 			}
 	    	
@@ -263,17 +278,17 @@ public class VehicleCitationMun {
 	}
 	
 	// Helper method for empty field
-	private boolean emptyField(VehicleCitationMun citation) {
+	private boolean emptyField(DriverCitation citation) {
 		
-		return emptyField(citation.vin, citation.dateIssued, citation.reason);
+		return emptyField(citation.license, citation.dateIssued, citation.reason);
 		
 	}
 	
 	// Helper method for empty field
-	private boolean emptyField(String vin, String dateIssued, String reason) {
+	private boolean emptyField(String license, String dateIssued, String reason) {
 		
 		// Check if any of the fields (except accountID) are empty
-	    if (vin == null || vin.isEmpty()) {
+	    if (license == null || license.isEmpty()) {
 			 System.out.println(String.format("Cannot leave first name blank!"));
 	        return true;
 	    }
@@ -307,10 +322,10 @@ public class VehicleCitationMun {
 	    return false;
 	}
 	
-	private boolean inSystem(VehicleCitationMun citation) {
+	private boolean inSystem(DriverCitation citation) {
 		
 		if (citation == null) {
-			System.out.println("Officer not in the system!");
+			System.out.println("Vehicle citation not in the system!");
 			return false;
 		}
 		
