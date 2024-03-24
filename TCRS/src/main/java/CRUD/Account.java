@@ -4,24 +4,92 @@ import databaseManagement.*;
 import java.sql.*;
 
 public class Account {
+	
 	private DatabaseManager databaseManager;
 	
-	public int accountID;
-	public String username;
-	public String password;
-	public String firstName;
-	public String lastName;
-	public String agency;
+	private int accountID;
+	private String username;
+	private String password;
+	private String firstName;
+	private String lastName;
+	private String agency;
 	
 	public Account(DatabaseManager databaseManager) {
 		this.databaseManager = databaseManager;
 	}
-
-	// Insert account object into database
-	public void insertAccount(Account account) {
+	
+	// ******** Setter Methods ********//
+	
+	public void setUsername(String username) {
 		
-		insertAccount(account.agency, account.firstName, account.lastName, account.username, account.password);
+		this.username = username;
+		
 	}
+	
+	public void setPassword(String password) {
+			
+			this.password = password;
+			
+		}
+	
+	public void setFirstName(String firstName) {
+		
+		this.firstName = firstName;
+		
+	}
+	
+	public void setLastName(String lastName) {
+		
+		this.lastName = lastName;
+		
+	}
+	
+	public void setAgency(String agency) {
+		
+		this.agency = agency;
+		
+	}
+	
+	//********* Getter Methods ********//
+	
+	public int getAccountID() {
+		
+		return accountID;
+		
+	}
+
+	public String getUsername() {
+		
+		return username;
+		
+	}
+	
+	public String getPassword() {
+			
+			return password;
+			
+		}
+	
+	public String getFirstName() {
+		
+		return firstName;
+		
+	}
+	
+	public String getLastName() {
+		
+		return lastName;
+		
+	}
+	
+	public String getAgency() {
+		
+		return agency;
+		
+	}
+	
+	//********** Database Methods **********//
+	
 	
 	// Create and insert account into database given parameters
 	public void insertAccount(String agency, String first, String last, String username, String password) {
@@ -96,26 +164,6 @@ public class Account {
 		
 	}
 	
-	// Delete account based on on user name
-	public void deleteAccount (String username) {
-		
-		// First confirm account exist, and if so return account information
-		Account findAcc = findAccount(username);
-		
-		// Check to see if the account is in the system
-		if (!inSystem(findAcc)) {
-			return;
-		}
-		
-		// Create query to delete account
-		String sqlDelete = String.format("DELETE FROM TCRS.ACCOUNTS WHERE USERNAME='%s'", username);
-		
-		// Execute deleting of account
-		databaseManager.executeUpdate(sqlDelete);
-		
-		
-	}
-	
 	// find account using account ID
 	public Account findAccount (int accountID) {
 		
@@ -130,6 +178,7 @@ public class Account {
 		
 		// Check if the query did not match  in the system, return empty account
 		if (nullCheck(result)) {
+			System.out.println("Nothing is being found in the system!");
     		return null;
 		}
     	

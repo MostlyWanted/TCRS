@@ -10,29 +10,21 @@ public class Test_Database {
             
 		DatabaseManager connection = new DatabaseManager();
 		DataValidation validate = new DataValidation(connection);
+		RecordValidation valid = new RecordValidation(connection);
 		
 		connection.connectToTestDatabase();
 
 		//ResultSet result = connection.executeQuery("badewale");;
 
-		DriverCitation citation = new DriverCitation(connection);
+		valid.checkLoginInfo("badewale", "239592830", "Admin");
+		
+		Account admin = new Account(connection);
+		admin.findAccount(2);
+		System.out.println(admin.toString());
+		
 		//officer.firstName = "Elon";
 		//officer.lastName = "Musk";
 		//officer.badgeNumber = 10060;
-		
-		//citation = citation.findCitation(1);
-		
-		citation.license = "M34567890134567";
-		citation.ISSUINGOFFICERIDP = 10030; 
-		citation.dateIssued = "02-14-2024";
-		citation.reason = "DUI";
-		citation.fineAmount = 1000.00; 
-		citation.Paid = true;
-
-		//citation.editVehicleCitation(35, citation);
-		citation.insertDriverCitation(citation);
-		
-		System.out.println(citation.toString());
 				
 		//VehicleCitationMun test = citation.findCitation(5);
 		

@@ -133,33 +133,40 @@ public class RecordValidation {
 		
 		return false;
 	}
+	
 	public boolean checkLoginInfo(String username, String password, String agency) {
 		
-		// First check user name exist with database
-		if(checkAccountRecordExistence(username)) {
-			System.out.println("Username/Password/agency not in system!");
-			return false;
-		}
 		
-		Account temp = new Account(this.databaseManager);
+		// Build string to search login credentials within database
+		String sqlCredentialCheck = String.format("SELECT * FROM TCRS.ACCOUNTS WHERE AGENCY = '%s' AND USERNAME = '%s' AND PASSWORDACC = '%s'", agency, username, password);
 		
-		temp.findAccount(username);
-		
-		if(!Objects.equals(temp.password, password) || !Objects.equals(temp.agency, agency))
-		{
-			System.out.println("Username/Password/agency not in system!");
-			return false;
-		}
-		
-		return true;
+		// Execute search and return results		
+		 ResultSet result = this.databaseManager.executeQuery(sqlCredentialCheck);
+		 
+			// If there is no next, then the VIN is not in the database and therefore valid
+			try {
+				if(result.next()) {
+					System.out.println("Login succesfull!");
+					return true;
+				}
+				else {
+					System.out.println("Account not in the system!");
+					return false;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
 	}
 	
 	//************************ Helper Methods **********************
 	// Check if unique
 	private boolean isUnique(String entry, String column, String table) {
 		
+		// Search the system
 		String query = String.format("SELECT %s FROM TCRS.%s WHERE %s='%s'", column, table, column, entry);
 		
+		// Return false if already in the system, true if unique
 		ResultSet result = this.databaseManager.executeQuery(query);
 		// If there is no next, then the VIN is not in the database and therefore valid
 		try {
