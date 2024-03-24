@@ -31,12 +31,12 @@ public class TextInterfacer {
     	navStack.navigateTo("Homepage");
         System.out.println("Welcome to the Home Page");
         System.out.println("-------------------------");
-        System.out.println("Please Login");
-        System.out.println("Enter agency: ");
+        System.out.println("Please Login or l to logout");
+        System.out.print("Enter agency: ");
         String agency = scanner.next();
-        System.out.println("Enter username: ");
+        System.out.print("Enter username: ");
         String username = scanner.next();
-        System.out.println("Enter password: ");
+        System.out.print("Enter password: ");
         String password = scanner.next();
         
         while(!valid.checkLoginInfo(username, password, agency)) {
@@ -64,6 +64,12 @@ public class TextInterfacer {
             case "Municiple":
             	navStack.navigateTo(agency);
                 System.out.println("Exiting...");
+                System.exit(0);
+                break;
+            case "l":
+            	navStack.navigateTo(agency);
+                System.out.println("Exiting...");
+                connection.disconnectFromDatabase();
                 System.exit(0);
                 break;
             default:
@@ -127,6 +133,6 @@ public class TextInterfacer {
     public static void main(String[] args) {
     	TextInterfacer textInterface = new TextInterfacer();
         textInterface.showHomePage();
-        textInterface.connection.disconnectFromDatabase();
+        
     }
 }
