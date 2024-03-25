@@ -1,4 +1,4 @@
-package VisualDesign;
+package Assignments;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Stack;
@@ -859,6 +859,7 @@ public class VisualDesignComponents extends Application {
 		 btClear.setOnAction(event -> clearFields(primaryStage.getScene().getRoot()));
 		 btExit.setOnAction(event->exit());
 		 btBack.setOnAction(event -> navigateBack());
+		 btSubmit.setOnAction(event -> emptyFieldsTest(primaryStage.getScene().getRoot()));
 		 btManageRecords.setOnAction(event -> {
 			 primaryStage.setScene(createOptionScene("Vehicle/Driver"));
 			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
@@ -909,7 +910,9 @@ public class VisualDesignComponents extends Application {
     public void exit() {
     	Platform.exit();
     }
-    public void checkEmptyFields(Node rootNode) {
+    public Boolean emptyFieldsTest(Node rootNode) {
+    	
+    	boolean emptyCheckPassed=true;
     	
     	BorderPane currentPane = (BorderPane) rootNode;
     	
@@ -926,22 +929,49 @@ public class VisualDesignComponents extends Application {
 	        if (node instanceof TextField ) {
 	        	TextField textField = (TextField) node;
 	        	 if (textField.getText().trim().isEmpty()) {
-	        		textField.setStyle("fx-border-color:#FA3E3E;");
+	        		textField.setStyle("-fx-border-color:#FA3E3E;");
 	        		lbEmptyFields.setVisible(true);
+	        		emptyCheckPassed=false;
 	        	 }
 	        }
 	        
 	        if (node instanceof ComboBox ) {
 	        	ComboBox<?> comboBox = (ComboBox<?>) node;
 	        	if(comboBox.getSelectionModel().isEmpty()){
-	        		comboBox.setStyle("fx-border-color:#FA3E3E;");
+	        		comboBox.setStyle("-fx-border-color:#FA3E3E;");
 	        		lbEmptyFields.setVisible(true);
+	        		emptyCheckPassed=false;
 	        	}
 	        }
 	    }  //Search Scene 
     	} else {
     		
+    	VBox centerContentVBox = (VBox) currentPane.getCenter();
+    	int stackIndex = centerContentVBox.getChildren().size()-1;
+    	StackPane feedbackStack = (StackPane) centerContentVBox.getChildren().get(stackIndex);
+		Label lbEmptyFields = (Label) feedbackStack.getChildren().get(0);
+		
+		for (Node node : centerContentVBox.getChildren()) {
+	        if (node instanceof TextField ) {
+	        	TextField textField = (TextField) node;
+	        	 if (textField.getText().trim().isEmpty()) {
+	        		textField.setStyle("-fx-border-color:#FA3E3E;");
+	        		lbEmptyFields.setVisible(true);
+	        		emptyCheckPassed=false;
+	        	 }
+	        }
+	        
+	        if (node instanceof ComboBox ) {
+	        	ComboBox<?> comboBox = (ComboBox<?>) node;
+	        	if(comboBox.getSelectionModel().isEmpty()){
+	        		comboBox.setStyle("-fx-border-color:#FA3E3E;");
+	        		lbEmptyFields.setVisible(true);
+	        		emptyCheckPassed=false;
+	        	}
+	        }
+	    } 
     	}
+    return emptyCheckPassed;
     }
 
 	
@@ -955,7 +985,7 @@ public class VisualDesignComponents extends Application {
 		primaryStage.setTitle("TrafficWatch");	
 		
 	
-		primaryStage.setScene(createLoginScene());
+		primaryStage.setScene(createDataScene("Enter","Vehicle Info"));
 		primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
 		primaryStage.show();	
 		
