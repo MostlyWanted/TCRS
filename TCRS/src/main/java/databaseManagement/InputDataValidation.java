@@ -71,6 +71,9 @@ public class InputDataValidation {
 			System.out.println("Incorrect year format!");
 			return false;
 		}
+		else if (!isNumber(year)) {
+			return false;
+		}
 		
 		int currYear = Integer.valueOf(year);
 		
@@ -115,6 +118,10 @@ public class InputDataValidation {
 	}
 	public boolean validateDemeritPoints(String demeritPoints) {
 		
+		if(!isNumber(demeritPoints)) {
+			return false;
+		}
+		
 		int dPoint = Integer.valueOf(demeritPoints);
 		
 		if (dPoint < 0 || 99 < dPoint)
@@ -124,6 +131,10 @@ public class InputDataValidation {
 		
 	}
 	public boolean validateBadgeNumber(String badge) {
+		
+		if(!isNumber(badge)) {
+			return false;
+		}
 		
 		int badgeNumber = Integer.valueOf(badge);
 		
@@ -138,6 +149,10 @@ public class InputDataValidation {
 	}
 	public boolean validateCitationID(String citation) {
 		
+		if(!isNumber(citation)) {
+			return false;
+		}
+		
 		int citationID = Integer.valueOf(citation);
 		
 		// Ensure number is valid
@@ -149,6 +164,10 @@ public class InputDataValidation {
 		
 	}
 	public boolean validateFineAmount(String fine) {
+		
+		if(!isNumber(fine)) {
+			return false;
+		}
 		
 		Double fineAmount = Double.valueOf(fine);
 		
@@ -167,6 +186,10 @@ public class InputDataValidation {
 	}
 	public boolean validateWarrantID(String warrant) {
 		
+		if(!isNumber(warrant)) {
+			return false;
+		}
+		
 		int warrantID = Integer.valueOf(warrant);
 		
 		// Ensure number is valid
@@ -177,19 +200,7 @@ public class InputDataValidation {
 		return true;
 		
 	}
-	public boolean validateSessionNumber(String session) {
-		
-		int sessionNumber = Integer.valueOf(session);
-		
-		if(sessionNumber < 1 || 4 < sessionNumber) {
-			System.out.println("Invalis session number");
-			return false;
-		}
-		
-		return true;
-		
-	}
-	
+
 	//************************ Helper Methods **********************
 	
 	// Check if the length is the correct
@@ -243,6 +254,12 @@ public class InputDataValidation {
 	    return true;
 	}
 	
+	// Check if only numbers, with range
+		private boolean isNumber(String str) {
+		    
+			return isNumber(str, 0, (str.length() - 1));
+		}
+		
 	
 	// Check if only numbers, with range
 	private boolean isNumber(String str, int begin, int end) {
