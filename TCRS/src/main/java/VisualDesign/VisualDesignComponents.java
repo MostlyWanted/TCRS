@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,14 +25,38 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+class CreateScene {
+	
+	String methodName;
+    String parameter1;
+    String parameter2;
+
+    public CreateScene(String methodName) {
+    	this.methodName = methodName;
+    }
+    public CreateScene(String methodName, String parameter1) {
+        this.methodName = methodName;
+        this.parameter1 = parameter1;
+    }
+
+    public CreateScene (String methodName, String parameter1, String parameter2) {
+        this.methodName = methodName;
+        this.parameter1 = parameter1;
+        this.parameter2 = parameter2;
+    }
+
+}
 
 public class VisualDesignComponents extends Application {
 	
 
-	Stack <Scene> sceneStack = new Stack<>();
+	InputDataValidation formatValidator = new InputDataValidation();
+	Stack<CreateScene> sceneStack = new Stack<>();
 	Stage primaryStage;
-	 HBox backLogoutHBox;
+	
 //Buttons	
 	//Basic buttons
 	Button btClear = new Button ("Clear");
@@ -194,10 +219,7 @@ public class VisualDesignComponents extends Application {
     
 //Method to assign styles to components
 	public void styleVisualComponents () {	
-		backLogoutHBox = new HBox(btBack, btLogout);
-		    backLogoutHBox.setSpacing(40);
-		    backLogoutHBox.setAlignment(Pos.CENTER_RIGHT);
-		    backLogoutHBox.setPadding(new Insets(50));
+		
 	//Adding warning icon to warning messages
 		ImageView warningIcon = new ImageView(new Image(getClass().getResourceAsStream("icons8-warning-32.png")));
 		lbEmptyFields.setGraphic(new ImageView(warningIcon.getImage()));
@@ -246,55 +268,31 @@ public class VisualDesignComponents extends Application {
         lbNoRecord.getStyleClass().add("warning-label");
         lbLoginError.getStyleClass().add("warning-label");
         lbSuccessText.getStyleClass().add("success-label");
-        //Instruction labels    
-        lbChoose.getStyleClass().add("big-label");
-        lbManage.getStyleClass().add("big-label");
-        lbReport.getStyleClass().add("big-label");
-        lbEnter.getStyleClass().add("medium-label");
-        lbEdit.getStyleClass().add("medium-label");
-        lbFilter.getStyleClass().add("medium-label");
-        lbDelete.getStyleClass().add("medium-label");
-        //Labels for text fields
-        lbEnterVin.getStyleClass().add("big-label");
-        lbEnterLic.getStyleClass().add("big-label");
-        lbStartDate.getStyleClass().add("small-label");
-        lbEndDate.getStyleClass().add("small-label");
-        lbEnterCitID.getStyleClass().add("big-label");
-        lbEnterWarID.getStyleClass().add("big-label");
-        lbEnterBadge.getStyleClass().add("big-label");
-        lbEnterAcc.getStyleClass().add("big-label");
-        lbVin.getStyleClass().add("small-label");
-        lbPlate.getStyleClass().add("small-label");
-        lbMake.getStyleClass().add("small-label");
-        lbModel.getStyleClass().add("small-label");
-        lbYear.getStyleClass().add("small-label");
-        lbRegStat.getStyleClass().add("small-label");
-        lbLic.getStyleClass().add("small-label");
-        lbFirst.getStyleClass().add("small-label");
-        lbLast.getStyleClass().add("small-label");
-        lbPoints.getStyleClass().add("small-label");
-        lbLicStat.getStyleClass().add("small-label");
-        lbDate.getStyleClass().add("small-label");
-        lbReason.getStyleClass().add("small-label");
-        lbOutstanding.getStyleClass().add("small-label");
-        lbCitID.getStyleClass().add("small-label");
-        lbWarID.getStyleClass().add("small-label");
-        lbFine.getStyleClass().add("small-label");
-        lbIssuingOff.getStyleClass().add("small-label");
-        lbPaid.getStyleClass().add("small-label");
-        lbReportable.getStyleClass().add("small-label");
-        lbSess1.getStyleClass().add("small-label");
-        lbSess2.getStyleClass().add("small-label");
-        lbSess3.getStyleClass().add("small-label");
-        lbSess4.getStyleClass().add("small-label");
-        lbSess1Att.getStyleClass().add("small-label");
-        lbSess2Att.getStyleClass().add("small-label");
-        lbSess3Att.getStyleClass().add("small-label");
-        lbSess4Att.getStyleClass().add("small-label");
-        lbBadge.getStyleClass().add("small-label");
-        lbUsername.getStyleClass().add("small-label");
-        lbPassword.getStyleClass().add("small-label");
-        lbAgency.getStyleClass().add("small-label");
+
+        //Big labels
+        Label [] bigLabels = { lbChoose, lbManage, lbReport, lbEnterVin,lbEnterLic,lbEnterCitID, lbEnterWarID, lbEnterBadge, lbEnterAcc};
+        
+        for(Label label: bigLabels){
+        	label.getStyleClass().add("big-label");
+        }
+        //Medium labels
+        Label[] mediumLabels = {lbEnter,lbEdit,lbFilter,lbDelete};
+        
+        for (Label label:mediumLabels) {
+        	label.getStyleClass().add("medium-label");
+        }
+        //Small labels
+        Label[] smallLabels = { 
+        	    lbVin, lbPlate, lbMake, lbModel, lbYear, lbRegStat, lbLic, lbFirst, lbLast, lbPoints, lbLicStat, lbDate,
+        	    lbReason, lbOutstanding, lbCitID, lbWarID, lbFine, lbIssuingOff, lbPaid, lbReportable, lbSess1, lbSess2,
+        	    lbSess3, lbSess4, lbSess1Att, lbSess2Att, lbSess3Att, lbSess4Att, lbBadge, lbUsername, lbPassword, lbAgency,
+        	    lbStartDate, lbEndDate
+        	};
+
+        	for (Label label : smallLabels) {
+        	    label.getStyleClass().add("small-label");
+        	}
+
     //Styling text fields 
         TextField[] textFields = {
         	    tfStartDate, tfEndDate, tfEnterCitID, tfEnterWarID, tfEnterAcc,
@@ -333,15 +331,21 @@ public class VisualDesignComponents extends Application {
 	
 	public void visualComponentSettings() {
 		taReport.setWrapText(true);
-		tfCitID.setEditable(false);
-		tfWarID.setEditable(false);
-        tfAccID.setEditable(false);  
-        taReport.setEditable(false);
-        lbLoginError.setVisible(false);
-        lbEmptyFields.setVisible(false);
-		lbWrongFormat.setVisible(false);
-		lbNoRecord.setVisible(false);
-		lbSuccessText.setVisible(false);
+		taReport.setEditable(false);
+		
+		//Text fields that should not be edited
+		TextField[] uneditableTextFields={tfCitID,tfWarID,tfAccID};
+		
+		for (TextField textField: uneditableTextFields) {
+			textField.setEditable(false);
+		}
+
+        //Feedback labels
+        Label[] feedbackLabels = {lbLoginError, lbEmptyFields, lbWrongFormat, lbNoRecord, lbSuccessText};
+        
+        for (Label feedbackLabel : feedbackLabels) {
+            feedbackLabel.setVisible(false);
+        }
 	}
 	
 	public void setFieldsUneditable () {
@@ -403,11 +407,13 @@ public class VisualDesignComponents extends Application {
 		pane.setBottom(bottomRectangle);
 		
 		bottomRectangle.widthProperty().bind(pane.widthProperty());
-		
-		 Scene scene = new Scene (pane,1440, 1024);
-		    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
-		    sceneStack.push(scene);
-		    return scene;
+		Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+		 Scene scene = new Scene (pane,bounds.getWidth(), bounds.getHeight());
+		 scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+		 sceneStack.push(new CreateScene("CreateLoginScene"));
+		    
+		 return scene;
 	}
 	
 	public Scene createOptionScene(String centerContent) {
@@ -415,7 +421,10 @@ public class VisualDesignComponents extends Application {
 		styleVisualComponents();
 		visualComponentSettings();
 		
-	   
+		HBox backLogoutHBox = new HBox(btBack, btLogout);
+		backLogoutHBox.setSpacing(40);
+		backLogoutHBox.setAlignment(Pos.CENTER_RIGHT);
+		backLogoutHBox.setPadding(new Insets(50));
 
 	    VBox centerContentVBox=null;
 
@@ -512,9 +521,12 @@ public class VisualDesignComponents extends Application {
 	    pane.setTop(backLogoutHBox);
 	    pane.setCenter(centerContentVBox);
 	    
-	    Scene scene = new Scene (pane,1440, 1024);
+	    Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+		 Scene scene = new Scene (pane, bounds.getWidth(), bounds.getHeight());
 	    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
-	    sceneStack.push(scene);
+	    sceneStack.push(new CreateScene("CreateOptionScene", centerContent));
+	    
 	    return scene;
 	}
 	
@@ -605,9 +617,11 @@ public class VisualDesignComponents extends Application {
 		pane.setTop(backLogoutHBox);
 		pane.setCenter(centerContentVBox);
 		
-		 Scene scene = new Scene (pane,1440, 1024);
+		Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+		 Scene scene = new Scene (pane,bounds.getWidth(), bounds.getHeight());
 		    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
-		    sceneStack.push(scene);
+		    sceneStack.push(new CreateScene("CreateSearchScene", centerContent));
 		    return scene;
 	}
 	public Scene createDataScene(String prompt, String fields) {
@@ -635,6 +649,7 @@ public class VisualDesignComponents extends Application {
 		
 		HBox submitClearFeedbackHBox = new HBox(submitClearHBox, feedbackStackSubmit);
 		submitClearFeedbackHBox.setPadding(new Insets(50));
+		submitClearFeedbackHBox.setSpacing(40);
 		
 	
 		VBox promptVBox=null;
@@ -820,16 +835,19 @@ public class VisualDesignComponents extends Application {
 		pane.setRight(labelsAndFieldsHBox);
 		pane.setBottom(bottomHBox);
 		
-		 Scene scene = new Scene (pane,1440, 1024);
+		Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+		 Scene scene = new Scene (pane,bounds.getWidth(), bounds.getHeight());
 		    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
-		    sceneStack.push(scene);
+		    sceneStack.push(new CreateScene("CreateDataScene", prompt, fields));
 		    return scene;
 	}
 	
 	public Scene createReportScene() {
 		styleVisualComponents();
 		visualComponentSettings();
-		 
+		Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds(); 
 		HBox backLogoutHBox = new HBox(btBack, btLogout);
 		backLogoutHBox.setSpacing(40);
 		backLogoutHBox.setAlignment(Pos.CENTER_RIGHT);
@@ -839,8 +857,8 @@ public class VisualDesignComponents extends Application {
 		reportScroll.setStyle("-fx-background-color: white;");
 		reportScroll.setFitToWidth(true);
         reportScroll.setFitToHeight(true);
-        reportScroll.setPrefViewportWidth(1440); 
-        reportScroll.setPrefViewportHeight(1024);
+        reportScroll.setPrefViewportWidth(bounds.getWidth()); 
+        reportScroll.setPrefViewportHeight(bounds.getHeight());
         reportScroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 		reportScroll.setPadding(new Insets(20));
 		BorderPane pane = new BorderPane();
@@ -848,9 +866,10 @@ public class VisualDesignComponents extends Application {
 		pane.setTop(backLogoutHBox);
 		pane.setCenter(reportScroll);
 		
-		 Scene scene = new Scene (pane,1440, 1024);
+		
+		 Scene scene = new Scene (pane,bounds.getWidth(), bounds.getHeight());
 		    scene.getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
-		    sceneStack.push(scene);
+		    sceneStack.push(new CreateScene("CreateReportScene"));
 		    return scene;
 		
 	}
@@ -859,7 +878,7 @@ public class VisualDesignComponents extends Application {
 		 btClear.setOnAction(event -> clearFields(primaryStage.getScene().getRoot()));
 		 btExit.setOnAction(event->exit());
 		 btBack.setOnAction(event -> navigateBack());
-		 btSubmit.setOnAction(event -> emptyFieldsTest(primaryStage.getScene().getRoot()));
+		 btSubmit.setOnAction(event -> fieldFormatTest(primaryStage.getScene().getRoot()));
 		 btManageRecords.setOnAction(event -> {
 			 primaryStage.setScene(createOptionScene("Vehicle/Driver"));
 			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
@@ -900,10 +919,27 @@ public class VisualDesignComponents extends Application {
     	 if (!sceneStack.isEmpty()) {
              sceneStack.pop();
              if (!sceneStack.isEmpty()) {
-                 Scene previousScene = sceneStack.peek();
-                 primaryStage.setScene(previousScene);
+                 CreateScene previousCreateScene = sceneStack.pop();
+                 
+                 switch (previousCreateScene.methodName) {
+                 case "CreateLoginScene":
+                	 primaryStage.setScene(createLoginScene());
+                	 break;
+                 case "CreateOptionScene":
+                	 primaryStage.setScene(createOptionScene(previousCreateScene.parameter1));
+                	 break;
+                 case "CreateSearchScene":
+                	 primaryStage.setScene(createSearchScene(previousCreateScene.parameter1));
+                	 break;
+                 case "CreateDataScene":
+                	 primaryStage.setScene(createDataScene(previousCreateScene.parameter1, previousCreateScene.parameter2));
+                	 break;
+                 case "CreateReportScene":
+                	 primaryStage.setScene(createReportScene());
+                	 break;
+                 }
              } else {
-                 createLoginScene();
+                primaryStage.setScene(createLoginScene());
              }
          }
      }
@@ -912,7 +948,7 @@ public class VisualDesignComponents extends Application {
     }
     public Boolean emptyFieldsTest(Node rootNode) {
     	
-    	boolean emptyCheckPassed=true;
+    	boolean emptyTestPassed=true;
     	
     	BorderPane currentPane = (BorderPane) rootNode;
     	
@@ -931,7 +967,7 @@ public class VisualDesignComponents extends Application {
 	        	 if (textField.getText().trim().isEmpty()) {
 	        		textField.setStyle("-fx-border-color:#FA3E3E;");
 	        		lbEmptyFields.setVisible(true);
-	        		emptyCheckPassed=false;
+	        		emptyTestPassed=false;
 	        	 }
 	        }
 	        
@@ -940,7 +976,7 @@ public class VisualDesignComponents extends Application {
 	        	if(comboBox.getSelectionModel().isEmpty()){
 	        		comboBox.setStyle("-fx-border-color:#FA3E3E;");
 	        		lbEmptyFields.setVisible(true);
-	        		emptyCheckPassed=false;
+	        		emptyTestPassed=false;
 	        	}
 	        }
 	    }  //Search Scene 
@@ -957,7 +993,7 @@ public class VisualDesignComponents extends Application {
 	        	 if (textField.getText().trim().isEmpty()) {
 	        		textField.setStyle("-fx-border-color:#FA3E3E;");
 	        		lbEmptyFields.setVisible(true);
-	        		emptyCheckPassed=false;
+	        		emptyTestPassed=false;
 	        	 }
 	        }
 	        
@@ -966,15 +1002,165 @@ public class VisualDesignComponents extends Application {
 	        	if(comboBox.getSelectionModel().isEmpty()){
 	        		comboBox.setStyle("-fx-border-color:#FA3E3E;");
 	        		lbEmptyFields.setVisible(true);
-	        		emptyCheckPassed=false;
+	        		emptyTestPassed=false;
 	        	}
 	        }
 	    } 
     	}
-    return emptyCheckPassed;
+    return emptyTestPassed;
     }
 
-	
+    public Boolean fieldFormatTest(Node rootNode) {
+    	
+    	boolean formatTestPassed=true;
+    	
+    	BorderPane currentPane = (BorderPane) rootNode;
+    	
+    	//Data Scene
+    	if (currentPane.getCenter()==null) {
+    		
+		HBox LabelsAndFieldsHBox = (HBox) currentPane.getRight();
+		VBox FieldsVBox = (VBox) LabelsAndFieldsHBox.getChildren().get(1);
+		HBox bottomHBox = (HBox) currentPane.getBottom();
+		StackPane feedbackStack = (StackPane) bottomHBox.getChildren().get(1);
+		Label lbWrongFormat = (Label) feedbackStack.getChildren().get(1);
+		
+	    for (Node node : FieldsVBox.getChildren()) {
+	        if (node instanceof TextField ) {
+	        	TextField textField = (TextField) node;
+	        	 if (textField==tfVin && !formatValidator.validateVIN(textField.getText())) {	        		
+	        		textField.setStyle("-fx-border-color:#FA3E3E;");
+	        		lbWrongFormat.setVisible(true);
+	        		formatTestPassed=false;
+	        	 }
+	        	 if (textField==tfPlate && !formatValidator.validateLicensePlate(textField.getText())) {	        		
+		        	textField.setStyle("-fx-border-color:#FA3E3E;");
+		        	lbWrongFormat.setVisible(true);
+		        	formatTestPassed=false;
+	        	 }
+	        	 if (textField==tfMake && !formatValidator.validateMake(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfModel && !formatValidator.validateModel(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfFirst && !formatValidator.validateFirstName(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfLast && !formatValidator.validateLastName(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfLic && !formatValidator.validateLicenseNumber(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if ((textField==tfStartDate||textField==tfEndDate||textField==tfSess1|| textField==tfSess2||textField==tfSess3||textField==tfSess4)&& !formatValidator.validateDate(textField.getText())) {	        		
+		        		textField.setStyle("-fx-border-color:#FA3E3E;");
+		        		lbWrongFormat.setVisible(true);
+		        		formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfYear && !formatValidator.validateYear(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfPoints && !formatValidator.validateDemeritPoints(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfBadge && !formatValidator.validateBadgeNumber(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfCitID && !formatValidator.validateCitationID(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfWarID && !formatValidator.validateWarrantID(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfFine && !formatValidator.validateFineAmount(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfAccID && !formatValidator.validateAccountID(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+	       }
+	        
+	       
+	       }
+	    }
+	   
+	    //Search Scene 
+    	} else {
+    		
+    	VBox centerContentVBox = (VBox) currentPane.getCenter();
+    	int stackIndex = centerContentVBox.getChildren().size()-1;
+    	StackPane feedbackStack = (StackPane) centerContentVBox.getChildren().get(stackIndex);
+		Label lbWrongFormat = (Label) feedbackStack.getChildren().get(1);
+		
+		for (Node node : centerContentVBox.getChildren()) {
+	        if (node instanceof TextField ) {
+	        	TextField textField = (TextField) node;
+	        	if (textField==tfLic && !formatValidator.validateLicenseNumber(textField.getText())) {	        		
+		        	textField.setStyle("-fx-border-color:#FA3E3E;");
+		        	lbWrongFormat.setVisible(true);
+		        	formatTestPassed=false;
+	        	 }
+	        	 if (textField==tfVin && !formatValidator.validateVIN(textField.getText())) {	        		
+		        		textField.setStyle("-fx-border-color:#FA3E3E;");
+		        		lbWrongFormat.setVisible(true);
+		        		formatTestPassed=false;
+	        	 }
+	        	 if ((textField==tfStartDate||textField==tfEndDate) && !formatValidator.validateDate(textField.getText())) {	        		
+		        		textField.setStyle("-fx-border-color:#FA3E3E;");
+		        		lbWrongFormat.setVisible(true);
+		        		formatTestPassed=false;
+		        }
+	        	 if (textField==tfBadge && !formatValidator.validateBadgeNumber(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }	
+	        	 if (textField==tfCitID && !formatValidator.validateCitationID(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfWarID && !formatValidator.validateWarrantID(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+		        	 }
+	        	 if (textField==tfAccID && !formatValidator.validateAccountID(textField.getText())) {	        		
+			        	textField.setStyle("-fx-border-color:#FA3E3E;");
+			        	lbWrongFormat.setVisible(true);
+			        	formatTestPassed=false;
+	        	 	}
+	        	}
+	        	
+	    	} 
+    	}
+    return formatTestPassed;
+    }
+
 	@Override
 	public void start (Stage primaryStage) {
 		
@@ -982,10 +1168,11 @@ public class VisualDesignComponents extends Application {
 		setButtonActions ();
 		
 		
+		
 		primaryStage.setTitle("TrafficWatch");	
 		
 	
-		primaryStage.setScene(createDataScene("Enter","Vehicle Info"));
+		primaryStage.setScene(createOptionScene("Manage/Report"));
 		primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
 		primaryStage.show();	
 		
