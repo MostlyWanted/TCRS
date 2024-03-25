@@ -65,12 +65,23 @@ public class InputDataValidation {
 		return !containsSpecialChar(model, type);
 		
 	}
-	public void validateYear(int year) {
+	public boolean validateYear(String year) {
 		
-		if (year < 1960 || 2024 < year) {
-			System.out.println("Incorrect year! \nPleae enter corect year of car");
+		if (year.length() != 4) {
+			System.out.println("Incorrect year format!");
+			return false;
 		}
 		
+		int currYear = Integer.valueOf(year);
+		
+		int latestYear = Year.now().getValue() + 1; 
+		
+		if (currYear < 1960 || latestYear < currYear) {
+			System.out.println("Incorrect year! \nPleae enter correct year of car");
+			return false;
+		}
+		
+		return true;
 	}
 	public boolean validateFirstName(String firstName) {
 		
@@ -102,15 +113,19 @@ public class InputDataValidation {
 		return true;
 		
 	}
-	public boolean validateDemeritPoints(int demeritPoints) {
+	public boolean validateDemeritPoints(String demeritPoints) {
 		
-		if (demeritPoints < 0 || 99 < demeritPoints)
+		int dPoint = Integer.valueOf(demeritPoints);
+		
+		if (dPoint < 0 || 99 < dPoint)
 			return false;
 		
 		return true;
 		
 	}
-	public boolean validateBadgeNumber(int badgeNumber) {
+	public boolean validateBadgeNumber(String badge) {
+		
+		int badgeNumber = Integer.valueOf(badge);
 		
 		int badgeStart = 10000;
 		
@@ -121,7 +136,9 @@ public class InputDataValidation {
 		return true;
 		
 	}
-	public boolean validateCitationID(int citationID) {
+	public boolean validateCitationID(String citation) {
+		
+		int citationID = Integer.valueOf(citation);
 		
 		// Ensure number is valid
 		if (negativeNum(citationID) || citationID == 0) {
@@ -131,7 +148,9 @@ public class InputDataValidation {
 		return true;
 		
 	}
-	public boolean validateFineAmount(double fineAmount) {
+	public boolean validateFineAmount(String fine) {
+		
+		Double fineAmount = Double.valueOf(fine);
 		
 		return negativeNum(fineAmount);
 	}
@@ -146,7 +165,9 @@ public class InputDataValidation {
 		return dateFormat(date);
 		
 	}
-	public boolean validateWarrantID(int warrantID) {
+	public boolean validateWarrantID(String warrant) {
+		
+		int warrantID = Integer.valueOf(warrant);
 		
 		// Ensure number is valid
 		if (negativeNum(warrantID) || warrantID == 0) {
@@ -156,7 +177,9 @@ public class InputDataValidation {
 		return true;
 		
 	}
-	public boolean validateSessionNumber(int sessionNumber) {
+	public boolean validateSessionNumber(String session) {
+		
+		int sessionNumber = Integer.valueOf(session);
 		
 		if(sessionNumber < 1 || 4 < sessionNumber) {
 			System.out.println("Invalis session number");
