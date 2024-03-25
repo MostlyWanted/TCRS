@@ -32,8 +32,18 @@ public class TextInterfacer {
         System.out.println("Welcome to the Home Page");
         System.out.println("-------------------------");
         System.out.println("Please Login or l to logout");
+        
         System.out.print("Enter agency: ");
         String agency = scanner.next();
+        
+        // check if need to logout system
+        if (agency.equals("l")) {
+        	System.out.println("Exiting...");
+        	connection.disconnectFromDatabase();
+            System.exit(0);
+        }
+        
+        
         System.out.print("Enter username: ");
         String username = scanner.next();
         System.out.print("Enter password: ");
@@ -43,12 +53,21 @@ public class TextInterfacer {
         	System.out.println("Login information incorrect please try again!");
         	
         	System.out.println("Please Login");
-            System.out.println("Enter agency: ");
-            agency = scanner.nextLine();
-            System.out.println("Enter username: ");
+            System.out.print("Enter agency: ");
+        	agency = scanner.nextLine();
+        	
+        	 if (agency.equals("l")) {
+             	System.out.println("Exiting...");
+             	connection.disconnectFromDatabase();
+                 System.exit(0);
+             }
+        	 
+            System.out.print("Enter username: ");
             username = scanner.nextLine();
-            System.out.println("Enter password: ");
+            System.out.print("Enter password: ");
             password = scanner.nextLine();
+            
+            
         }
         
 
