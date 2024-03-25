@@ -200,6 +200,23 @@ public class InputDataValidation {
 		return true;
 		
 	}
+	public boolean validateAccountID(String account) {
+		
+		if(!isNumber(account)) {
+			return false;
+		}
+		
+		int accountID = Integer.valueOf(account);
+		
+		// Ensure number is valid
+		if (negativeNum(accountID) || accountID == 0) {
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 
 	//************************ Helper Methods **********************
 	
