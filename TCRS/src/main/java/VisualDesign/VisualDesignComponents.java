@@ -1,8 +1,10 @@
 package VisualDesign;
-
+import java.util.List;
+import java.util.Arrays;
 import java.util.Stack;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,7 +25,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
 
 public class VisualDesignComponents extends Application {
 	
@@ -205,41 +206,36 @@ public class VisualDesignComponents extends Application {
         lbLoginError.setGraphic(new ImageView(warningIcon.getImage()));
     //Styling buttons 
         //Basic buttons
-        btClear.getStyleClass().add("small-buttons");   
-        btSubmit.getStyleClass().add("small-buttons");
-        btLogout.getStyleClass().add("small-buttons");
-        btExit.getStyleClass().add("small-buttons");
-        btBack.getStyleClass().add("small-buttons");
-        btLogin.getStyleClass().add("small-buttons");
-        btDelete.getStyleClass().add("small-buttons");
+        Button[] basicButtons = { btClear, btSubmit, btLogout, btExit, btBack, btLogin, btDelete };
+
+        for (Button basicButton : basicButtons) {
+            basicButton.getStyleClass().add("small-buttons");
+        }
         //Record management buttons
-        btEnterRecord.getStyleClass().add("big-buttons");
-        btFindEditRecord.getStyleClass().add("big-buttons");
-        btDeleteRecord.getStyleClass().add("big-buttons");
-        btEnterAccount.getStyleClass().add("big-buttons");
-        btFindEditAccount.getStyleClass().add("big-buttons");
-        btDeleteAccount.getStyleClass().add("big-buttons");
+        Button[] recordManagementButtons = { btEnterRecord, btFindEditRecord, btDeleteRecord, btEnterAccount, btFindEditAccount, btDeleteAccount };
+
+        for (Button button : recordManagementButtons) {
+            button.getStyleClass().add("big-buttons"); 
+        }
         //Record navigation buttons
-        btManageRecords.getStyleClass().add("big-buttons");
-        btVehicleRecords.getStyleClass().add("big-buttons");
-        btDriverRecords.getStyleClass().add("big-buttons");
-        btWarrants.getStyleClass().add("big-buttons");
-        btVehicleWarrants.getStyleClass().add("big-buttons");
-        btDriverWarrants.getStyleClass().add("big-buttons");
-        btCitations.getStyleClass().add("big-buttons");
-        btVehicleCitations.getStyleClass().add("big-buttons");
-        btDriverCitations.getStyleClass().add("big-buttons");
-        btTrafficSchool.getStyleClass().add("big-buttons");
-        btEnrollment.getStyleClass().add("big-buttons");
-        btAttendance.getStyleClass().add("big-buttons");
-        btOfficers.getStyleClass().add("big-buttons");
+        Button[] navigationButtons = { 
+        	    btManageRecords, btVehicleRecords, btDriverRecords, btWarrants, btVehicleWarrants,
+        	    btDriverWarrants, btCitations, btVehicleCitations, btDriverCitations,
+        	    btTrafficSchool, btEnrollment, btAttendance, btOfficers
+        	};
+
+        for (Button button : navigationButtons) {
+        	    button.getStyleClass().add("big-buttons"); 
+        	}
         //Report navigation/management buttons
-        btGenerateReport.getStyleClass().add("big-buttons");
-        btVehicleInfo.getStyleClass().add("big-buttons");
-        btDriverInfo.getStyleClass().add("big-buttons");
-        btDrivingRecord.getStyleClass().add("big-buttons");
-        btCitationSummary.getStyleClass().add("big-buttons");
-        btOutstandingWarrants.getStyleClass().add("big-buttons");
+        Button[] reportManagementButtons = { 
+        	    btGenerateReport, btVehicleInfo, btDriverInfo, btDrivingRecord, 
+        	    btCitationSummary, btOutstandingWarrants
+        	};
+
+        	for (Button button : reportManagementButtons) {
+        	    button.getStyleClass().add("big-buttons");
+        	}
     //Styling labels
     	//Login page labels
         lbTrafficWatch.getStyleClass().add("title");
@@ -300,52 +296,34 @@ public class VisualDesignComponents extends Application {
         lbPassword.getStyleClass().add("small-label");
         lbAgency.getStyleClass().add("small-label");
     //Styling text fields 
-        tfStartDate.getStyleClass().add("text-fields");
-        tfEndDate.getStyleClass().add("text-fields");
-        tfEnterCitID.getStyleClass().add("text-fields");
-        tfEnterWarID.getStyleClass().add("text-fields");
-        tfEnterAcc.getStyleClass().add("text-fields");
-        tfVin.getStyleClass().add("text-fields");
-        tfPlate.getStyleClass().add("text-fields");
-        tfMake.getStyleClass().add("text-fields");
-        tfModel.getStyleClass().add("text-fields");
-        tfYear.getStyleClass().add("text-fields");
-        tfLic.getStyleClass().add("text-fields");
-        tfFirst.getStyleClass().add("text-fields");
-        tfLast.getStyleClass().add("text-fields");
-        tfPoints.getStyleClass().add("text-fields");
-        tfDate.getStyleClass().add("text-fields");
-        tfReason.getStyleClass().add("text-fields");
-        tfOutstanding.getStyleClass().add("text-fields");
-        tfCitID.getStyleClass().add("text-fields");       
-        tfWarID.getStyleClass().add("text-fields"); 
-        tfAccID.getStyleClass().add("text-fields");   
-        tfFine.getStyleClass().add("text-fields");
-        tfIssuingOff.getStyleClass().add("text-fields");
-        tfSess1.getStyleClass().add("text-fields");
-        tfSess2.getStyleClass().add("text-fields");
-        tfSess3.getStyleClass().add("text-fields");
-        tfSess4.getStyleClass().add("text-fields");
-        tfBadge.getStyleClass().add("text-fields");
-        tfUsername.getStyleClass().add("text-fields");
-        tfPassword.getStyleClass().add("text-fields");
+        TextField[] textFields = {
+        	    tfStartDate, tfEndDate, tfEnterCitID, tfEnterWarID, tfEnterAcc,
+        	    tfVin, tfPlate, tfMake, tfModel, tfYear, tfLic, tfFirst, tfLast,
+        	    tfPoints, tfDate, tfReason, tfOutstanding, tfCitID, tfWarID, tfAccID,
+        	    tfFine, tfIssuingOff, tfSess1, tfSess2, tfSess3, tfSess4, tfBadge,
+        	    tfUsername, tfPassword
+        	};
+
+        	for (TextField textField : textFields) {
+        	    textField.getStyleClass().add("text-fields"); // Add style class
+        	}
+        	
         pfPassword.getStyleClass().add("big-text-fields");
         pfPassword.setPromptText("Password");     
     //Styling combo boxes
-        cbAgency.getStyleClass().add("combo-boxes");
+   
         cbAgencyLogin.getStyleClass().add("big-combo-boxes");
         cbAgencyLogin.setPromptText("Agency");
-        cbRegStat.getStyleClass().add("combo-boxes");
-        cbLicStat.getStyleClass().add("combo-boxes");
-        cbOutstanding.getStyleClass().add("combo-boxes");
-        cbReasonDriv.getStyleClass().add("combo-boxes");
-        cbReasonVeh.getStyleClass().add("combo-boxes");
-        cbPaid.getStyleClass().add("combo-boxes");
-        cbReportable.getStyleClass().add("combo-boxes");
-        cbSessAtt1.getStyleClass().add("combo-boxes");
-        cbSessAtt2.getStyleClass().add("combo-boxes");
-        cbSessAtt3.getStyleClass().add("combo-boxes");
-        cbSessAtt4.getStyleClass().add("combo-boxes");
+     
+        List<ComboBox<String>> stringComboBoxes = Arrays.asList(
+        	    cbAgency, cbRegStat, cbLicStat, cbOutstanding, cbReasonDriv,
+        	    cbReasonVeh, cbPaid, cbReportable, cbSessAtt1, cbSessAtt2,
+        	    cbSessAtt3, cbSessAtt4
+        	);
+
+        	for (ComboBox<String> comboBox : stringComboBoxes) {
+        	    comboBox.getStyleClass().add("combo-boxes"); // Add style class
+        	}
     //Styling report text
         taReport.getStyleClass().add("report-text");
     //Styling bottom rectangle 
@@ -365,6 +343,30 @@ public class VisualDesignComponents extends Application {
 		lbNoRecord.setVisible(false);
 		lbSuccessText.setVisible(false);
 	}
+	
+	public void setFieldsUneditable () {
+		TextField[] textFields = { 
+			    tfStartDate, tfEndDate, tfEnterCitID, tfEnterWarID, tfEnterAcc, tfVin, tfPlate, tfMake, tfModel, 
+			    tfYear, tfLic, tfFirst, tfLast, tfPoints, tfDate, tfReason, tfOutstanding, tfCitID, tfWarID, 
+			    tfAccID, tfFine, tfIssuingOff, tfSess1, tfSess2, tfSess3, tfSess4, tfBadge, tfUsername, tfPassword, pfPassword
+			};
+
+			for (TextField textField : textFields) {
+			    textField.setEditable(false); 
+			   
+			}
+
+	
+			ComboBox<?>[] comboBoxes = { 
+			    cbAgency, cbAgencyLogin, cbRegStat, cbLicStat, cbOutstanding, cbReasonDriv, cbReasonVeh, 
+			    cbPaid, cbReportable, cbSessAtt1, cbSessAtt2, cbSessAtt3, cbSessAtt4 
+			};
+
+			for (ComboBox<?> comboBox : comboBoxes) {
+			    comboBox.setEditable(false); // Add style class
+			}
+	}
+	
 	
 	
 	
@@ -658,6 +660,7 @@ public class VisualDesignComponents extends Application {
 				bottomHBox = submitClearFeedbackHBox;
 				break;
 			case("Delete"):
+				setFieldsUneditable();
 				promptVBox = new VBox(lbDelete);
 				promptVBox.setPadding(new Insets(0,0,0,50));
 				StackPane feedbackStackDelete = new StackPane(lbSuccessText);
@@ -854,10 +857,17 @@ public class VisualDesignComponents extends Application {
 	
 	public void setButtonActions () {
 		 btClear.setOnAction(event -> clearFields(primaryStage.getScene().getRoot()));
+		 btExit.setOnAction(event->exit());
 		 btBack.setOnAction(event -> navigateBack());
 		 btManageRecords.setOnAction(event -> {
 			 primaryStage.setScene(createOptionScene("Vehicle/Driver"));
 			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+			 
+		 });
+		 btLogout.setOnAction(event -> {
+			 primaryStage.setScene(createLoginScene());
+			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+			 sceneStack.clear();
 			 
 		 });
 	}
@@ -896,7 +906,43 @@ public class VisualDesignComponents extends Application {
              }
          }
      }
-        
+    public void exit() {
+    	Platform.exit();
+    }
+    public void checkEmptyFields(Node rootNode) {
+    	
+    	BorderPane currentPane = (BorderPane) rootNode;
+    	
+    	//Data Scene
+    	if (currentPane.getCenter()==null) {
+    		
+		HBox LabelsAndFieldsHBox = (HBox) currentPane.getRight();
+		VBox FieldsVBox = (VBox) LabelsAndFieldsHBox.getChildren().get(1);
+		HBox bottomHBox = (HBox) currentPane.getBottom();
+		StackPane feedbackStack = (StackPane) bottomHBox.getChildren().get(1);
+		Label lbEmptyFields = (Label) feedbackStack.getChildren().get(0);
+		
+	    for (Node node : FieldsVBox.getChildren()) {
+	        if (node instanceof TextField ) {
+	        	TextField textField = (TextField) node;
+	        	 if (textField.getText().trim().isEmpty()) {
+	        		textField.setStyle("fx-border-color:#FA3E3E;");
+	        		lbEmptyFields.setVisible(true);
+	        	 }
+	        }
+	        
+	        if (node instanceof ComboBox ) {
+	        	ComboBox<?> comboBox = (ComboBox<?>) node;
+	        	if(comboBox.getSelectionModel().isEmpty()){
+	        		comboBox.setStyle("fx-border-color:#FA3E3E;");
+	        		lbEmptyFields.setVisible(true);
+	        	}
+	        }
+	    }  //Search Scene 
+    	} else {
+    		
+    	}
+    }
 
 	
 	@Override
@@ -909,7 +955,7 @@ public class VisualDesignComponents extends Application {
 		primaryStage.setTitle("TrafficWatch");	
 		
 	
-		primaryStage.setScene(createOptionScene("Manage/Report"));
+		primaryStage.setScene(createLoginScene());
 		primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
 		primaryStage.show();	
 		
