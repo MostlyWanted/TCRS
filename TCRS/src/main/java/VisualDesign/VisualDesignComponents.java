@@ -67,12 +67,37 @@ public class VisualDesignComponents extends Application {
 	Button btLogin = new Button("Login");
 	Button btDelete = new Button("Delete");
 	//Record management buttons
-	Button btEnterRecord = new Button("Enter a Record");
-	Button btViewEditRecord = new Button("View/Edit a Record");
-	Button btDeleteRecord = new Button("Delete a Record");
 	Button btEnterAccount = new Button("Enter an Account");
 	Button btViewEditAccount = new Button("View/Edit an Account");
 	Button btDeleteAccount = new Button("Delete an Account");
+		//Enter
+	Button btEnterVehRecord = new Button("Enter a Record");
+	Button btEnterDriRecord = new Button("Enter a Record");
+	Button btEnterOffRecord = new Button("Enter a Record");
+	Button btEnterDriCitRecord = new Button("Enter a Record");
+	Button btEnterVehCitRecord = new Button("Enter a Record");
+	Button btEnterDriWarRecord = new Button("Enter a Record");
+	Button btEnterVehWarRecord = new Button("Enter a Record");
+	Button btEnterEnrollmentRecord = new Button("Enter a Record");
+		//View/Edit
+	Button btViewEditVehRecord = new Button("View/Edit a Record");
+	Button btViewEditDriRecord = new Button("View/Edit a Record");
+	Button btViewEditOffRecord = new Button("View/Edit a Record");
+	Button btViewEditDriCitRecord = new Button("View/Edit a Record");
+	Button btViewEditVehCitRecord = new Button("View/Edit a Record");
+	Button btViewEditDriWarRecord = new Button("View/Edit a Record");
+	Button btViewEditVehWarRecord = new Button("View/Edit a Record");
+	Button btViewEditEnrollmentRecord = new Button("View/Edit a Record");
+		//Delete
+	Button btDeleteVehRecord = new Button("Delete a Record");
+	Button btDeleteDriRecord = new Button("Delete a Record");
+	Button btDeleteOffRecord = new Button("Delete a Record");
+	Button btDeleteDriCitRecord = new Button("Delete a Record");
+	Button btDeleteVehCitRecord = new Button("Delete a Record");
+	Button btDeleteDriWarRecord = new Button("Delete a Record");
+	Button btDeleteVehWarRecord = new Button("Delete a Record");
+	Button btDeleteEnrollmentRecord = new Button("Delete a Record");
+
 	//Record navigation buttons
 	Button btManageRecords = new Button("Manage Records");
 	Button btVehicleRecords = new Button("Vehicle Records");
@@ -236,7 +261,14 @@ public class VisualDesignComponents extends Application {
             basicButton.getStyleClass().add("small-buttons");
         }
         //Record management buttons
-        Button[] recordManagementButtons = { btEnterRecord, btViewEditRecord, btDeleteRecord, btEnterAccount, btViewEditAccount, btDeleteAccount };
+        Button[] recordManagementButtons = { btEnterAccount, btViewEditAccount, btDeleteAccount, 
+        	    btEnterVehRecord, btEnterDriRecord, btEnterOffRecord, btEnterDriCitRecord,
+        	    btEnterVehCitRecord, btEnterDriWarRecord, btEnterVehWarRecord, btEnterEnrollmentRecord,
+        	    btViewEditVehRecord, btViewEditDriRecord, btViewEditOffRecord, btViewEditDriCitRecord,
+        	    btViewEditVehCitRecord, btViewEditDriWarRecord, btViewEditVehWarRecord, btViewEditEnrollmentRecord,
+        	    btDeleteVehRecord, btDeleteDriRecord, btDeleteOffRecord, btDeleteDriCitRecord,
+        	    btDeleteVehCitRecord, btDeleteDriWarRecord, btDeleteVehWarRecord, btDeleteEnrollmentRecord };
+
 
         for (Button button : recordManagementButtons) {
             button.getStyleClass().add("big-buttons"); 
@@ -879,6 +911,13 @@ public class VisualDesignComponents extends Application {
 		 btEnterAccount.setOnAction(event->createDataScene("Enter","Account Info"));
 		 btViewEditAccount.setOnAction(event->createDataScene("View/Edit","Account Info"));
 		 btDeleteAccount.setOnAction(event->createDataScene("Delete","Account Info"));
+		 
+		 btEnterRecord.setOnAction(event->{
+		 })
+		 
+		 btViewEditRecord
+		 
+		 btDeleteRecord
 		 //Record navigation Buttons
 		 Button[] toEnterEditDelete = {btVehicleRecords, btDriverRecords, btVehicleWarrants, btDriverWarrants, btVehicleCitations, btDriverCitations, btEnrollment, btOfficers};
 		 for (Button button: toEnterEditDelete) {
