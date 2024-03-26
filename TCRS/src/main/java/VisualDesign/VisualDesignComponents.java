@@ -68,11 +68,11 @@ public class VisualDesignComponents extends Application {
 	Button btDelete = new Button("Delete");
 	//Record management buttons
 	Button btEnterRecord = new Button("Enter a Record");
-	Button btFindEditRecord = new Button("Find/Edit a Record");
+	Button btViewEditRecord = new Button("View/Edit a Record");
 	Button btDeleteRecord = new Button("Delete a Record");
-	Button btEnterAccount = new Button("Enter Account");
-	Button btFindEditAccount = new Button("Find/Edit Account");
-	Button btDeleteAccount = new Button("Delete Account");
+	Button btEnterAccount = new Button("Enter an Account");
+	Button btViewEditAccount = new Button("View/Edit an Account");
+	Button btDeleteAccount = new Button("Delete an Account");
 	//Record navigation buttons
 	Button btManageRecords = new Button("Manage Records");
 	Button btVehicleRecords = new Button("Vehicle Records");
@@ -200,6 +200,8 @@ public class VisualDesignComponents extends Application {
             "Speeding", "Reckless Driving", "Distracted Driving", "DUI", "Moving Vehicle Code Violation"));
     ComboBox<String> cbReasonVeh = new ComboBox<>(FXCollections.observableArrayList(
             "Paking Violation", "Fix-It Ticket"));
+    ComboBox<String> cbReasonDrivVeh = new ComboBox<>(FXCollections.observableArrayList(
+            "Speeding", "Reckless Driving", "Distracted Driving", "DUI", "Moving Vehicle Code Violation","Paking Violation", "Fix-It Ticket"));
     ComboBox<String> cbPaid = new ComboBox<>(FXCollections.observableArrayList(
             "Paid", "Unpaid"));
     ComboBox<String> cbReportable = new ComboBox<>(FXCollections.observableArrayList(
@@ -234,7 +236,7 @@ public class VisualDesignComponents extends Application {
             basicButton.getStyleClass().add("small-buttons");
         }
         //Record management buttons
-        Button[] recordManagementButtons = { btEnterRecord, btFindEditRecord, btDeleteRecord, btEnterAccount, btFindEditAccount, btDeleteAccount };
+        Button[] recordManagementButtons = { btEnterRecord, btViewEditRecord, btDeleteRecord, btEnterAccount, btViewEditAccount, btDeleteAccount };
 
         for (Button button : recordManagementButtons) {
             button.getStyleClass().add("big-buttons"); 
@@ -314,7 +316,7 @@ public class VisualDesignComponents extends Application {
         cbAgencyLogin.setPromptText("Agency");
      
         List<ComboBox<String>> stringComboBoxes = Arrays.asList(
-        	    cbAgency, cbRegStat, cbLicStat, cbOutstanding, cbReasonDriv,
+        	    cbAgency, cbRegStat, cbLicStat, cbOutstanding, cbReasonDriv, cbReasonDrivVeh,
         	    cbReasonVeh, cbPaid, cbReportable, cbSessAtt1, cbSessAtt2,
         	    cbSessAtt3, cbSessAtt4
         	);
@@ -429,12 +431,23 @@ public class VisualDesignComponents extends Application {
 	    VBox centerContentVBox=null;
 
 	    switch (centerContent) {
-	        case "Manage/Report":
+	        case "Manage/Report Provincial":
 	            centerContentVBox = new VBox(lbChoose, btManageRecords, btGenerateReport);
 	            centerContentVBox.setAlignment(Pos.CENTER);
 	            centerContentVBox.setSpacing(30);
 	            lbChoose.setPadding(new Insets(100));
 	            centerContentVBox.setPadding(new Insets(100, 0, 300, 0));
+	            btManageRecords.setOnAction(event->createOptionScene("Vehicle/Driver"));
+	            btGenerateReport.setOnAction(event->createOptionScene("Vehicle/Driver/Driving Record Report"));
+	            break;
+	        case "Manage/Report Municipal":
+	            centerContentVBox = new VBox(lbChoose, btManageRecords, btGenerateReport);
+	            centerContentVBox.setAlignment(Pos.CENTER);
+	            centerContentVBox.setSpacing(30);
+	            lbChoose.setPadding(new Insets(100));
+	            centerContentVBox.setPadding(new Insets(100, 0, 300, 0));
+	            btManageRecords.setOnAction(event->createOptionScene("Citations/Warrants/Officers/Traffic School"));
+	            btGenerateReport.setOnAction(event->createOptionScene("Citation Summary/Outstanding Warrants"));
 	            break;
 
 	        case "Vehicle/Driver":
@@ -475,16 +488,9 @@ public class VisualDesignComponents extends Application {
 	            centerContentVBox.setSpacing(30);
 	            lbManage.setPadding(new Insets(100));
 	            centerContentVBox.setPadding(new Insets(100, 0, 300, 0));
-	            break;
-	        case "Vehicle/Driver Citation Summary":
-				centerContentVBox = new VBox(lbReport, btVehicleCitations, btDriverCitations);
-				centerContentVBox.setAlignment(Pos.CENTER);
-				centerContentVBox.setSpacing(30);
-				lbReport.setPadding(new Insets(100));
-				centerContentVBox.setPadding(new Insets(100, 0, 300, 0));
-				break; 	 		                			                                        
+	            break;		                			                                        
 	        case "Enter/Edit/Delete Record":
-	            centerContentVBox = new VBox(lbChoose, btEnterRecord, btFindEditRecord, btDeleteRecord);
+	            centerContentVBox = new VBox(lbChoose, btEnterRecord, btViewEditRecord, btDeleteRecord);
 	            centerContentVBox.setAlignment(Pos.CENTER);
 	            centerContentVBox.setSpacing(30);
 	            lbChoose.setPadding(new Insets(80));
@@ -492,7 +498,7 @@ public class VisualDesignComponents extends Application {
 	            break;
 
 	        case "Enter/Edit/Delete Account":
-	            centerContentVBox = new VBox(lbChoose, btEnterAccount, btFindEditAccount, btDeleteAccount);
+	            centerContentVBox = new VBox(lbChoose, btEnterAccount, btViewEditAccount, btDeleteAccount);
 	            centerContentVBox.setAlignment(Pos.CENTER);
 	            centerContentVBox.setSpacing(30);
 	            lbChoose.setPadding(new Insets(80));
@@ -796,32 +802,18 @@ public class VisualDesignComponents extends Application {
 				fieldsVBox.setSpacing(30);
 				fieldsVBox.setAlignment(Pos.TOP_LEFT);
 				break;
-			case("Driver Citation Summary"):
+			case("Citation Summary"):
 				lbStartDate.setText("Start Date (DD/MM/YYYY):");
 				lbEndDate.setText("End Date (DD/MM/YYYY):");
-				labelsVBox = new VBox(lbLic,  lbPlate, lbIssuingOff, lbStartDate, lbEndDate, lbReason, lbPaid);
+				labelsVBox = new VBox(lbIssuingOff, lbStartDate, lbEndDate, lbReason, lbPaid);
 				labelsVBox.setSpacing(60);
 				labelsVBox.setAlignment(Pos.TOP_RIGHT);
 				labelsVBox.setPadding(new Insets(20));
 				
-				fieldsVBox = new VBox(tfLic, tfPlate, tfIssuingOff,  tfStartDate, tfEndDate, cbReasonDriv, cbPaid);
+				fieldsVBox = new VBox(tfIssuingOff,  tfStartDate, tfEndDate, cbReasonDrivVeh, cbPaid);
 				fieldsVBox.setSpacing(30);
 				fieldsVBox.setAlignment(Pos.TOP_LEFT);
-				break;
-				
-			case("Vehicle Citation Summary"):
-				lbStartDate.setText("Start Date (DD/MM/YYYY):");
-				lbEndDate.setText("End Date (DD/MM/YYYY):");
-			
-				labelsVBox = new VBox(lbVin,  lbPlate, lbIssuingOff, lbStartDate, lbEndDate, lbReason, lbPaid);
-				labelsVBox.setSpacing(60);
-				labelsVBox.setAlignment(Pos.TOP_RIGHT);
-				labelsVBox.setPadding(new Insets(20));
-				
-				fieldsVBox = new VBox(tfVin, tfPlate, tfIssuingOff,  tfStartDate, tfEndDate, cbReasonVeh, cbPaid);
-				fieldsVBox.setSpacing(30);
-				fieldsVBox.setAlignment(Pos.TOP_LEFT);
-				break;				
+				break;			
 		}
 		
 		HBox labelsAndFieldsHBox=new HBox(labelsVBox, fieldsVBox);
@@ -875,19 +867,38 @@ public class VisualDesignComponents extends Application {
 	}
 	
 	public void setButtonActions () {
-		 btClear.setOnAction(event -> clearFields(primaryStage.getScene().getRoot()));
+		//Basic Buttons 
+		btClear.setOnAction(event -> clearFields(primaryStage.getScene().getRoot()));
 		 btExit.setOnAction(event->exit());
-		 btBack.setOnAction(event -> navigateBack());
+		 btBack.setOnAction(event -> navigateBack());	 
+		 btLogout.setOnAction(event -> {
+			 primaryStage.setScene(createLoginScene());
+			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
+			 sceneStack.clear();});
+		 //Record Management Buttons
+		 btEnterAccount.setOnAction(event->createDataScene("Enter","Account Info"));
+		 btViewEditAccount.setOnAction(event->createDataScene("View/Edit","Account Info"));
+		 btDeleteAccount.setOnAction(event->createDataScene("Delete","Account Info"));
+		 //Record navigation Buttons
+		 Button[] toEnterEditDelete = {btVehicleRecords, btDriverRecords, btVehicleWarrants, btDriverWarrants, btVehicleCitations, btDriverCitations, btEnrollment, btOfficers};
+		 for (Button button: toEnterEditDelete) {
+			 button.setOnAction(event -> createOptionScene("Enter/Edit/Delete Record"));
+		 }
+		 btWarrants.setOnAction(event -> createOptionScene("Vehicle/Driver Warrants"));
+		 btCitations.setOnAction(event -> createOptionScene("Vehicle/Driver Citations"));
+		 btTrafficSchool.setOnAction(event -> createOptionScene("Enrollment/Attendance"));
+		 btAttendance.setOnAction(event -> createDataScene("View/Edit","Traffic School Attendance"));
+		 //Report navigation/management buttons
+		 btCitationSummary.setOnAction(event -> createDataScene("Filter","Citation Summary"));
+		 btVehicleInfo.setOnAction(event->createSearchScene("Enter VIN"));
+		 btDriverInfo.setOnAction(event->createSearchScene("Enter License"));
+		 btDrivingRecord.setOnAction(event->createSearchScene("Enter Driving Record"));	
+		 btOutstandingWarrants;
+		 //testing
 		 btSubmit.setOnAction(event -> fieldFormatTest(primaryStage.getScene().getRoot()));
 		 btManageRecords.setOnAction(event -> {
 			 primaryStage.setScene(createOptionScene("Vehicle/Driver"));
 			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
-			 
-		 });
-		 btLogout.setOnAction(event -> {
-			 primaryStage.setScene(createLoginScene());
-			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
-			 sceneStack.clear();
 			 
 		 });
 	}
