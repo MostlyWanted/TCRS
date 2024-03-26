@@ -53,8 +53,8 @@ public class VisualDesignComponents extends Application {
 	
 
 	InputDataValidation formatValidator = new InputDataValidation();
-	DatabaseManager databaseManager = new DatabaseManager();
-	RecordValidation recordValidator = new RecordValidation(databaseManager);
+	DatabaseManager databaseManager = new DatabaseManager(); //*************************************************************//
+	RecordValidation recordValidator = new RecordValidation(databaseManager);//*************************************************************//
 	
 	Stack<CreateScene> sceneStack = new Stack<>();
 	Stage primaryStage;
@@ -435,7 +435,7 @@ public class VisualDesignComponents extends Application {
 	
 	
 	
-	public Scene createLoginScene() {
+	public Scene createLoginScene() {//*************************************************************//
 		
 		styleVisualComponents();
 		resetVisualComponentSettings();
@@ -1040,7 +1040,7 @@ public class VisualDesignComponents extends Application {
 		
 		 //testing
 		 btSubmit.setOnAction(event -> fieldFormatTest(primaryStage.getScene().getRoot()));
-		 btLogin.setOnAction(event->login());
+		 btLogin.setOnAction(event->login()); //*************************************************************//
 		
 	}
 	
@@ -1317,7 +1317,7 @@ public class VisualDesignComponents extends Application {
     return formatTestPassed;
     }
     
-    public void login () {
+    public void login () {//*************************************************************//
     	boolean validLogin = recordValidator.checkLoginInfo(tfUsername.getText(), pfPassword.getText(), cbAgencyLogin.getValue());
     	
     	if (validLogin && "Provincial".equals(cbAgencyLogin.getValue()))
