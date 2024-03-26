@@ -99,7 +99,8 @@ public class VisualDesignComponents extends Application {
 	Button btDeleteEnrollmentRecord = new Button("Delete a Record");
 
 	//Record navigation buttons
-	Button btManageRecords = new Button("Manage Records");
+	Button btManageRecordsProvincial = new Button("Manage Records");
+	Button btManageRecordsMunicipal = new Button("Manage Records");
 	Button btVehicleRecords = new Button("Vehicle Records");
 	Button btDriverRecords = new Button("Driver Records");
 	Button btWarrants = new Button("Warrants");
@@ -113,7 +114,8 @@ public class VisualDesignComponents extends Application {
 	Button btAttendance = new Button("Attendance");
 	Button btOfficers = new Button("Officers");
 	//Report navigation/management buttons
-	Button btGenerateReport = new Button("Generate a Report");
+	Button btGenerateReportProvincial = new Button("Generate a Report");
+	Button btGenerateReportMunicipal = new Button("Generate a Report");
 	Button btVehicleInfo = new Button("Vehicle Information");
 	Button btDriverInfo = new Button("Driver Information");
 	Button btDrivingRecord = new Button("Driving Record");
@@ -275,7 +277,7 @@ public class VisualDesignComponents extends Application {
         }
         //Record navigation buttons
         Button[] navigationButtons = { 
-        	    btManageRecords, btVehicleRecords, btDriverRecords, btWarrants, btVehicleWarrants,
+        	    btManageRecordsProvincial, btManageRecordsMunicipal, btVehicleRecords, btDriverRecords, btWarrants, btVehicleWarrants,
         	    btDriverWarrants, btCitations, btVehicleCitations, btDriverCitations,
         	    btTrafficSchool, btEnrollment, btAttendance, btOfficers
         	};
@@ -285,7 +287,7 @@ public class VisualDesignComponents extends Application {
         	}
         //Report navigation/management buttons
         Button[] reportManagementButtons = { 
-        	    btGenerateReport, btVehicleInfo, btDriverInfo, btDrivingRecord, 
+        	    btGenerateReportProvincial, btGenerateReportMunicipal, btVehicleInfo, btDriverInfo, btDrivingRecord, 
         	    btCitationSummary, btOutstandingWarrants
         	};
 
@@ -380,10 +382,32 @@ public class VisualDesignComponents extends Application {
         for (Label feedbackLabel : feedbackLabels) {
             feedbackLabel.setVisible(false);
         }
+        //Reversing setFieldsUneditable
+        TextField[] textFields = { 
+			    tfStartDate, tfEndDate, tfEnterCitID, tfEnterWarID, tfEnterAcc, tfVin, tfPlate, tfMake, tfModel, 
+			    tfYear, tfLic, tfFirst, tfLast, tfPoints, tfDate, tfReason, tfOutstanding, tfCitID, tfWarID, 
+			    tfAccID, tfFine, tfIssuingOff, tfSess1, tfSess2, tfSess3, tfSess4, tfBadge, tfUsername, tfPassword, pfPassword
+			};
+
+			for (TextField textField : textFields) {
+			    textField.setEditable(true); 
+			   
+			}
+
+			
+			ComboBox<?>[] comboBoxes = { 
+			    cbAgency, cbRegStat, cbLicStat, cbOutstanding, cbReasonDriv, cbReasonVeh, 
+			    cbPaid, cbReportable, cbSessAtt1, cbSessAtt2, cbSessAtt3, cbSessAtt4 
+			};
+
+			for (ComboBox<?> comboBox : comboBoxes) {
+			    comboBox.setDisable(false); 
+			}
+        
 	}
 	
 	public void setFieldsUneditable () {
-		TextField[] textFields = { 
+			TextField[] textFields = { 
 			    tfStartDate, tfEndDate, tfEnterCitID, tfEnterWarID, tfEnterAcc, tfVin, tfPlate, tfMake, tfModel, 
 			    tfYear, tfLic, tfFirst, tfLast, tfPoints, tfDate, tfReason, tfOutstanding, tfCitID, tfWarID, 
 			    tfAccID, tfFine, tfIssuingOff, tfSess1, tfSess2, tfSess3, tfSess4, tfBadge, tfUsername, tfPassword, pfPassword
@@ -394,14 +418,14 @@ public class VisualDesignComponents extends Application {
 			   
 			}
 
-	
+			
 			ComboBox<?>[] comboBoxes = { 
-			    cbAgency, cbAgencyLogin, cbRegStat, cbLicStat, cbOutstanding, cbReasonDriv, cbReasonVeh, 
+			    cbAgency, cbRegStat, cbLicStat, cbOutstanding, cbReasonDriv, cbReasonVeh, 
 			    cbPaid, cbReportable, cbSessAtt1, cbSessAtt2, cbSessAtt3, cbSessAtt4 
 			};
 
 			for (ComboBox<?> comboBox : comboBoxes) {
-			    comboBox.setEditable(false); // Add style class
+			    comboBox.setDisable(true); 
 			}
 	}
 	
@@ -464,22 +488,20 @@ public class VisualDesignComponents extends Application {
 
 	    switch (centerContent) {
 	        case "Manage/Report Provincial":
-	            centerContentVBox = new VBox(lbChoose, btManageRecords, btGenerateReport);
+	            centerContentVBox = new VBox(lbChoose, btManageRecordsProvincial, btGenerateReportProvincial);
 	            centerContentVBox.setAlignment(Pos.CENTER);
 	            centerContentVBox.setSpacing(30);
 	            lbChoose.setPadding(new Insets(100));
 	            centerContentVBox.setPadding(new Insets(100, 0, 300, 0));
-	            btManageRecords.setOnAction(event->createOptionScene("Vehicle/Driver"));
-	            btGenerateReport.setOnAction(event->createOptionScene("Vehicle/Driver/Driving Record Report"));
+	           
 	            break;
 	        case "Manage/Report Municipal":
-	            centerContentVBox = new VBox(lbChoose, btManageRecords, btGenerateReport);
+	            centerContentVBox = new VBox(lbChoose, btManageRecordsMunicipal, btGenerateReportMunicipal);
 	            centerContentVBox.setAlignment(Pos.CENTER);
 	            centerContentVBox.setSpacing(30);
 	            lbChoose.setPadding(new Insets(100));
 	            centerContentVBox.setPadding(new Insets(100, 0, 300, 0));
-	            btManageRecords.setOnAction(event->createOptionScene("Citations/Warrants/Officers/Traffic School"));
-	            btGenerateReport.setOnAction(event->createOptionScene("Citation Summary/Outstanding Warrants"));
+	           
 	            break;
 
 	        case "Vehicle/Driver":
@@ -521,14 +543,62 @@ public class VisualDesignComponents extends Application {
 	            lbManage.setPadding(new Insets(100));
 	            centerContentVBox.setPadding(new Insets(100, 0, 300, 0));
 	            break;		                			                                        
-	        case "Enter/Edit/Delete Record":
-	            centerContentVBox = new VBox(lbChoose, btEnterRecord, btViewEditRecord, btDeleteRecord);
+	        case "Enter/Edit/Delete Vehicle Record":
+	            centerContentVBox = new VBox(lbChoose, btEnterVehRecord, btViewEditVehRecord, btDeleteVehRecord);
 	            centerContentVBox.setAlignment(Pos.CENTER);
 	            centerContentVBox.setSpacing(30);
 	            lbChoose.setPadding(new Insets(80));
 	            centerContentVBox.setPadding(new Insets(50, 0, 400, 0));
 	            break;
-
+	        case "Enter/Edit/Delete Driver Record":
+	            centerContentVBox = new VBox(lbChoose, btEnterDriRecord, btViewEditDriRecord, btDeleteDriRecord);
+	            centerContentVBox.setAlignment(Pos.CENTER);
+	            centerContentVBox.setSpacing(30);
+	            lbChoose.setPadding(new Insets(80));
+	            centerContentVBox.setPadding(new Insets(50, 0, 400, 0));
+	            break;
+	        case "Enter/Edit/Delete Officer Record":
+	            centerContentVBox = new VBox(lbChoose, btEnterOffRecord, btViewEditOffRecord, btDeleteOffRecord);
+	            centerContentVBox.setAlignment(Pos.CENTER);
+	            centerContentVBox.setSpacing(30);
+	            lbChoose.setPadding(new Insets(80));
+	            centerContentVBox.setPadding(new Insets(50, 0, 400, 0));
+	            break;
+	        case "Enter/Edit/Delete Vehicle Citation Record":
+	            centerContentVBox = new VBox(lbChoose, btEnterVehCitRecord, btViewEditVehCitRecord, btDeleteVehCitRecord);
+	            centerContentVBox.setAlignment(Pos.CENTER);
+	            centerContentVBox.setSpacing(30);
+	            lbChoose.setPadding(new Insets(80));
+	            centerContentVBox.setPadding(new Insets(50, 0, 400, 0));
+	            break;           
+	        case "Enter/Edit/Delete Driver Citation Record":
+	            centerContentVBox = new VBox(lbChoose, btEnterDriCitRecord, btViewEditDriCitRecord, btDeleteDriCitRecord);
+	            centerContentVBox.setAlignment(Pos.CENTER);
+	            centerContentVBox.setSpacing(30);
+	            lbChoose.setPadding(new Insets(80));
+	            centerContentVBox.setPadding(new Insets(50, 0, 400, 0));
+	            break;
+	        case "Enter/Edit/Delete Vehicle Warrant Record":
+	            centerContentVBox = new VBox(lbChoose, btEnterVehWarRecord, btViewEditVehWarRecord, btDeleteVehWarRecord);
+	            centerContentVBox.setAlignment(Pos.CENTER);
+	            centerContentVBox.setSpacing(30);
+	            lbChoose.setPadding(new Insets(80));
+	            centerContentVBox.setPadding(new Insets(50, 0, 400, 0));
+	            break;
+	        case "Enter/Edit/Delete Driver Warrant Record":
+	            centerContentVBox = new VBox(lbChoose, btEnterDriWarRecord, btViewEditDriWarRecord, btDeleteDriWarRecord);
+	            centerContentVBox.setAlignment(Pos.CENTER);
+	            centerContentVBox.setSpacing(30);
+	            lbChoose.setPadding(new Insets(80));
+	            centerContentVBox.setPadding(new Insets(50, 0, 400, 0));
+	            break;
+	        case "Enter/Edit/Delete Enrollment Record":
+	            centerContentVBox = new VBox(lbChoose, btEnterEnrollmentRecord, btViewEditEnrollmentRecord, btDeleteEnrollmentRecord);
+	            centerContentVBox.setAlignment(Pos.CENTER);
+	            centerContentVBox.setSpacing(30);
+	            lbChoose.setPadding(new Insets(80));
+	            centerContentVBox.setPadding(new Insets(50, 0, 400, 0));
+	            break;
 	        case "Enter/Edit/Delete Account":
 	            centerContentVBox = new VBox(lbChoose, btEnterAccount, btViewEditAccount, btDeleteAccount);
 	            centerContentVBox.setAlignment(Pos.CENTER);
@@ -901,45 +971,74 @@ public class VisualDesignComponents extends Application {
 	public void setButtonActions () {
 		//Basic Buttons 
 		btClear.setOnAction(event -> clearFields(primaryStage.getScene().getRoot()));
-		 btExit.setOnAction(event->exit());
+		 btExit.setOnAction(event->{
+			 exit();
+			 sceneStack.clear();});
 		 btBack.setOnAction(event -> navigateBack());	 
 		 btLogout.setOnAction(event -> {
 			 primaryStage.setScene(createLoginScene());
-			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
 			 sceneStack.clear();});
 		 //Record Management Buttons
-		 btEnterAccount.setOnAction(event->createDataScene("Enter","Account Info"));
-		 btViewEditAccount.setOnAction(event->createDataScene("View/Edit","Account Info"));
-		 btDeleteAccount.setOnAction(event->createDataScene("Delete","Account Info"));
-		 
-		 btEnterRecord.setOnAction(event->{
-		 })
-		 
-		 btViewEditRecord
-		 
-		 btDeleteRecord
-		 //Record navigation Buttons
-		 Button[] toEnterEditDelete = {btVehicleRecords, btDriverRecords, btVehicleWarrants, btDriverWarrants, btVehicleCitations, btDriverCitations, btEnrollment, btOfficers};
-		 for (Button button: toEnterEditDelete) {
-			 button.setOnAction(event -> createOptionScene("Enter/Edit/Delete Record"));
-		 }
-		 btWarrants.setOnAction(event -> createOptionScene("Vehicle/Driver Warrants"));
-		 btCitations.setOnAction(event -> createOptionScene("Vehicle/Driver Citations"));
-		 btTrafficSchool.setOnAction(event -> createOptionScene("Enrollment/Attendance"));
-		 btAttendance.setOnAction(event -> createDataScene("View/Edit","Traffic School Attendance"));
-		 //Report navigation/management buttons
-		 btCitationSummary.setOnAction(event -> createDataScene("Filter","Citation Summary"));
-		 btVehicleInfo.setOnAction(event->createSearchScene("Enter VIN"));
-		 btDriverInfo.setOnAction(event->createSearchScene("Enter License"));
-		 btDrivingRecord.setOnAction(event->createSearchScene("Enter Driving Record"));	
-		 btOutstandingWarrants;
+		 btEnterAccount.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Account Info")));
+		 btViewEditAccount.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Account Info")));
+		 btDeleteAccount.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Account Info")));
+
+		 btEnterVehRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Vehicle Info")));
+		 btEnterDriRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Driver Info")));
+		 btEnterOffRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Officer Info")));
+		 btEnterDriCitRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Driver Citation Info")));
+		 btEnterVehCitRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Vehicle Citation Info")));
+		 btEnterDriWarRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Driver Warrant Info")));
+		 btEnterVehWarRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Vehicle Warrant Info")));
+		 btEnterEnrollmentRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Enter", "Traffic School Enrollment")));
+		 btViewEditVehRecord.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Vehicle Info")));
+		 btViewEditDriRecord.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Driver Info")));
+		 btViewEditOffRecord.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Officer Info")));
+		 btViewEditDriCitRecord.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Driver Citation Info")));
+		 btViewEditVehCitRecord.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Vehicle Citation Info")));
+		 btViewEditDriWarRecord.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Driver Warrant Info")));
+		 btViewEditVehWarRecord.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Vehicle Warrant Info")));
+		 btViewEditEnrollmentRecord.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Traffic School Enrollment")));
+		 btDeleteVehRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Vehicle Info")));
+		 btDeleteDriRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Driver Info")));
+		 btDeleteOffRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Officer Info")));
+		 btDeleteDriCitRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Driver Citation Info")));
+		 btDeleteVehCitRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Vehicle Citation Info")));
+		 btDeleteDriWarRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Driver Warrant Info")));
+		 btDeleteVehWarRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Vehicle Warrant Info")));
+		 btDeleteEnrollmentRecord.setOnAction(event -> primaryStage.setScene(createDataScene("Delete", "Traffic School Enrollment")));
+
+		 // Record navigation Buttons
+		 btManageRecordsProvincial.setOnAction(event -> primaryStage.setScene(createOptionScene("Vehicle/Driver")));
+		 btManageRecordsMunicipal.setOnAction(event -> primaryStage.setScene(createOptionScene("Citations/Warrants/Officers/Traffic School")));
+		 btGenerateReportProvincial.setOnAction(event -> primaryStage.setScene(createOptionScene("Vehicle/Driver/Driving Record Report")));
+		 btGenerateReportMunicipal.setOnAction(event -> primaryStage.setScene(createOptionScene("Citation Summary/Outstanding Warrants")));
+
+		 btWarrants.setOnAction(event -> primaryStage.setScene(createOptionScene("Vehicle/Driver Warrants")));
+		 btCitations.setOnAction(event -> primaryStage.setScene(createOptionScene("Vehicle/Driver Citations")));
+		 btTrafficSchool.setOnAction(event -> primaryStage.setScene(createOptionScene("Enrollment/Attendance")));
+
+		 btVehicleRecords.setOnAction(event -> primaryStage.setScene(createOptionScene("Enter/Edit/Delete Vehicle Record")));
+		 btDriverRecords.setOnAction(event -> primaryStage.setScene(createOptionScene("Enter/Edit/Delete Driver Record")));
+		 btVehicleWarrants.setOnAction(event -> primaryStage.setScene(createOptionScene("Enter/Edit/Delete Vehicle Warrant Record")));
+		 btDriverWarrants.setOnAction(event -> primaryStage.setScene(createOptionScene("Enter/Edit/Delete Driver Warrant Record")));
+		 btVehicleCitations.setOnAction(event -> primaryStage.setScene(createOptionScene("Enter/Edit/Delete Vehicle Citation Record")));
+		 btDriverCitations.setOnAction(event -> primaryStage.setScene(createOptionScene("Enter/Edit/Delete Driver Citation Record")));
+		 btEnrollment.setOnAction(event -> primaryStage.setScene(createOptionScene("Enter/Edit/Delete Enrollment Record")));
+		 btOfficers.setOnAction(event -> primaryStage.setScene(createOptionScene("Enter/Edit/Delete Officer Record")));
+
+		 btAttendance.setOnAction(event -> primaryStage.setScene(createDataScene("View/Edit", "Traffic School Attendance")));
+
+		 // Report navigation/management buttons
+		 btCitationSummary.setOnAction(event -> primaryStage.setScene(createDataScene("Filter", "Citation Summary")));
+		 btVehicleInfo.setOnAction(event -> primaryStage.setScene(createSearchScene("Enter VIN")));
+		 btDriverInfo.setOnAction(event -> primaryStage.setScene(createSearchScene("Enter License")));
+		 btDrivingRecord.setOnAction(event -> primaryStage.setScene(createSearchScene("Enter Driving Record")));
+
+		
 		 //testing
 		 btSubmit.setOnAction(event -> fieldFormatTest(primaryStage.getScene().getRoot()));
-		 btManageRecords.setOnAction(event -> {
-			 primaryStage.setScene(createOptionScene("Vehicle/Driver"));
-			 primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
-			 
-		 });
+		
 	}
 	
 	public void clearFields (Node rootNode) {
@@ -1222,7 +1321,7 @@ public class VisualDesignComponents extends Application {
 		primaryStage.setTitle("TrafficWatch");	
 		
 	
-		primaryStage.setScene(createOptionScene("Manage/Report"));
+		primaryStage.setScene(createOptionScene("Manage/Report Municipal"));
 		primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
 		primaryStage.show();	
 		
