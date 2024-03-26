@@ -1,4 +1,8 @@
 package VisualDesignComponents;
+
+import databaseManagement.*;
+import CRUD.*;
+
 import java.util.List;
 import java.util.Arrays;
 import java.util.Stack;
