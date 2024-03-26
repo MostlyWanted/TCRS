@@ -1,8 +1,7 @@
-package Assignments;
+package VisualDesignComponents;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Stack;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -54,6 +53,9 @@ public class VisualDesignComponents extends Application {
 	
 
 	InputDataValidation formatValidator = new InputDataValidation();
+	DatabaseManager databaseManager = new DatabaseManager();
+	RecordValidation recordValidator = new RecordValidation(databaseManager);
+	
 	Stack<CreateScene> sceneStack = new Stack<>();
 	Stage primaryStage;
 	
@@ -365,7 +367,7 @@ public class VisualDesignComponents extends Application {
     
 	}
 	
-	public void visualComponentSettings() {
+	public void resetVisualComponentSettings() {
 		taReport.setWrapText(true);
 		taReport.setEditable(false);
 		
@@ -436,7 +438,7 @@ public class VisualDesignComponents extends Application {
 	public Scene createLoginScene() {
 		
 		styleVisualComponents();
-		visualComponentSettings();
+		resetVisualComponentSettings();
 		
 		tfUsername.getStyleClass().remove("text-fields");
 		tfUsername.getStyleClass().add("big-text-fields");
@@ -477,7 +479,7 @@ public class VisualDesignComponents extends Application {
 	public Scene createOptionScene(String centerContent) {
 		
 		styleVisualComponents();
-		visualComponentSettings();
+		resetVisualComponentSettings();
 		
 		HBox backLogoutHBox = new HBox(btBack, btLogout);
 		backLogoutHBox.setSpacing(40);
@@ -641,7 +643,7 @@ public class VisualDesignComponents extends Application {
 	public Scene createSearchScene(String centerContent) {
 		
 		styleVisualComponents();
-		visualComponentSettings();
+		resetVisualComponentSettings();
 		
 		HBox backLogoutHBox = new HBox(btBack, btLogout);
 		backLogoutHBox.setSpacing(40);
@@ -735,7 +737,7 @@ public class VisualDesignComponents extends Application {
 	public Scene createDataScene(String prompt, String fields) {
 		
 		styleVisualComponents();
-		visualComponentSettings();
+		resetVisualComponentSettings();
 		
 		HBox backLogoutHBox = new HBox(btBack, btLogout);
 		backLogoutHBox.setSpacing(40);
@@ -939,7 +941,7 @@ public class VisualDesignComponents extends Application {
 	
 	public Scene createReportScene() {
 		styleVisualComponents();
-		visualComponentSettings();
+		resetVisualComponentSettings();
 		Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds(); 
 		HBox backLogoutHBox = new HBox(btBack, btLogout);
@@ -1038,6 +1040,7 @@ public class VisualDesignComponents extends Application {
 		
 		 //testing
 		 btSubmit.setOnAction(event -> fieldFormatTest(primaryStage.getScene().getRoot()));
+		 btLogin.setOnAction(event->login());
 		
 	}
 	
@@ -1157,6 +1160,10 @@ public class VisualDesignComponents extends Application {
 	    } 
     	}
     return emptyTestPassed;
+    }
+    
+    public void showSuccessMessage() {
+    	lbSuccessText.setVisible(true);
     }
 
     public Boolean fieldFormatTest(Node rootNode) {
@@ -1309,6 +1316,19 @@ public class VisualDesignComponents extends Application {
     	}
     return formatTestPassed;
     }
+    
+    public void login () {
+    	boolean validLogin = recordValidator.checkLoginInfo(tfUsername.getText(), pfPassword.getText(), cbAgencyLogin.getValue());
+    	
+    	if (validLogin && "Provincial".equals(cbAgencyLogin.getValue()))
+            primaryStage.setScene(createOptionScene("Manage/Report Provincial"));
+        else if (validLogin && "Municipal".equals(cbAgencyLogin.getValue()))
+            primaryStage.setScene(createOptionScene("Manage/Report Municipal"));
+        else if (validLogin && "Administration".equals(cbAgencyLogin.getValue()))
+            primaryStage.setScene(createOptionScene("Enter/Edit/Delete Account"));
+        else
+            lbLoginError.setVisible(true);
+    }
 
 	@Override
 	public void start (Stage primaryStage) {
@@ -1319,9 +1339,7 @@ public class VisualDesignComponents extends Application {
 		
 		
 		primaryStage.setTitle("TrafficWatch");	
-		
-	
-		primaryStage.setScene(createOptionScene("Manage/Report Municipal"));
+		primaryStage.setScene(createLoginScene());
 		primaryStage.getScene().getStylesheets().add(getClass().getResource("Styles.css").toExternalForm());
 		primaryStage.show();	
 		
