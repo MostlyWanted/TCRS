@@ -19,7 +19,7 @@ public class RecordValidation {
 		String type = "VIN";
 		String table = "VEHICLEINFO";
 
-		return !isUnique(vin, type, table);
+		return isInSystem(vin, type, table);
 		
 	}
 	public boolean checkDriverRecordExistence(String licenseNumber) {
@@ -27,7 +27,7 @@ public class RecordValidation {
 		String type = "LICENSENUMBER";
 		String table = "DRIVERINFO";
 
-		return !isUnique(licenseNumber, type, table);
+		return isInSystem(licenseNumber, type, table);
 	}
 	public boolean checkVehWarrRecordExistence(int vehicleWarrantID) {
 		
@@ -39,7 +39,7 @@ public class RecordValidation {
 		String warrant = String.valueOf(vehicleWarrantID);
 		
 		// Check if value is in municipal or provincial records
-		return !isUnique(warrant, type, vehMun, vehProv);
+		return isInSystem(warrant, type, vehMun, vehProv);
 		
 	}
 	public boolean checkDriWarrRecordExistence(int driverWarrantID) {
@@ -53,7 +53,7 @@ public class RecordValidation {
 		String warrant = String.valueOf(driverWarrantID);
 		
 		// Check if value is in municipal or provincial records
-		return !isUnique(warrant, type, drivMun, drivProv);
+		return isInSystem(warrant, type, drivMun, drivProv);
 		
 	}
 	public boolean checkVehCitRecordExistence(int vehicleCitationID) {
@@ -66,7 +66,7 @@ public class RecordValidation {
 		String citation = String.valueOf(vehicleCitationID);
 		
 		// Check if value is in municipal or provincial records
-		return !isUnique(citation, type, vehMun, vehProv);
+		return isInSystem(citation, type, vehMun, vehProv);
 		
 	}
 	public boolean checkDriCitRecordExistence(int driverCitationID) {
@@ -80,7 +80,7 @@ public class RecordValidation {
 		String citation = String.valueOf(driverCitationID);
 		
 		// Check if value is in municipal or provincial records
-		return !isUnique(citation, type, drivMun, drivProv);
+		return isInSystem(citation, type, drivMun, drivProv);
 		
 	}
 	public boolean checkOfficerRecordExistence(int badgeNumber) {
@@ -90,7 +90,7 @@ public class RecordValidation {
 		
 		String badge = String.valueOf(badgeNumber);
 		
-		return !isUnique(badge, type, table);
+		return isInSystem(badge, type, table);
 		
 	}
 
@@ -103,7 +103,7 @@ public class RecordValidation {
 		String citation = String.valueOf(citationID);
 		
 		// Check traffic school
-		return (!isUnique(citation, trafficSchCit, trafficSchool));
+		return (isInSystem(citation, trafficSchCit, trafficSchool));
 		
 	}
 	public boolean checkAccountRecordExistence(int accountID) {
@@ -115,7 +115,7 @@ public class RecordValidation {
 		String account = String.valueOf(accountID);
 		
 		// Check traffic school
-		return (!isUnique(account, type, table));
+		return (isInSystem(account, type, table));
 		
 	}
 	
@@ -125,7 +125,7 @@ public class RecordValidation {
 		String table = "ACCOUNTS";
 		
 		// Check traffic school
-		return (!isUnique(username, type, table));
+		return (isInSystem(username, type, table));
 		
 	}
 	
@@ -171,7 +171,6 @@ public class RecordValidation {
 		// If there is no next, then the VIN is not in the database and therefore valid
 		try {
 			if(result.next()) {
-				System.out.println(String.format("%s: %s is already in the system!", column, entry));
 				return false;
 			}
 			else
@@ -181,18 +180,32 @@ public class RecordValidation {
 			return false;
 		}
 	}
-
-
-	private boolean isUnique(String entry, String type, String setOne, String setTwo) {
+	
+	// Return whether or not the search found a match in the system
+	private boolean isInSystem(String entry, String column, String table) {
 		
-		// Check municipal
-
-		if (!isUnique(entry, type, setOne) || !isUnique(entry, type, setTwo)) {
+		if (isUnique(entry, column, table)) {
+			
+			System.out.println(String.format("%s was not found in the system!", entry));
 			return false;
+			
 		}
 		
 		return true;
-				
 	}
+	
+	// Return whether or not the search found a match in the system
+	private boolean isInSystem(String entry, String type, String setOne, String setTwo) {
+		
+		if (isUnique(entry, type, setOne) && isUnique(entry, type, setTwo)) {
+			
+			System.out.println(String.format("%s was not found in the system!", entry));
+			return false;
+			
+		}
+		
+		return true;
+	}
+
 	
 }
