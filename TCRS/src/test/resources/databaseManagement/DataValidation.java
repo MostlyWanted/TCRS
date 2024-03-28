@@ -1,4 +1,3 @@
-package databaseManagement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

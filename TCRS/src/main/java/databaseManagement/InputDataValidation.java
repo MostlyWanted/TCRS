@@ -89,14 +89,24 @@ public class InputDataValidation {
 	public boolean validateFirstName(String firstName) {
 		
 		// Check if only letters entered
-		return isAlpha(firstName);
+		if (!isAlpha(firstName)) {
+			return false;
+		}
+		
+		// Check if only first letter capital
+		return nameCasing(firstName);
 		
 	}
 	public boolean validateLastName(String lastName) {
 		
 		// Check if only letters entered
-		return isAlpha(lastName);
-				
+		if (!isAlpha(lastName)) {
+			return false;
+		}
+		
+		// Check if only first letter capital
+		return nameCasing(lastName);
+		
 	}
 	public boolean validateLicenseNumber(String licenseNumber) {
 		
@@ -107,11 +117,14 @@ public class InputDataValidation {
 		if (!isValidLength(licenseNumber, licenseLength, type)) {
 			return false;
 		}
-		else if (!isAlpha(licenseNumber, 0, 1)) {
+		else if (!isAlpha(licenseNumber, 0, 1)){
 			return false;
 		}
 		else if (!isNumber(licenseNumber, 1, licenseLength - 1)) {
 			return false;
+		}
+		else if (Character.isLowerCase(licenseNumber.charAt(0))) {
+			System.out.println("Check licnese Number letter casing!");
 		}
 		return true;
 		
@@ -272,10 +285,10 @@ public class InputDataValidation {
 	}
 	
 	// Check if only numbers, with range
-		private boolean isNumber(String str) {
-		    
-			return isNumber(str, 0, (str.length() - 1));
-		}
+	private boolean isNumber(String str) {
+	    
+		return isNumber(str, 0, (str.length() - 1));
+	}
 		
 	
 	// Check if only numbers, with range
@@ -372,7 +385,7 @@ public class InputDataValidation {
 		return false;
 	}
 	
-private boolean negativeNum(double value) {
+	private boolean negativeNum(double value) {
 		
 		if (value < 0) {
 			System.out.println("Amount must be greater than zero!");
@@ -380,6 +393,28 @@ private boolean negativeNum(double value) {
 		}
 		
 		return false;
+	}
+	
+	// Used to check the case sensitivity in names is correct
+	private boolean nameCasing(String name) {
+		
+		if(Character.isLowerCase(name.charAt(0))){
+			System.out.println("Make sure the first letter is capital");
+			return false;
+		}
+		
+		String str = name.substring(1);
+		
+		for(int i = 0; i < str.length(); i++) {
+			
+			if(Character.isUpperCase(str.charAt(i))){
+				System.out.println("Error check name! check casing!");
+				return false;
+			} 
+		}
+		
+		return true;
+		
 	}
 
 

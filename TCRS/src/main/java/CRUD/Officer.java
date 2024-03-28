@@ -16,14 +16,74 @@ public class Officer {
 		this.databaseManager = databaseManager;
 	}
 	
+	// ******** Setter Methods ********//
+	
+		public void setBadgeNumber(String badgeNumber) {
+			
+			if(!isNumber(badgeNumber)) {
+				System.out.println("Invaild badge number account!");
+				return;
+			}
+			
+			int badge = Integer.valueOf(badgeNumber);
+			
+			this.badgeNumber = badge;
+			
+		}
+		
+		public void setFirstName(String firstName) {
+			
+			this.firstName = firstName;
+			
+		}
+		
+		public void setLastName(String lastName) {
+			
+			this.lastName = lastName;
+			
+		}
+		
+		
+		//********* Getter Methods ********//
+		
+		public int getAccountID() {
+			
+			return badgeNumber;
+			
+		}
+
+		
+		public String getFirstName() {
+			
+			return firstName;
+			
+		}
+		
+		public String getLastName() {
+			
+			return lastName;
+			
+		}
+		
+
 	// Insert new account using officer class
 	public void insertOfficer (Officer officer) {
 		
-		insertOfficer(officer.badgeNumber, officer.firstName, officer.lastName);
+		String badge = String.valueOf(officer.badgeNumber);
+		
+		insertOfficer(badge, officer.firstName, officer.lastName);
 	}
 	
 	// Insertion helper method / base method
-	public void insertOfficer (int badgeNumber, String firstName, String lastName) {
+	public void insertOfficer (String badge, String firstName, String lastName) {
+		
+		
+		if(!isNumber(badge)) {
+			System.out.println("Invaild badge number account!");
+			return;
+		}
+		
+		int badgeNumber = Integer.valueOf(badge);
 		
 		Officer officer = new Officer(databaseManager);
 		
@@ -53,7 +113,14 @@ public class Officer {
 	}
 	
 	// Edit officer based on the badge number
-	public void editOfficer (int badgeNumber, Officer newAccount) {
+	public void editOfficer (String badge, Officer newAccount) {
+		
+		if(!isNumber(badge)) {
+			System.out.println("Invaild badge number, unable to edit account!");
+			return;
+		}
+		
+		int badgeNumber = Integer.valueOf(badge);
 		
 		// First confirm account exist, and if so return account information
 		Officer officer = findOfficer(badgeNumber);
@@ -75,7 +142,15 @@ public class Officer {
 		
 	}
 	
-	public void deleteOfficer (int badgeNumber) {
+	public void deleteOfficer (String badge) {
+		
+		if(!isNumber(badge)) {
+			System.out.println("Invaild badge number, unable to delete account!");
+			return;
+		}
+		
+		int badgeNumber = Integer.valueOf(badge);
+		
 		
 		// First confirm account exist, and if so return account information
 		Officer officer = findOfficer(badgeNumber);
@@ -95,7 +170,14 @@ public class Officer {
 				
 	}
 	
-	public Officer findOfficer (int badgeNumber) {
+	public Officer findOfficer (String badge) {
+		
+		if(!isNumber(badge)) {
+			System.out.println("Invaild badge number, unable to find account!");
+			return null;
+		}
+		
+		int badgeNumber = Integer.valueOf(badge);
 		
 		// Create account to hold new found account information
 		Officer officer = new Officer(this.databaseManager);
@@ -234,6 +316,47 @@ public class Officer {
 			}
 			
 			return true;
+		}
+		
+		// Check if only numbers, with range
+		private boolean isNumber(String str) {
+		    
+			return isNumber(str, 0, (str.length() - 1));
+		}
+		
+		// Check if only numbers, with range
+		private boolean isNumber(String str, int begin, int end) {
+		    char[] c = str.toCharArray();
+
+		    for (int i = begin; i < end; i++ ) {
+		        if(!Character.isDigit(c[i])) {
+		        	System.out.println("Non number was found!");
+		            return false;
+		        }
+		    }
+
+		    return true;
+		}
+		
+		private Officer findOfficer (int badgeNumber) {
+			
+			// Create account to hold new found account information
+			Officer officer = new Officer(this.databaseManager);
+			
+			/// Create query to delete account
+			String sqlQuery = String.format("SELECT * FROM TCRS.OFFICERINFO WHERE BADGENUMBER = %d", badgeNumber);
+					
+			// Execute finding account SELECT query
+			ResultSet result = databaseManager.executeQuery(sqlQuery);
+			
+			// Check if the query did not match  in the system, return empty account
+			if (nullCheck(result)) {
+	    		return null;
+			}
+	    	
+	    	// Return the found account logged into findAcc
+	    	return logData(result, officer);
+			    	
 		}
 
 

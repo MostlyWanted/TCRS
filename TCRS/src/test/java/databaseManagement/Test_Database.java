@@ -9,7 +9,7 @@ public class Test_Database {
         // Connect to the database
             
 		DatabaseManager connection = new DatabaseManager();
-		DataValidation validate = new DataValidation(connection);
+		InputDataValidation validate = new InputDataValidation();
 		RecordValidation valid = new RecordValidation(connection);
 		
 		connection.connectToTestDatabase();

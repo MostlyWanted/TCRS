@@ -24,16 +24,137 @@ public class DriverCitation {
 		this.databaseManager = databaseManager;
 	}
 	
+	// ******** Setter Methods ********//
+	
+	
+	public void setlicense(String license) {
+			
+			this.license = license;
+			
+		}
+	
+	public void setISSUINGOFFICERIDP(String ISSUINGOFFICERIDP) {
+		
+		
+		if(!isNumber(ISSUINGOFFICERIDP)) {
+			System.out.println("Invaild badge number account!");
+			return;
+		}
+		
+		int badge = Integer.valueOf(ISSUINGOFFICERIDP);
+		
+		this.ISSUINGOFFICERIDP = badge;
+		
+	}
+	
+	public void setDateIssued(String dateIssued) {
+		
+		this.dateIssued = dateIssued;
+		
+	}
+	
+	public void setReason(String reason) {
+		
+		this.reason = reason;
+		
+	}
+	
+	public void setFineAmount(String fineAmount) {
+		
+		if(!isNumber(fineAmount)) {
+			System.out.println("Invaild badge number account!");
+			return;
+		}
+		
+		double fine = Double.valueOf(fineAmount);
+		
+		this.fineAmount = fine;
+		
+	}
+	
+	public void setPaid(Boolean Paid) {
+		
+		this.Paid = Paid;
+		
+	}
+	
+	//********* Getter Methods ********//
+	
+	public String getcitationId() {
+		
+		String citId = String.valueOf(citationId);
+		
+		return citId;
+		
+	}
+
+	public String getLicense() {
+		
+		return license;
+		
+	}
+	
+	public String getISSUINGOFFICERIDP() {
+			
+		String badge = String.valueOf(fineAmount);
+
+		return badge;
+			
+		}
+	
+	public String getdateIssued() {
+		
+		return dateIssued;
+		
+	}
+	
+	public String getReason() {
+		
+		return reason;
+		
+	}
+	
+	public String getFineAmount() {
+		
+		String fine = String.valueOf(ISSUINGOFFICERIDP);
+
+		return fine;
+			
+		}
+	
+	public Boolean getPaid() {
+		
+		return Paid;
+		
+	}
+		
+			//********** Database Methods **********//
+
 	public void insertDriverCitation (DriverCitation citation) {
 		
-		insertDriverCitation(citation.license, citation.ISSUINGOFFICERIDP, citation.dateIssued,
-				citation.reason, citation.fineAmount, citation.Paid);
+		String badgeNumber = String.valueOf(citation.ISSUINGOFFICERIDP);
+		String fine = String.valueOf(citation.fineAmount);
+		
+		insertDriverCitation(citation.license, badgeNumber, citation.dateIssued,
+				citation.reason, fine, citation.Paid);
 
 		
 	}
 	
-	public void insertDriverCitation (String license, int officerBadge, String dateIssued, String reason,  Double fineAmount, boolean Paid) {		
+	public void insertDriverCitation (String license, String officer, String dateIssued, String reason,  String fine, boolean Paid) {		
 		DriverCitation citation = new DriverCitation(databaseManager);
+		
+		if(!isNumber(officer)) {
+			System.out.println("Invaild badge number account!");
+			return;
+		}
+		else if(!isNumber(fine)) {
+			System.out.println("Invaild fine amount!");
+			return;
+		}
+		
+		int officerBadge = Integer.valueOf(officer);
+		double fineAmount = Integer.valueOf(fine);
 		
 		citation.license = license;
 		citation.ISSUINGOFFICERIDP = officerBadge; 
@@ -83,16 +204,14 @@ public class DriverCitation {
 			 paidStr = "No";;
 			}
 		 
-		 // Convert numbers to string
-		 String badgenumber = Integer.toString(officerBadge);
-		 String fineStr = fineAmount.toString();
-		 fineStr = "$" + fineStr;
+		 // Convert numbers to string		 
+		 fine = "$" + fine;
 		 
 		// Create SQL query string
 	    String sql = String.format("INSERT INTO TCRS.DRIVINGCITATIONSMUN (ISSUINGOFFICERIDP , DRIVERIDCITATIONP , "
 	    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS )"
-	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", badgenumber, citation.license, 
-				citation.reason, citation.dateIssued, fineStr, paidStr);
+	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", officer, citation.license, 
+				citation.reason, citation.dateIssued, fine, paidStr);
 	    
 	    // Pass prepared statement to databaseManager for execution
 	    databaseManager.executeUpdate(sql);
@@ -100,7 +219,14 @@ public class DriverCitation {
 	    System.out.println("Account added to the database!");
 		
 	}
-	public void editDriverCitation (int citationID, DriverCitation citationNew) {
+	public void editDriverCitation (String citID, DriverCitation citationNew) {
+		
+		if(!isNumber(citID)) {
+			System.out.println("Invaild citation ID, unable to edit account!");
+			return;
+		}
+		
+		int citationID = Integer.valueOf(citID);
 		
 		// First confirm account exist, and if so return account information
 		DriverCitation citation = findCitation(citationID);
@@ -136,8 +262,14 @@ public class DriverCitation {
 		System.out.println("Account edited");
 	}
 	
-	public void deleteDriverCitation (int citationID) {
+	public void deleteDriverCitation (String citID) {
 		
+		if(!isNumber(citID)) {
+			System.out.println("Invaild citation ID, unable to delete account!");
+			return;
+		}
+		
+		int citationID = Integer.valueOf(citID);
 
 		// First confirm account exist, and if so return account information
 		DriverCitation citation = findCitation(citationID);
@@ -167,30 +299,23 @@ public class DriverCitation {
 				+ " Reason:" + this.reason + " Fine Amount: $" + this.fineAmount + " Paid: " + this.Paid;
 	}
 	
-	// Find account using account user name
-	public DriverCitation findCitation (int citationID) {
+	public DriverCitation findCitation (String citID) {
 		
-		// Create account to hold new found account information
-		DriverCitation findCitation = new DriverCitation(this.databaseManager);
+		if(!isNumber(citID)) {
+			System.out.println("Invaild citation ID, unable to find citation in system!");
+			return null;
+		}
 		
-		// Build SQL query using static method
-		String sqlQuery = String.format("SELECT * FROM TCRS.DRIVINGCITATIONSMUN WHERE CITATIONID='%d'", citationID);
-
-		// Execute finding account SELECT query
-		ResultSet result = databaseManager.executeQuery(sqlQuery);
+		int citationID = Integer.valueOf(citID);
 		
-		// Check if the query did not match  in the system
-		if (nullCheck(result))
-    		return null;
-		
-    	
-    	// Return the found account logged into findAcc
-    	return logData(result, findCitation);
+		// Run private helper method
+		return findCitation(citationID);
     	
 	}
 	
+	
 	// Find account using account user name
-	public DriverCitation findCitation (String license) {
+	public DriverCitation findCitationLicense (String license) {
 		
 		// Create account to hold new found account information
 		DriverCitation findCitation = new DriverCitation(this.databaseManager);
@@ -257,6 +382,28 @@ public class DriverCitation {
 		
 		return null;
 	}
+	
+	// Find account using account user name
+		private DriverCitation findCitation (int citationID) {
+			
+			// Create account to hold new found account information
+			DriverCitation findCitation = new DriverCitation(this.databaseManager);
+			
+			// Build SQL query using static method
+			String sqlQuery = String.format("SELECT * FROM TCRS.DRIVINGCITATIONSMUN WHERE CITATIONID='%d'", citationID);
+
+			// Execute finding account SELECT query
+			ResultSet result = databaseManager.executeQuery(sqlQuery);
+			
+			// Check if the query did not match  in the system
+			if (nullCheck(result))
+	    		return null;
+			
+	    	
+	    	// Return the found account logged into findAcc
+	    	return logData(result, findCitation);
+	    	
+		}
 	
 	private boolean nullCheck(ResultSet result) {
 		
@@ -330,6 +477,27 @@ public class DriverCitation {
 		}
 		
 		return true;
+	}
+	
+	// Check if only numbers, with range
+	private boolean isNumber(String str) {
+	    
+		return isNumber(str, 0, (str.length() - 1));
+	}
+		
+	
+	// Check if only numbers, with range
+	private boolean isNumber(String str, int begin, int end) {
+	    char[] c = str.toCharArray();
+
+	    for (int i = begin; i < end; i++ ) {
+	        if(!Character.isDigit(c[i])) {
+	        	System.out.println("Non number was found in incorrect position!");
+	            return false;
+	        }
+	    }
+
+	    return true;
 	}
 	
 

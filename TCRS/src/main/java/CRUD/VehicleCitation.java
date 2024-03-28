@@ -23,16 +23,116 @@ public class VehicleCitation {
 		this.databaseManager = databaseManager;
 	}
 	
+	// ******** Setter Methods ********//
+	
+		
+		public void setVin(String password) {
+				
+				this.vin = password;
+				
+			}
+		
+		public void setIssuingOfficerBadgeNumber(String issuingOfficerBadgeNumber) {
+			
+			if(!isNumber(issuingOfficerBadgeNumber)) {
+				System.out.println("Invaild badge number account!");
+				return;
+			}
+						
+			int badge = Integer.valueOf(issuingOfficerBadgeNumber);
+			
+			this.issuingOfficerBadgeNumber = badge;
+			
+		}
+		
+		public void setDateIssued(String dateIssued) {
+			
+			this.dateIssued = dateIssued;
+			
+		}
+		
+		public void setReason(String reason) {
+			
+			this.reason = reason;
+			
+		}
+		
+		public void setPaid(Boolean Paid) {
+			
+			this.Paid = Paid;
+			
+		}
+		
+		//********* Getter Methods ********//
+		
+		public String getcitationId() {
+			
+			String citId = String.valueOf(citationId);
+			
+			return citId;
+			
+		}
+
+		public String getVin() {
+			
+			return vin;
+			
+		}
+		
+		public String getissuingOfficerBadgeNumber() {
+				
+			String badge = String.valueOf(issuingOfficerBadgeNumber);
+
+			return badge;
+				
+			}
+		
+		public String getdateIssued() {
+			
+			return dateIssued;
+			
+		}
+		
+		public String getReason() {
+			
+			return reason;
+			
+		}
+		
+		public Boolean getPaid() {
+			
+			return Paid;
+			
+		}
+	
+		//********** Database Methods **********//
+
 	public void insertVehicleCitation (VehicleCitation citation) {
 		
-		insertVehicleCitation(citation.vin, citation.issuingOfficerBadgeNumber, citation.dateIssued,
-				citation.reason, citation.fineAmount, citation.Paid);
+		
+		String badgeNumber = String.valueOf(citation.issuingOfficerBadgeNumber);
+		String fine = String.valueOf(citation.fineAmount);
+		
+		insertVehicleCitation(citation.vin, badgeNumber, citation.dateIssued,
+				citation.reason, fine, citation.Paid);
 
 		
 	}
 	
-	public void insertVehicleCitation (String vin, int officerBadge, String dateIssued, String reason,  Double fineAmount, boolean Paid) {		
+	public void insertVehicleCitation (String vin, String officer, String dateIssued, String reason,  String fine, boolean Paid) {		
 		VehicleCitation citation = new VehicleCitation(databaseManager);
+		
+		if(!isNumber(officer)) {
+			System.out.println("Invaild badge number account!");
+			return;
+		}
+		else if(!isNumber(fine)) {
+			System.out.println("Invaild fine amount!");
+			return;
+		}
+		
+		int officerBadge = Integer.valueOf(officer);
+		double fineAmount = Integer.valueOf(fine);
 		
 		citation.vin = vin;
 		citation.issuingOfficerBadgeNumber = officerBadge; 
@@ -82,16 +182,14 @@ public class VehicleCitation {
 			 paidStr = "No";;
 			}
 		 
-		 // Convert numbers to string
-		 String badgenumber = Integer.toString(officerBadge);
-		 String fineStr = fineAmount.toString();
-		 fineStr = "$" + fineStr;
+		 
+		 fine = "$" + fine;
 		 
 		// Create SQL query string
 	    String sql = String.format("INSERT INTO TCRS.VEHICLECITATIONSMUN (ISSUINGOFFICERIDM , VINCITATIONM , "
 	    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS )"
-	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", badgenumber, citation.vin, 
-				citation.reason, citation.dateIssued, fineStr, paidStr);
+	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", officer, citation.vin, 
+				citation.reason, citation.dateIssued, fine, paidStr);
 	    
 	    // Pass prepared statement to databaseManager for execution
 	    databaseManager.executeUpdate(sql);
@@ -99,7 +197,14 @@ public class VehicleCitation {
 	    System.out.println("Account added to the database!");
 		
 	}
-	public void editVehicleCitation (int citationID, VehicleCitation citationNew) {
+	public void editVehicleCitation (String citID, VehicleCitation citationNew) {
+		
+		if(!isNumber(citID)) {
+			System.out.println("Invaild vehicle citation, unable to edit account!");
+			return;
+		}
+		
+		int citationID = Integer.valueOf(citID);
 		
 		// First confirm account exist, and if so return account information
 		VehicleCitation citation = findCitation(citationID);
@@ -135,8 +240,14 @@ public class VehicleCitation {
 		System.out.println("Account edited");
 	}
 	
-	public void deleteVehicleCitation (int citationID) {
+	public void deleteVehicleCitation (String citID) {
 		
+		if(!isNumber(citID)) {
+			System.out.println("Invaild vehicle citation, unable to delete account!");
+			return;
+		}
+		
+		int citationID = Integer.valueOf(citID);
 
 		// First confirm account exist, and if so return account information
 		VehicleCitation citation = findCitation(citationID);
@@ -329,6 +440,26 @@ public class VehicleCitation {
 		}
 		
 		return true;
+	}
+	
+	// Check if only numbers, with range
+	private boolean isNumber(String str) {
+	    
+		return isNumber(str, 0, (str.length() - 1));
+	}
+	
+	// Check if only numbers, with range
+	private boolean isNumber(String str, int begin, int end) {
+	    char[] c = str.toCharArray();
+
+	    for (int i = begin; i < end; i++ ) {
+	        if(!Character.isDigit(c[i])) {
+	        	System.out.println("Non number was found!");
+	            return false;
+	        }
+	    }
+
+	    return true;
 	}
 	
 

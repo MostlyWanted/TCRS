@@ -10,7 +10,7 @@ public class TextInterfacer {
     private NavigationStack navStack;
     
     DatabaseManager connection;
-	DataValidation validate;
+	InputDataValidation validate;
 	RecordValidation valid;
 
     public TextInterfacer() {
@@ -21,7 +21,7 @@ public class TextInterfacer {
          
          // Setup connection to database
          connection = new DatabaseManager();
- 		 validate = new DataValidation(connection);
+ 		 validate = new InputDataValidation();
  		 valid = new RecordValidation(connection);
  		
  		connection.connectToTestDatabase();

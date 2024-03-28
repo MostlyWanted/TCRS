@@ -52,9 +52,12 @@ public class Account {
 	
 	//********* Getter Methods ********//
 	
-	public int getAccountID() {
+	public String getAccountID() {
 		
-		return accountID;
+		
+		String accId = String.valueOf(accountID);
+		
+		return accId;
 		
 	}
 
@@ -96,6 +99,8 @@ public class Account {
 		
 		Account account = new Account(databaseManager);
 		
+		username = username.toLowerCase();
+		
 		account.agency = agency; 
 		account.firstName = first; 
 		account.lastName = last; 
@@ -124,7 +129,14 @@ public class Account {
 	}
 
 	
-	public void editAccount (int accountID, Account newAcc) {
+	public void editAccount (String account, Account newAcc) {
+		
+		if(!isNumber(account)) {
+			System.out.println("Unable to edit account!");
+			return;
+		}
+		
+		int accountID = Integer.valueOf(account);
 		
 		// First confirm account exist, and if so return account information
 		Account findAcc = findAccount(accountID);
@@ -146,8 +158,15 @@ public class Account {
 	}
 	
 	// Delete account based on the account ID
-	public void deleteAccount (int accountID) {
-				
+	public void deleteAccount (String account) {
+		
+		if(!isNumber(account)) {
+			System.out.println("Unable to delete account!");
+			return;
+		}
+		
+		int accountID = Integer.valueOf(account);
+		
 		// First confirm account exist, and if so return account information
 		Account findAcc = findAccount(accountID);
 		
@@ -165,8 +184,14 @@ public class Account {
 	}
 	
 	// find account using account ID
-	public Account findAccount (int accountID) {
+	public Account findAccount (String account) {
 		
+		if(!isNumber(account)) {
+			System.out.println("Unable to find account!");
+			return null;
+		}
+		
+		int accountID = Integer.valueOf(account); 
 		// Create account to hold new found account information
 		Account findAcc = new Account(this.databaseManager);
 		
@@ -188,7 +213,9 @@ public class Account {
 	}
 	
 	// Find account using account user name
-	public Account findAccount (String username) {
+	public Account findAccountUserName (String username) {
+		
+		username.toLowerCase();
 		
 		// Create account to hold new found account information
 		Account findAcc = new Account(this.databaseManager);
@@ -346,6 +373,49 @@ public class Account {
 		
 		return true;
 	}
+	
+	// find account using account ID
+		private Account findAccount (int accountID) {
+			
+			// Create account to hold new found account information
+			Account findAcc = new Account(this.databaseManager);
+			
+			/// Create query to delete account
+			String sqlQuery = String.format("SELECT * FROM TCRS.ACCOUNTS WHERE ACCOUNTID = %d", accountID);
+					
+			// Execute finding account SELECT query
+			ResultSet result = databaseManager.executeQuery(sqlQuery);
+			
+			// Check if the query did not match  in the system, return empty account
+			if (nullCheck(result)) {
+				System.out.println("Nothing is being found in the system!");
+	    		return null;
+			}
+	    	
+	    	// Return the found account logged into findAcc
+	    	return logData(result, findAcc);
+	    	
+		}
+		
+		// Check if only numbers, with range
+		private boolean isNumber(String str) {
+		    
+			return isNumber(str, 0, (str.length() - 1));
+		}
+		
+		// Check if only numbers, with range
+		private boolean isNumber(String str, int begin, int end) {
+		    char[] c = str.toCharArray();
+
+		    for (int i = begin; i < end; i++ ) {
+		        if(!Character.isDigit(c[i])) {
+		        	System.out.println("Non number was found!");
+		            return false;
+		        }
+		    }
+
+		    return true;
+		}
 	
 		
 }

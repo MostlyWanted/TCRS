@@ -16,6 +16,7 @@ public class RecordValidation {
 	
 	public boolean checkVehicleRecordExistence(String vin) {
 		
+		vin = vin.toUpperCase();
 		String type = "VIN";
 		String table = "VEHICLEINFO";
 
@@ -24,6 +25,7 @@ public class RecordValidation {
 	}
 	public boolean checkDriverRecordExistence(String licenseNumber) {
 		
+		licenseNumber = licenseNumber.toUpperCase();
 		String type = "LICENSENUMBER";
 		String table = "DRIVERINFO";
 
@@ -121,6 +123,7 @@ public class RecordValidation {
 	
 	public boolean checkAccountRecordExistence(String username) {
 		
+		username = username.toLowerCase();
 		String type = "USERNAME";
 		String table = "ACCOUNTS";
 		
@@ -129,13 +132,10 @@ public class RecordValidation {
 		
 	}
 	
-	public boolean checkAccountRecordDuplication(String username, String password, String agency) {
-		
-		return false;
-	}
 	
 	public boolean checkLoginInfo(String username, String password, String agency) {
 		
+		username = username.toLowerCase();
 		
 		// Build string to search login credentials within database
 		String sqlCredentialCheck = String.format("SELECT * FROM TCRS.ACCOUNTS WHERE AGENCY = '%s' AND USERNAME = '%s' AND PASSWORDACC = '%s'", agency, username, password);
