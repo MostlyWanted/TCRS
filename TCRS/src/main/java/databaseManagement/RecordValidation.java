@@ -31,104 +31,76 @@ public class RecordValidation {
 
 		return isInSystem(licenseNumber, type, table);
 	}
-	public boolean checkVehWarrRecordExistence(int vehicleWarrantID) {
+	public boolean checkVehWarrRecordExistence(String vehicleWarrantID) {
 		
 		String type = "WARRANTID";
 		
 		String vehMun = "VEHICLEWARRANTSMUNICIPLE";
 		String vehProv = "VEHICLEWARRANTSPROV";
-		
-		String warrant = String.valueOf(vehicleWarrantID);
-		
+				
 		// Check if value is in municipal or provincial records
-		return isInSystem(warrant, type, vehMun, vehProv);
+		return isInSystem(vehicleWarrantID, type, vehMun, vehProv);
 		
 	}
-	public boolean checkDriWarrRecordExistence(int driverWarrantID) {
+	public boolean checkDriWarrRecordExistence(String driverWarrantID) {
 		
 		String type = "WARRANTID";
 		
 		String drivMun = "DRIVERWARRANTSMUNICIPLE";
 		String drivProv = "DRIVERWARRANTSPROV";
 
-		
-		String warrant = String.valueOf(driverWarrantID);
-		
+				
 		// Check if value is in municipal or provincial records
-		return isInSystem(warrant, type, drivMun, drivProv);
+		return isInSystem(driverWarrantID, type, drivMun, drivProv);
 		
 	}
-	public boolean checkVehCitRecordExistence(int vehicleCitationID) {
+	public boolean checkVehCitRecordExistence(String vehicleCitationID) {
 		
 		String type = "CITATIONID";
 		
 		String vehMun = "VEHICLECITATIONSMUN";
 		String vehProv = "VEHICLECITATIONSPROV";
-		
-		String citation = String.valueOf(vehicleCitationID);
-		
+				
 		// Check if value is in municipal or provincial records
-		return isInSystem(citation, type, vehMun, vehProv);
+		return isInSystem(vehicleCitationID, type, vehMun, vehProv);
 		
 	}
-	public boolean checkDriCitRecordExistence(int driverCitationID) {
+	public boolean checkDriCitRecordExistence(String driverCitationID) {
 		
 		String type = "CITATIONID";
 		
 		String drivMun = "DRIVINGCITATIONSMUN";
 		String drivProv = "DRIVINGCITATIONSPROV";
-
-		
-		String citation = String.valueOf(driverCitationID);
 		
 		// Check if value is in municipal or provincial records
-		return isInSystem(citation, type, drivMun, drivProv);
+		return isInSystem(driverCitationID, type, drivMun, drivProv);
 		
 	}
-	public boolean checkOfficerRecordExistence(int badgeNumber) {
+	public boolean checkOfficerRecordExistence(String badgeNumber) {
 		
 		String type = "BADGENUMBER";
 		String table = "OFFICERINFO";
-		
-		String badge = String.valueOf(badgeNumber);
-		
-		return isInSystem(badge, type, table);
+				
+		return isInSystem(badgeNumber, type, table);
 		
 	}
 
-	public boolean checkTrafficSchoolRecordExistence(int citationID) {
+	public boolean checkTrafficSchoolRecordExistence(String citationID) {
 		
 		String trafficSchool = "TRAFFICSCHOOL";
 		String trafficSchCit = "CITATIONIDTS";
-	
-		
-		String citation = String.valueOf(citationID);
-		
+			
 		// Check traffic school
-		return (isInSystem(citation, trafficSchCit, trafficSchool));
+		return (isInSystem(citationID, trafficSchCit, trafficSchool));
 		
 	}
-	public boolean checkAccountRecordExistence(int accountID) {
+	public boolean checkAccountRecordExistence(String accountID) {
 		
 		String type = "ACCOUNTID";
 		String table = "ACCOUNTS";
-	
-		
-		String account = String.valueOf(accountID);
-		
+			
 		// Check traffic school
-		return (isInSystem(account, type, table));
-		
-	}
-	
-	public boolean checkAccountRecordExistence(String username) {
-		
-		username = username.toLowerCase();
-		String type = "USERNAME";
-		String table = "ACCOUNTS";
-		
-		// Check traffic school
-		return (isInSystem(username, type, table));
+		return (isInSystem(accountID, type, table));
 		
 	}
 	

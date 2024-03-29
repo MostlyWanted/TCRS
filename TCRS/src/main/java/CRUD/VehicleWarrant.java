@@ -15,40 +15,102 @@ public class VehicleWarrant {
     public VehicleWarrant(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
+    
+ // ******** Setter Methods ********//
+	
+	
+ 		public void setVin(String vin) {
+ 				
+ 				this.vin = vin;
+ 				
+ 			}
+ 		
+ 		public void setDateIssued(String dateIssued) {
+ 			
+ 			this.dateIssued = dateIssued;
+ 			
+ 		}
+ 		
+ 		public void setReason(String reason) {
+ 			
+ 			this.warrantReason = reason;
+ 			
+ 		}
+ 		
+ 	 	public void setOutstanding(String outstandingWarrant) {
+ 	 		
+ 	 		Boolean outstanding;
+ 	 		
+ 	 		if(outstandingWarrant.equalsIgnoreCase("Yes")) {
+ 	 			
+ 	 			outstanding = true;
+ 	 			
+ 	 		}
+ 	 		else 
+ 	 			outstanding = false;
+ 	 		
+ 	 		this.outstanding = outstanding;
+ 	 		
+ 	 	}
+ 	 	
+ 		//********* Getter Methods ********//
+ 		
 
-    public void insertVehicleWarrant(VehicleWarrant vehicleWarrant) {
-        insertVehicleWarrant(vehicleWarrant.vin, vehicleWarrant.dateIssued, vehicleWarrant.warrantReason,
-                vehicleWarrant.outstanding);
-    }
+ 		public String getVin() {
+ 			
+ 			return vin;
+ 			
+ 		}
+ 		
+ 		
+ 		public String getdateIssued() {
+ 			
+ 			return dateIssued;
+ 			
+ 		}
+ 		
+ 		public String getReason() {
+ 			
+ 			return warrantReason;
+ 			
+ 		}
+ 		
+ 		public String getOutstanding() {
 
-    public void insertVehicleWarrant(String vin, String dateIssued, String warrantReason, Boolean outstanding) {
-        VehicleWarrant vehicleWarrant = new VehicleWarrant(databaseManager);
+ 	 		String outstandingWarrant;
+ 			
+ 			if(outstanding == true) {
+ 				
+ 				outstandingWarrant = "Yes";
+ 				
+ 			}
+ 			else 
+ 				outstandingWarrant = "No";
+ 			
+ 	 		return outstandingWarrant;
+ 	 		
+ 	 	}
+ 		
+ 		//******** Database Methods ***********
 
-        vehicleWarrant.vin = vin;
-        vehicleWarrant.dateIssued = dateIssued;
-        vehicleWarrant.warrantReason = warrantReason;
-        vehicleWarrant.outstanding = outstanding;
+    public void insertVehicleWarrant(String vin, String dateIssued, String warrantReason, String outstanding) {
 
-        if (emptyField(vehicleWarrant)) {
-            return;
-        }
-
-        if (!validVehicleWarrant(vehicleWarrant)) {
+        if (!validVehicleWarrant(vin, dateIssued)) {
             return;
         }
 
         String sql = String.format(
                 "INSERT INTO VEHICLE_WARRANTS (VIN, DATE_ISSUED, WARRANT_REASON, OUTSTANDING) VALUES ('%s', '%s', '%s', %b)",
-                vehicleWarrant.vin, vehicleWarrant.dateIssued, vehicleWarrant.warrantReason,
-                vehicleWarrant.outstanding);
+                vin, dateIssued, warrantReason, outstanding);
 
         databaseManager.executeUpdate(sql);
 
         System.out.println("Vehicle warrant added to the database!");
     }
 
-    public void editVehicleWarrant(int warrantID, VehicleWarrant newVehicleWarrant) {
-        VehicleWarrant vehicleWarrant = findVehicleWarrant(warrantID);
+    public void editVehicleWarrant(String warrantID, String vin, String dateIssued, String warrantReason, String outstanding) {
+        
+    	VehicleWarrant vehicleWarrant = findVehicleWarrant(Integer.valueOf(warrantID));
 
         if (!inSystem(vehicleWarrant)) {
             return;
@@ -56,16 +118,16 @@ public class VehicleWarrant {
 
         String sqlQuery = String.format(
                 "UPDATE VEHICLE_WARRANTS SET VIN = '%s', DATE_ISSUED = '%s', WARRANT_REASON = '%s', OUTSTANDING = %b WHERE WARRANT_ID = %d",
-                newVehicleWarrant.vin, newVehicleWarrant.dateIssued, newVehicleWarrant.warrantReason,
-                newVehicleWarrant.outstanding, warrantID);
+                vin, dateIssued, warrantReason,outstanding, Integer.valueOf(warrantID));
 
         databaseManager.executeUpdate(sqlQuery);
 
         System.out.println("Vehicle warrant edited");
     }
 
-    public void deleteVehicleWarrant(int warrantID) {
-        VehicleWarrant vehicleWarrant = findVehicleWarrant(warrantID);
+    public void deleteVehicleWarrant(String warrantID) {
+    	
+        VehicleWarrant vehicleWarrant = findVehicleWarrant(Integer.valueOf(warrantID));
 
         if (!inSystem(vehicleWarrant)) {
             return;
@@ -79,6 +141,7 @@ public class VehicleWarrant {
     }
 
     public VehicleWarrant findVehicleWarrant(int warrantID) {
+    	
         VehicleWarrant vehicleWarrant = new VehicleWarrant(this.databaseManager);
 
         String sqlQuery = String.format("SELECT * FROM VEHICLE_WARRANTS WHERE WARRANT_ID = %d", warrantID);
@@ -90,11 +153,18 @@ public class VehicleWarrant {
 
         return logData(result, vehicleWarrant);
     }
+    
+    public VehicleWarrant findVehicleWarrant(String warrantID) {
+    	
+        return (findVehicleWarrant(Integer.valueOf(warrantID)));
+    }
 
     public String toString() {
         return "VIN: " + this.vin + " Date Issued: " + this.dateIssued + " Warrant Reason: " + this.warrantReason
                 + " Outstanding: " + this.outstanding;
     }
+    
+    //*************** Private Helper Methods *******************
 
     private VehicleWarrant logData(ResultSet result, VehicleWarrant vehicleWarrant) {
         try {
@@ -163,25 +233,31 @@ public class VehicleWarrant {
         return false;
     }
 
-    private boolean validVehicleWarrant(VehicleWarrant vehicleWarrant) {
+    private boolean validVehicleWarrant(String vin, String dateIssused) {
         InputDataValidation format = new InputDataValidation();
         RecordValidation records = new RecordValidation(this.databaseManager);
 
-        if (!format.validateVIN(vehicleWarrant.vin)) {
+        if (!format.validateVIN(vin)) {
             System.out.println("Unable to add vehicle warrant to database!\nCheck VIN!");
 
             return false;
         }
-        if (!format.validateDate(vehicleWarrant.dateIssued)) {
+        if (!format.validateDate(dateIssued)) {
             System.out.println("Unable to add vehicle warrant to database!\nCheck date issued!");
             return false;
         }
 
-        if (records.checkVehicleRecordExistence(vehicleWarrant.vin)) {
+        if (records.checkVehicleRecordExistence(vin)) {
             return false;
         }
 
         return true;
+    }
+    
+    //*********** Object Methods *******
+    private boolean validVehicleWarrant(VehicleWarrant vehicleWarrant) {
+        
+    	return validVehicleWarrant(vehicleWarrant.getVin(), vehicleWarrant.getdateIssued());
     }
 
     private boolean inSystem(VehicleWarrant vehicleWarrant) {
@@ -191,5 +267,17 @@ public class VehicleWarrant {
         }
 
         return true;
+    }
+    
+    public void editVehicleWarrant(int warrantID, VehicleWarrant newVehicleWarrant) {
+        
+    	editVehicleWarrant(String.valueOf(warrantID), newVehicleWarrant.getVin(), newVehicleWarrant.getdateIssued(), newVehicleWarrant.getReason(),
+                newVehicleWarrant.getOutstanding());
+    	
+    }
+
+    public void insertVehicleWarrant(VehicleWarrant vehicleWarrant) {
+        insertVehicleWarrant(vehicleWarrant.getVin(), vehicleWarrant.getdateIssued(), vehicleWarrant.getReason(),
+                vehicleWarrant.getOutstanding());
     }
 }

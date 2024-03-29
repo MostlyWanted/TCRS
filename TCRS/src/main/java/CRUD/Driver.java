@@ -117,10 +117,6 @@ public class Driver {
         driver.licenseStatus = licenseStatus;
         driver.demeritPoints = demeritPoints;
 
-        if (emptyField(driver)) {
-            return;
-        }
-
         if (!validDriver(driver)) {
             return;
         }

@@ -26,9 +26,9 @@ public class VehicleCitation {
 	// ******** Setter Methods ********//
 	
 		
-		public void setVin(String password) {
+		public void setVin(String vin) {
 				
-				this.vin = password;
+				this.vin = vin;
 				
 			}
 		
