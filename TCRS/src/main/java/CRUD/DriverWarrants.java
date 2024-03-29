@@ -6,6 +6,8 @@ import databaseManagement.*;
 
 public class DriverWarrants {
     private DatabaseManager databaseManager;
+    
+    private int warrantID;;
     private String licenseNumber;
     private String dateIssued;
     private String warrantReason;
@@ -14,64 +16,158 @@ public class DriverWarrants {
     public DriverWarrants(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
+    
+ // ******** Setter Methods ********//
+	
+	
+ 	public void setlicense(String licenseNumber) {
+ 			
+ 			this.licenseNumber = licenseNumber;
+ 			
+ 		}
+ 	
+ 	public void setDateIssued(String dateIssued) {
+ 		
+ 		this.dateIssued = dateIssued;
+ 		
+ 	}
 
-    public void insertDriverWarrant(DriverWarrants driverWarrant) {
-        insertDriverWarrant(driverWarrant.licenseNumber, driverWarrant.dateIssued, driverWarrant.warrantReason,
-                driverWarrant.outstanding);
-    }
+ 	public void setWarrantReason(String warrantReason) {
+ 		
+ 		this.warrantReason = warrantReason;
+ 		
+ 	}
+ 	
+ 	
+ 	public void setOutstanding(String outstandingWarrant) {
+ 		
+ 		Boolean outstanding;
+ 		
+ 		if(outstandingWarrant.equalsIgnoreCase("Yes")) {
+ 			
+ 			outstanding = true;
+ 			
+ 		}
+ 		else 
+ 			outstanding = false;
+ 		
+ 		this.outstanding = outstanding;
+ 		
+ 	}
+ 	
+ 	
+ 	//********* Getter Methods ********//
+ 	
+ 	public String getcWarrantId() {
+ 		
+ 		String warrID = String.valueOf(warrantID);
+ 		
+ 		return warrID;
+ 		
+ 	}
 
+ 	public String getLicenseNumber() {
+ 		
+ 		return licenseNumber;
+ 		
+ 	}
+ 	
+ 	
+ 	public String getdateIssued() {
+ 		
+ 		return dateIssued;
+ 		
+ 	}
+ 	
+ 	public String getReason() {
+ 		
+ 		return warrantReason;
+ 		
+ 	}
+ 	
+ 	
+ 	
+ 	public String getOutstanding() {
+
+ 		String outstandingWarrant;
+		
+		if(outstanding == true) {
+			
+			outstandingWarrant = "Yes";
+			
+		}
+		else 
+			outstandingWarrant = "No";
+		
+ 		return outstandingWarrant;
+ 		
+ 	}
+ 		
+
+ 	// ******** Class Methods *********
+ 	
     public void insertDriverWarrant(String licenseNumber, String dateIssued, String warrantReason,
-            Boolean outstanding) {
-        DriverWarrants driverWarrant = new DriverWarrants(databaseManager);
+            String outstanding) {
 
-        driverWarrant.licenseNumber = licenseNumber;
-        driverWarrant.dateIssued = dateIssued;
-        driverWarrant.warrantReason = warrantReason;
-        driverWarrant.outstanding = outstanding;
-
-        if (emptyField(driverWarrant)) {
-            return;
-        }
-
-        if (!validDriverWarrant(driverWarrant)) {
+        if (!validDriverWarrant(licenseNumber, dateIssued)) {
             return;
         }
 
         String sql = String.format(
-                "INSERT INTO DRIVER_WARRANTS (LICENSE_NUMBER, DATE_ISSUED, WARRANT_REASON, OUTSTANDING) VALUES ('%s', '%s', '%s', %b)",
-                driverWarrant.licenseNumber, driverWarrant.dateIssued, driverWarrant.warrantReason,
-                driverWarrant.outstanding);
+                "INSERT INTO TCRS.DRIVERWARRANTSMUNICIPLE (DRIVERIDWARRANTM, WARRANTDATE, REASON, OUTSTANDING) VALUES ('%s', '%s', '%s', %b)",
+                licenseNumber, dateIssued, warrantReason, outstanding);
 
         databaseManager.executeUpdate(sql);
 
         System.out.println("Driver warrant added to the database!");
     }
+    
+    
 
-    public void editDriverWarrant(int warrantID, DriverWarrants newDriverWarrant) {
-        DriverWarrants driverWarrant = findDriverWarrant(warrantID);
+    public void editDriverWarrant(String warrantID, String licenseNumber, String dateIssued, String warrantReason,
+            String outstanding) {
+    	
+    	// Check if account Id is an number
+    	if(!isNumber(warrantID)) {
+    		System.out.println("Unable edit warrant! Check Id  number!");
+    		return;
+    	}
+    	
+    	int warrID = Integer.valueOf(warrantID);
+    	
+        DriverWarrants driverWarrant = findDriverWarrant(warrID);
 
         if (!inSystem(driverWarrant)) {
             return;
         }
 
         String sqlQuery = String.format(
-                "UPDATE DRIVER_WARRANTS SET LICENSE_NUMBER = '%s', DATE_ISSUED = '%s', WARRANT_REASON = '%s', OUTSTANDING = %b WHERE WARRANT_ID = %d",
-                newDriverWarrant.licenseNumber, newDriverWarrant.dateIssued, newDriverWarrant.warrantReason,
-                newDriverWarrant.outstanding, warrantID);
+                "UPDATE TCRS.DRIVERWARRANTSMUNICIPLE SET DRIVERIDWARRANTM = '%s', WARRANTDATE = '%s', REASON = '%s', OUTSTANDING = %b WHERE WARRANTID = %d",
+                licenseNumber, dateIssued, warrantReason, outstanding, warrantID);
 
         databaseManager.executeUpdate(sqlQuery);
 
         System.out.println("Driver warrant edited");
     }
+   
 
-    public void deleteDriverWarrant(int warrantID) {
-        DriverWarrants driverWarrant = findDriverWarrant(warrantID);
+    public void deleteDriverWarrant(String warrantID) {
+    	
+    	// Check if account Id is an number
+    	if(!isNumber(warrantID)) {
+    		System.out.println("Unable to delete warrant! Check Id number!");
+    		return;
+    	}
+    	
+    	int warrId = Integer.valueOf(warrantID);
+    	
+        DriverWarrants driverWarrant = findDriverWarrant(warrId);
 
         if (!inSystem(driverWarrant)) {
             return;
         }
 
-        String sqlDelete = String.format("DELETE FROM DRIVER_WARRANTS WHERE WARRANT_ID = %d", warrantID);
+        String sqlDelete = String.format("DELETE FROM TCRS.DRIVERWARRANTSMUNICIPLE WHERE WARRANTID = %d", warrantID);
 
         databaseManager.executeUpdate(sqlDelete);
 
@@ -81,7 +177,7 @@ public class DriverWarrants {
     public DriverWarrants findDriverWarrant(int warrantID) {
         DriverWarrants driverWarrant = new DriverWarrants(this.databaseManager);
 
-        String sqlQuery = String.format("SELECT * FROM DRIVER_WARRANTS WHERE WARRANT_ID = %d", warrantID);
+        String sqlQuery = String.format("SELECT * FROM TCRS.DRIVERWARRANTSMUNICIPLE WHERE WARRANTID = %d", warrantID);
 
         ResultSet result = databaseManager.executeQuery(sqlQuery);
 
@@ -90,18 +186,50 @@ public class DriverWarrants {
 
         return logData(result, driverWarrant);
     }
+    
+    // Find class with string paramter
+    public DriverWarrants findDriverWarrant(String warrantID) {
+        
+    	// Check if account Id is an number
+    	if(!isNumber(warrantID)) {
+    		System.out.println("Unable find warant! Check warrant ID number!");
+    		return null;
+    	}
+    		int warrID = Integer.valueOf(warrantID);
+    		
+    		return findDriverWarrant( warrID);
+    	
+    }
 
     public String toString() {
         return "License Number: " + this.licenseNumber + " Date Issued: " + this.dateIssued + " Warrant Reason: "
                 + this.warrantReason + " Outstanding: " + this.outstanding;
     }
 
+    // ************* Object Based Methods *********
+    
+    // Insert using Warrant Object
+    public void insertDriverWarrant(DriverWarrants driverWarrant) {
+
+        insertDriverWarrant(driverWarrant.getLicenseNumber(), driverWarrant.getdateIssued(), driverWarrant.getReason(),
+        		driverWarrant.getOutstanding());
+    }
+    
+    public void editDriverWarrant(int warrantID, DriverWarrants newDriverWarrant) {
+
+    	editDriverWarrant(newDriverWarrant.getcWarrantId(),  newDriverWarrant.getLicenseNumber(),  newDriverWarrant.getdateIssued(),  newDriverWarrant.getReason(), newDriverWarrant.getOutstanding());
+    	
+    }
+    
+    
+    // ********** Private Helper Methods *********
+    
     private DriverWarrants logData(ResultSet result, DriverWarrants driverWarrant) {
         try {
             while (result.next()) {
-                driverWarrant.licenseNumber = result.getString("LICENSE_NUMBER");
-                driverWarrant.dateIssued = result.getString("DATE_ISSUED");
-                driverWarrant.warrantReason = result.getString("WARRANT_REASON");
+                driverWarrant.licenseNumber = result.getString("DRIVERIDWARRANTM");
+                driverWarrant.dateIssued = result.getString("WARRANTDATE");
+                driverWarrant.warrantReason = result.getString("REASON");
                 driverWarrant.outstanding = result.getBoolean("OUTSTANDING");
 
                 return driverWarrant;
@@ -162,6 +290,27 @@ public class DriverWarrants {
 
         return false;
     }
+    
+    private boolean validDriverWarrant(String license, String dateIssued) {
+        InputDataValidation format = new InputDataValidation();
+        RecordValidation records = new RecordValidation(this.databaseManager);
+
+        if (!format.validateLicenseNumber(license)) {
+            System.out.println("Unable to add driver warrant to database!\nCheck license number!");
+
+            return false;
+        }
+        if (!format.validateDate(dateIssued)) {
+            System.out.println("Unable to add driver warrant to database!\nCheck date issued!");
+            return false;
+        }
+
+        if (records.checkDriverRecordExistence(license)) {
+            return false;
+        }
+
+        return true;
+    }
 
     private boolean validDriverWarrant(DriverWarrants driverWarrant) {
         InputDataValidation format = new InputDataValidation();
@@ -192,4 +341,24 @@ public class DriverWarrants {
 
         return true;
     }
+    
+    // Check if only numbers, with range
+   	private boolean isNumber(String str) {
+   	    
+   		return isNumber(str, 0, (str.length() - 1));
+   	}
+   	
+   	// Check if only numbers, with range
+   	private boolean isNumber(String str, int begin, int end) {
+   	    char[] c = str.toCharArray();
+
+   	    for (int i = begin; i < end; i++ ) {
+   	        if(!Character.isDigit(c[i])) {
+   	        	System.out.println("Non number was found!");
+   	            return false;
+   	        }
+   	    }
+
+   	    return true;
+   	}
 }

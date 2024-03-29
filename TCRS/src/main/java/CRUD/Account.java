@@ -96,31 +96,18 @@ public class Account {
 	
 	// Create and insert account into database given parameters
 	public void insertAccount(String agency, String first, String last, String username, String password) {
-		
-		Account account = new Account(databaseManager);
-		
+				
 		username = username.toLowerCase();
 		
-		account.agency = agency; 
-		account.firstName = first; 
-		account.lastName = last; 
-		account.username = username; 
-		account.password = password;
-		
-		// Check if any fields are empty
-		if (emptyField(account)) {
-			 return;
-		 }
-		
 		// Validate correct formats of input data
-		 if (!validateAccount(account)) {
+		 if (!validateAccount(first, last, username)){
 			 return;
 		 }	 
 		
 		// Create SQL query string
 	    String sql = String.format("INSERT INTO TCRS.ACCOUNTS (USERNAME , PASSWORDACC , FIRSTNAME , LASTNAME , AGENCY ) "
-	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s')", account.username, account.password, account.firstName, 
-	    		account.lastName, account.agency);
+	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s')", username, password, first, 
+	    		last, agency);
 	    
 	    // Pass prepared statement to databaseManager for execution
 	    databaseManager.executeUpdate(sql);
@@ -129,14 +116,16 @@ public class Account {
 	}
 
 	
-	public void editAccount (String account, Account newAcc) {
+	public void editAccount (String accID, String username, String password, String firstName, String lastName, String agency) {
 		
-		if(!isNumber(account)) {
-			System.out.println("Unable to edit account!");
+
+		// Check if account Id is an number
+		if(!isNumber(accID)) {
+			System.out.println("Unable to edit account! Check Account ID number!");
 			return;
 		}
 		
-		int accountID = Integer.valueOf(account);
+		int accountID = Integer.valueOf(accID);
 		
 		// First confirm account exist, and if so return account information
 		Account findAcc = findAccount(accountID);
@@ -148,13 +137,19 @@ public class Account {
 		
 		// Build edit query in system based on account ID
 		String sqlQuery = String.format("UPDATE TCRS.ACCOUNTS SET USERNAME = '%s', PASSWORDACC = '%s', FIRSTNAME = '%s', LASTNAME = '%s',"
-				+ " AGENCY = '%s' WHERE ACCOUNTID = '%s'", newAcc.username, newAcc.password, 
-				newAcc.firstName, newAcc.lastName, newAcc.agency, findAcc.accountID);
+				+ " AGENCY = '%s' WHERE ACCOUNTID = '%s'", username, password, 
+				firstName, lastName, agency, accID);
 
 		// Execute query
 		databaseManager.executeUpdate(sqlQuery);
 		
 		System.out.println("Account edited");
+	}
+	
+	// Edit account based on account Id using account object to create account to edit
+	public void editAccount (String account, Account newAcc) {
+		
+		editAccount(account, newAcc.username, newAcc.password, newAcc.firstName, newAcc.lastName, newAcc.agency);
 	}
 	
 	// Delete account based on the account ID
@@ -192,6 +187,7 @@ public class Account {
 		}
 		
 		int accountID = Integer.valueOf(account); 
+		
 		// Create account to hold new found account information
 		Account findAcc = new Account(this.databaseManager);
 		
@@ -237,7 +233,33 @@ public class Account {
 	}
 	
 	// Auto fill data
-	public void autoInputAccount (int accountID) {
+	public String[][] autoInputAccount (String accID) {
+		
+		// Check if account Id is an number
+		if(!isNumber(accID)) {
+			System.out.println("Unable to edit account! Check Account ID number!");
+			return null;
+		}
+		
+		int accountID = Integer.valueOf(accID);
+		
+		// First confirm account exist, and if so return account information
+		Account findAcc = findAccount(accountID);
+		
+		// Check to see if the account is in the system
+		if (!inSystem(findAcc)) {
+			return null;
+		}
+		
+		String autoFill[][] = {
+				{ "username", findAcc.getUsername()},
+				{ "password", findAcc.getPassword()},
+				{ "firstName", findAcc.getFirstName()},
+				{ "lastName", findAcc.getLastName()},
+				{ "agency", findAcc.getAgency()}
+		};
+
+		return autoFill;
 		
 	}
 	
@@ -338,6 +360,32 @@ public class Account {
 	    return false;
 	}
 	
+	// Check to ensure the account information is valid
+		private boolean validateAccount(String firstName, String LastNAme, String username) {
+			
+			// Create validation objects
+			InputDataValidation format = new InputDataValidation();
+			RecordValidation records = new RecordValidation(this.databaseManager);
+
+		    if (!format.validateFirstName(firstName)) {
+				 System.out.println("Unable to add account to database!\nCheck first name!");
+
+		        return false;
+		    }
+		    if (!format.validateLastName(lastName)) {
+				 System.out.println("Unable to add account to database!\nCheck last name!");
+		        return false;
+		    }
+		    
+		    // Check if any of the fields (except accountID) are empty
+	 		if(records.checkAccountRecordExistence(username)) {
+	 		        return false;
+	 		}
+		 		
+		    // All fields are non-empty, so return true
+		    return true;
+		}
+		
 	// Check to ensure the account information is valid
 	private boolean validateAccount(Account account) {
 		

@@ -46,9 +46,12 @@ public class Officer {
 		
 		//********* Getter Methods ********//
 		
-		public int getAccountID() {
+		public String getBadgeNumber() {
 			
-			return badgeNumber;
+			
+			String badge = String.valueOf(badgeNumber);
+			
+			return badge;
 			
 		}
 
@@ -65,16 +68,8 @@ public class Officer {
 			
 		}
 		
-
-	// Insert new account using officer class
-	public void insertOfficer (Officer officer) {
-		
-		String badge = String.valueOf(officer.badgeNumber);
-		
-		insertOfficer(badge, officer.firstName, officer.lastName);
-	}
 	
-	// Insertion helper method / base method
+	// Insertion method
 	public void insertOfficer (String badge, String firstName, String lastName) {
 		
 		
@@ -83,27 +78,14 @@ public class Officer {
 			return;
 		}
 		
-		int badgeNumber = Integer.valueOf(badge);
-		
-		Officer officer = new Officer(databaseManager);
-		
-		officer.badgeNumber = badgeNumber;
-		officer.firstName = firstName; 
-		officer.lastName = lastName; 
-
-		// Check if any fields are empty
-		if (emptyField(officer)) {
+		// Validate correct formats of input data
+		 if (!validAccount(badge, firstName, lastName)) {
 			 return;
 		 }
 		
-		// Validate correct formats of input data
-		 if (!validAccount(officer)) {
-			 return;
-		 }	 
-		
 		// Create SQL query string
 	    String sql = String.format("INSERT INTO TCRS.OFFICERINFO (LASTNAME , FIRSTNAME , BADGENUMBER ) "
-	    		+ "VALUES ('%s', '%s', '%s')", officer.lastName, officer.firstName, officer.badgeNumber);
+	    		+ "VALUES ('%s', '%s', '%s')", lastName, firstName, badge);
 	    
 	    // Pass prepared statement to databaseManager for execution
 	    databaseManager.executeUpdate(sql);
@@ -113,7 +95,7 @@ public class Officer {
 	}
 	
 	// Edit officer based on the badge number
-	public void editOfficer (String badge, Officer newAccount) {
+	public void editOfficer (String badge, String firsName, String lastName) {
 		
 		if(!isNumber(badge)) {
 			System.out.println("Invaild badge number, unable to edit account!");
@@ -133,7 +115,7 @@ public class Officer {
 		
 		// Build edit query in system based on account ID
 		String sqlQuery = String.format("UPDATE TCRS.OFFICERINFO SET LASTNAME = '%s', FIRSTNAME = '%s'"
-				+ " WHERE BADGENUMBER = %d", newAccount.lastName, newAccount.firstName, officer.badgeNumber);
+				+ " WHERE BADGENUMBER = %d", lastName, firstName, badge);
 
 		// Execute query
 		databaseManager.executeUpdate(sqlQuery);
@@ -206,6 +188,30 @@ public class Officer {
 		
 		return "Badge Number " + this.badgeNumber + " First Name: " + this.firstName + " Last Name: " + this.lastName;
 	}
+	
+	//*********** Object Methods *****************
+	
+	// Insert new account using officer class
+	public void insertOfficer (Officer officer) {
+		
+		insertOfficer(officer.getBadgeNumber(), officer.getFirstName(), officer.getLastName());
+		
+	}
+	
+	// Check to ensure the account information is valid
+	private boolean validAccount(Officer officer) {
+
+		return validAccount(officer.getBadgeNumber(), officer.firstName, officer.lastName);
+		
+	}
+	
+	// Edit officer based on the badge number
+	public void editOfficer (String badge, Officer newAccount) {
+		
+		
+	}
+	
+	
 	
 	//**************************** Private Helper Methods ********************************************
 	
@@ -283,7 +289,7 @@ public class Officer {
 		}
 		
 		// Check to ensure the account information is valid
-		private boolean validAccount(Officer officer) {
+		private boolean validAccount(String badgeNumber, String firstName, String lastName) {
 			
 			// Create validation objects
 			InputDataValidation format = new InputDataValidation();
@@ -299,14 +305,17 @@ public class Officer {
 		        return false;
 		    }
 		    
+		    int badge = Integer.valueOf(badgeNumber);
+		    
 			// Check if already in the system
-			if(records.checkOfficerRecordExistence(officer.badgeNumber)) {
+			if(records.checkOfficerRecordExistence(badge)) {
 			        return false;
 			}
 
 		    // All fields are non-empty, so return true
 		    return true;
 		}
+				
 		
 		private boolean inSystem(Officer officer) {
 			

@@ -12,13 +12,14 @@ public class DriverCitation {
 	
 	private DatabaseManager databaseManager;
 
-	private int citationId;
+	public int citationId;
 	public String license;
 	public int ISSUINGOFFICERIDP;
 	public String dateIssued;
 	public String reason;
 	public Double fineAmount;
-	public boolean Paid;
+	public String Paid;
+	public boolean Reportable;
 	
 	public DriverCitation(DatabaseManager databaseManager) {
 		this.databaseManager = databaseManager;
@@ -72,11 +73,28 @@ public class DriverCitation {
 		
 	}
 	
-	public void setPaid(Boolean Paid) {
+	public void setPaid(String Paid) {
 		
 		this.Paid = Paid;
 		
 	}
+	
+	public void setReportable(String Report) {
+		
+		Boolean Reportable;
+		
+		if(Report.equalsIgnoreCase("Yes")) {
+			
+			Reportable = true;
+			
+		}
+		else 
+			Reportable = false;
+		
+		this.Reportable = Reportable;
+		
+	}
+	
 	
 	//********* Getter Methods ********//
 	
@@ -122,28 +140,35 @@ public class DriverCitation {
 			
 		}
 	
-	public Boolean getPaid() {
+	public String getPaid() {
 		
 		return Paid;
+		
+	}
+	
+	public String getReportable() {
+		
+		String Report;
+		
+		if(Reportable == true) {
+			
+			Report = "Yes";
+			
+		}
+		else 
+			Report = "No";
+		
+	
+		return Report;
 		
 	}
 		
 			//********** Database Methods **********//
 
-	public void insertDriverCitation (DriverCitation citation) {
-		
-		String badgeNumber = String.valueOf(citation.ISSUINGOFFICERIDP);
-		String fine = String.valueOf(citation.fineAmount);
-		
-		insertDriverCitation(citation.license, badgeNumber, citation.dateIssued,
-				citation.reason, fine, citation.Paid);
 
-		
-	}
 	
-	public void insertDriverCitation (String license, String officer, String dateIssued, String reason,  String fine, boolean Paid) {		
-		DriverCitation citation = new DriverCitation(databaseManager);
-		
+	public void insertDriverCitation (String license, String officer, String dateIssued, String reason,  String fine, String Paid, String reportable) {		
+				
 		if(!isNumber(officer)) {
 			System.out.println("Invaild badge number account!");
 			return;
@@ -153,23 +178,11 @@ public class DriverCitation {
 			return;
 		}
 		
-		int officerBadge = Integer.valueOf(officer);
-		double fineAmount = Integer.valueOf(fine);
-		
-		citation.license = license;
-		citation.ISSUINGOFFICERIDP = officerBadge; 
-		citation.dateIssued = dateIssued;
-		citation.reason = reason;
-		citation.fineAmount = fineAmount; 
-		citation.Paid = Paid;
-
-		// Check if any fields are empty
-		if (emptyField(citation)) {
-			 return;
-		 }
-		
 		// Create validation object
 		InputDataValidation valid = new InputDataValidation();
+		
+		int officerBadge = Integer.valueOf(officer);
+		double fineAmount = Integer.valueOf(fine);
 		
 		// Ensure the license is valid
 		if(!valid.validateLicenseNumber(license)) {
@@ -181,7 +194,6 @@ public class DriverCitation {
 			return;
 		}
 		
-		
 		// Validate correct formats of input data
 		 if (!validBadgeNumber(officerBadge)) {
 			 System.out.println("Officer badge number not in the system!");
@@ -192,34 +204,52 @@ public class DriverCitation {
 			 System.out.println("Invalid fine amount");
 			 return;
 		 }
-		
-		 
-		 // Create string from paid boolean
-		 String paidStr;
-		 
-		 if(Paid == true) {
-			 paidStr = "Yes";
-			 }
-		else {
-			 paidStr = "No";;
-			}
-		 
-		 // Convert numbers to string		 
-		 fine = "$" + fine;
 		 
 		// Create SQL query string
-	    String sql = String.format("INSERT INTO TCRS.DRIVINGCITATIONSMUN (ISSUINGOFFICERIDP , DRIVERIDCITATIONP , "
-	    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS )"
-	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", officer, citation.license, 
-				citation.reason, citation.dateIssued, fine, paidStr);
+	    String sql = String.format("INSERT INTO TCRS.DRIVINGCITATIONSMUNICIPLE (ISSUEINGOFFICERIDM , DRIVERIDCITATIONM , "
+	    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS, REPORTABLE )"
+	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s' )", officer, license, 
+				reason, dateIssued, fine, Paid, reportable);
 	    
 	    // Pass prepared statement to databaseManager for execution
 	    databaseManager.executeUpdate(sql);
 	    
-	    System.out.println("Account added to the database!");
+	    System.out.println("Citaion added to the municipal database!");
+	    
+	 
+	    // Insert provincial if reportable
+	    if (reportable.equalsIgnoreCase("Yes")) {
+	    	
+	    	// Create query
+	    	String sqlProv = String.format("INSERT INTO TCRS.DRIVINGCITATIONSPROV (ISSUINGOFFICERIDP , DRIVERIDCITATIONP , "
+		    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS )"
+		    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s' )", officer, license, 
+					reason, dateIssued, fine, Paid);
+	    	
+	    	// Insert into provincial database
+	    	databaseManager.executeUpdate(sql);
+	    	
+		    System.out.println("Citation was also added to the provincial database!");
+
+	    }
 		
 	}
-	public void editDriverCitation (String citID, DriverCitation citationNew) {
+	
+	// Insert driver using driver citation object
+	public void insertDriverCitation (DriverCitation citation) {
+		
+		String badgeNumber = String.valueOf(citation.ISSUINGOFFICERIDP);
+		String fine = String.valueOf(citation.fineAmount);
+
+		
+		insertDriverCitation(citation.license, badgeNumber, citation.dateIssued,
+				citation.reason, fine, citation.Paid, citation.getReportable());
+
+		
+	}
+	
+	
+	public void editDriverCitation (String citID, String license, String ISSUINGOFFICERIDP, String dateIssued, String reason, String fineAmount, String Paid, String Reportable) {
 		
 		if(!isNumber(citID)) {
 			System.out.println("Invaild citation ID, unable to edit account!");
@@ -235,31 +265,51 @@ public class DriverCitation {
 		if (!inSystem(citation)) {
 			return;
 		}
-		
-		 // Create string from paid boolean
-		 String paidStr;
 		 
-		 if(Paid == true) {
-			 paidStr = "Yes";
-			 }
-		else {
-			 paidStr = "No";;
-			}
-		 
-		 // Convert numbers to string
-		 String badgenumber = Integer.toString(citationNew.ISSUINGOFFICERIDP);
-		 String fineStr = Double.toString(citationNew.fineAmount);
-		 fineStr = "$" + fineStr;
 		
 		// Build edit query in system based on citation ID
-		String sqlQuery = String.format("UPDATE TCRS.DRIVINGCITATIONSMUN SET ISSUINGOFFICERIDP = '%s', DRIVERIDCITATIONP = '%s', CITATIONREASON = '%s', "
-				+ "CITATIONDATE = '%s', FINEAMOUNT = '%s', PAYMENTSTATUS = '%s' WHERE CITATIONID = %d", 
-				 badgenumber, citationNew.license, citationNew.reason, citationNew.dateIssued, fineStr, paidStr, citationNew.citationId);
-
+		String sqlQuery = String.format("UPDATE TCRS.DRIVINGCITATIONSMUNICIPLE SET ISSUEINGOFFICERIDM = '%s', DRIVERIDCITATIONM = '%s', CITATIONREASON = '%s', "
+				+ "CITATIONDATE = '%s', FINEAMOUNT = '%s', PAYMENTSTATUS = '%s', REPORTABLE = '%s' WHERE CITATIONID = %d", 
+				ISSUINGOFFICERIDP, license, reason, dateIssued, fineAmount, Paid, citID, Reportable);
+		
 		// Execute query
 		databaseManager.executeUpdate(sqlQuery);
 		
 		System.out.println("Account edited");
+		
+		// Update provincial if reportable
+		if (Reportable.equalsIgnoreCase("Yes")) {
+	    	
+	    	// Create query
+			String sqlQueryProv = String.format("UPDATE TCRS.DRIVINGCITATIONSPROV SET ISSUINGOFFICERIDP = '%s', DRIVERIDCITATIONP = '%s', CITATIONREASON = '%s', "
+					+ "CITATIONDATE = '%s', FINEAMOUNT = '%s', PAYMENTSTATUS = '%s' WHERE CITATIONID = %d", 
+					ISSUINGOFFICERIDP, license, reason, dateIssued, fineAmount, Paid, citID);
+	    	
+	    	// Insert into provincial database
+			databaseManager.executeUpdate(sqlQueryProv);
+			
+		    System.out.println("Citation was also ediited in the provincial database!");
+
+	    }
+	}
+	
+	// Edit driver citation using driver citation object for input
+	public void editDriverCitation (String citID, DriverCitation citationNew) {
+		
+		String badge = String.valueOf(citationNew.ISSUINGOFFICERIDP);
+		String fine = String.valueOf(citationNew.fineAmount);
+		String report;
+		if (citationNew.Reportable) {
+			report = "Yes";
+		}
+		else {
+			report = "No";
+		}
+
+		
+		editDriverCitation (citID, citationNew.license, badge, citationNew.dateIssued, citationNew.reason, fine, citationNew.Paid, report);
+
+		
 	}
 	
 	public void deleteDriverCitation (String citID) {
@@ -280,12 +330,22 @@ public class DriverCitation {
 		}
 				
 		// Create query to delete account
-		String sqlDelete = String.format("DELETE FROM TCRS.DRIVINGCITATIONSMUN WHERE CITATIONID= %d", citationID);
+		String sqlDelete = String.format("DELETE FROM TCRS.DRIVINGCITATIONSMUNICIPLE WHERE CITATIONID= %d", citationID);
 		
+		// Since municipal is a foreign key for provincial, provincial data must be removed first
+		if (citation.Reportable == true) {
+			
+			String sqlDeleteProv = String.format("DELETE FROM TCRS.DRIVINGCITATIONSPROV WHERE CITATIONID= %d", citationID);
+			// Execute deleting of account
+			databaseManager.executeUpdate(sqlDeleteProv);
+			
+			System.out.println("Citation " + citationID + " removed from provincial system!");
+			
+		}
 		// Execute deleting of account
 		databaseManager.executeUpdate(sqlDelete);
 		
-		System.out.println("Citation " + citationID + " removed from system!");
+		System.out.println("Citation " + citationID + " removed from municipal system!");
 
 	}
 
@@ -296,8 +356,47 @@ public class DriverCitation {
 	public String toString() {
 		
 		return "License Number " + this.license + " Officer Badge Number: " + this.ISSUINGOFFICERIDP + " Date Issued: " + this.dateIssued
-				+ " Reason:" + this.reason + " Fine Amount: $" + this.fineAmount + " Paid: " + this.Paid;
+				+ " Reason:" + this.reason + " Fine Amount: $" + this.fineAmount + " Paid: " + this.Paid + " Reportable " + this.Reportable;
 	}
+	
+	// Auto fill data
+		public String[][] autoInputAccount (String citID) {
+			
+			
+			// First confirm account exist, and if so return account information
+			DriverCitation citation = findCitation(citID);
+			
+			// Check to see if the account is in the system
+			if (!inSystem(citation)) {
+				return null;
+			}
+			
+			// Convert all values into strings
+			String badge = String.valueOf(citation.ISSUINGOFFICERIDP);
+			String fine = String.valueOf(citation.fineAmount);
+			String report;
+			if (citation.Reportable) {
+				report = "Yes";
+			}
+			else {
+				report = "No";
+
+			}
+			
+			// Build autoFill using array of strings
+			String autoFill[][] = {
+					{ "license", citation.license},
+					{ "ISSUINGOFFICERIDP", badge},
+					{ "dateIssued", citation.dateIssued},
+					{ "reason", citation.reason},
+					{ "fineAmount", fine},
+					{ "Paid", Paid},
+					{ "Reportable", report}
+			};
+
+			return autoFill;
+			
+		}
 	
 	public DriverCitation findCitation (String citID) {
 		
@@ -321,7 +420,7 @@ public class DriverCitation {
 		DriverCitation findCitation = new DriverCitation(this.databaseManager);
 		
 		// Build SQL query using static method
-		String sqlQuery = String.format("SELECT * FROM TCRS.DRIVINGCITATIONSMUN WHERE DRIVERIDCITATIONP='%s'", license);
+		String sqlQuery = String.format("SELECT * FROM TCRS.DRIVINGCITATIONSMUNICIPLE WHERE DRIVERIDCITATIONP='%s'", license);
 
 		// Execute finding account SELECT query
 		ResultSet result = databaseManager.executeQuery(sqlQuery);
@@ -345,22 +444,23 @@ public class DriverCitation {
 			while (result.next()) {
 			     //Retrieve data by column index or name
 				citation.citationId = result.getInt("CITATIONID");
-				citation.license = result.getString("DRIVERIDCITATIONP");
-				citation.ISSUINGOFFICERIDP = result.getInt("ISSUINGOFFICERIDP");
+				citation.license = result.getString("DRIVERIDCITATIONM");
+				citation.ISSUINGOFFICERIDP = result.getInt("ISSUEINGOFFICERIDM");
 				citation.dateIssued = result.getString("CITATIONDATE");
 				citation.reason = result.getString("CITATIONREASON");
 				String fine = result.getString("FINEAMOUNT");
-				String paid = result.getString("PAYMENTSTATUS");
+				citation.Paid = result.getString("PAYMENTSTATUS");
+				String report = result.getString("PAYMENTSTATUS");
 				
 				//covert fine amount to double
 				citation.fineAmount = Double.valueOf(fine.substring(1));
 				
 				// convert payment status to boolean
-				if(paid.equalsIgnoreCase("Yes")) {
-					citation.Paid = true;
+				if(report.equalsIgnoreCase("Yes")) {
+					citation.Reportable = true;
 				}
 				else {
-					citation.Paid = false;
+					citation.Reportable = false;
 				}
 			    				
 			return citation;
@@ -390,7 +490,7 @@ public class DriverCitation {
 			DriverCitation findCitation = new DriverCitation(this.databaseManager);
 			
 			// Build SQL query using static method
-			String sqlQuery = String.format("SELECT * FROM TCRS.DRIVINGCITATIONSMUN WHERE CITATIONID='%d'", citationID);
+			String sqlQuery = String.format("SELECT * FROM TCRS.DRIVINGCITATIONSMUNICIPLE WHERE CITATIONID='%d'", citationID);
 
 			// Execute finding account SELECT query
 			ResultSet result = databaseManager.executeQuery(sqlQuery);

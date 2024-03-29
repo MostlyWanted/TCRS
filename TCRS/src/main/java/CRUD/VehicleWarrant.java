@@ -6,10 +6,11 @@ import databaseManagement.*;
 
 public class VehicleWarrant {
     private DatabaseManager databaseManager;
-    private String vin;
-    private String dateIssued;
-    private String warrantReason;
-    private Boolean outstanding;
+    
+    public String vin;
+    public String dateIssued;
+    public String warrantReason;
+    public Boolean outstanding;
 
     public VehicleWarrant(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;

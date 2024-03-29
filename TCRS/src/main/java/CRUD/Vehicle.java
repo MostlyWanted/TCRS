@@ -9,77 +9,161 @@ public class Vehicle {
 
     private DatabaseManager databaseManager;
 
-    private String vin;
-    private String licensePlate;
-    private String make;
-    private String model;
-    private int year;
-    private String registeredStatus;
+    public String vin;
+    public String licensePlate;
+    public String make;
+    public String model;
+    public int year;
+    public String registeredStatus;
 
     public Vehicle(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
     }
+    
+ // ******** Setter Methods ********//
+	
+ 	public void setlicensePlate(String licensePlate) {
+ 		
+ 		this.licensePlate = licensePlate;
+ 		
+ 	}
+ 	
+ 	public void setMake(String make) {
+ 			
+ 			this.make = make;
+ 			
+ 		}
+ 	
+ 	public void setModel(String model) {
+ 		
+ 		this.model = model;
+ 		
+ 	}
+ 	
+ 	
+ 	public void setYear(String yearCar) {
+ 		
+ 	// Check if account Id is an number
+	if(!isNumber(yearCar)) {
+		System.out.println("Unable set year! Check year of car!");
+		return;
+	}
+	
+	int year = Integer.valueOf(yearCar);
+ 		
+ 		this.year = year;
+ 		
+ 	}
+ 	
+ 	//********* Getter Methods ********//
+    
+ 	public String getVin() {
+ 		
+ 		return vin;
+ 		
+ 	}
+ 	public String getLicensePlate() {
+ 		
+ 		return licensePlate;
+ 		
+ 	}
+ 	
+ 	public String getMake() {
+ 			
+ 			return make;
+ 			
+ 		}
+ 	
+ 	public String getModel() {
+ 		
+ 		return model;
+ 		
+ 	}
+ 	
+ 	
+ 	public String getYear() {
+ 		
+ 		// Convert in to String
+ 		
+	String yearVeh = String.valueOf(year);
+ 		
+		return yearVeh;
+
+ 		
+ 	}
+ 	
+ 	public String getRegisteredStatus() {
+ 		
+ 		return registeredStatus;
+ 		
+ 	}
+ 	
+ 	
+ 	
+ 	//********** Database Methods **********//
+ 	
 
     public void insertVehicle(Vehicle vehicle) {
-        insertVehicle(vehicle.vin, vehicle.licensePlate, vehicle.make, vehicle.model, vehicle.year,
-                vehicle.registeredStatus);
+        insertVehicle(vehicle.getVin(), vehicle.getLicensePlate(), vehicle.getMake(), vehicle.getModel(), vehicle.getYear(),
+                vehicle.getRegisteredStatus());
     }
 
-    public void insertVehicle(String vin, String licensePlate, String make, String model, int year,
+    // Insert Vehicle
+    public void insertVehicle(String vin, String licensePlate, String make, String model, String year,
             String registeredStatus) {
-        Vehicle vehicle = new Vehicle(databaseManager);
-
-        vehicle.vin = vin;
-        vehicle.licensePlate = licensePlate;
-        vehicle.make = make;
-        vehicle.model = model;
-        vehicle.year = year;
-        vehicle.registeredStatus = registeredStatus;
-
-        if (emptyField(vehicle)) {
+    	
+        if (!validVehicle(vin)) {
             return;
         }
 
-        if (!validVehicle(vehicle)) {
-            return;
-        }
-
-        String sql = String.format("INSERT INTO TCRS.VEHICLES (VIN, LICENSEPLATE, MAKE, MODEL, YEAR, REGISTEREDSTATUS) "
-                + "VALUES ('%s', '%s', '%s', '%s', %d, '%s')", vehicle.vin, vehicle.licensePlate, vehicle.make,
-                vehicle.model, vehicle.year, vehicle.registeredStatus);
+        String sql = String.format("INSERT INTO TCRS.VEHICLEINFO (VIN, LICENSEPLATE, MAKE, MODEL, CARYEAR, REGISTEREDSTATUS) "
+                + "VALUES ('%s', '%s', '%s', '%s', %d, '%s')", vin, licensePlate, make,
+                model, year, registeredStatus);
 
         databaseManager.executeUpdate(sql);
 
         System.out.println("Vehicle added to the database!");
     }
 
-    public void editVehicle(String vin, Vehicle newVehicle) {
-        Vehicle vehicle = findVehicle(vin);
+    // Edit Vehicle
+    public void editVehicle(String vin, String licensePlate, String make, String model, String year,
+            String registeredStatus) {
+        
+    	Vehicle vehicle = findVehicle(vin);
 
         if (!inSystem(vehicle)) {
             return;
         }
-        String sqlQuery = String.format("UPDATE TCRS.VEHICLES SET LICENSEPLATE = '%s', MAKE = '%s', MODEL = '%s', "
-                + "YEAR = %d, REGISTEREDSTATUS = '%s' WHERE VIN = '%s'", newVehicle.licensePlate, newVehicle.make,
-                newVehicle.model, newVehicle.year, newVehicle.registeredStatus, vehicle.vin);
+        
+        String sqlQuery = String.format("UPDATE TCRS.VEHICLEINFO SET LICENSEPLATE = '%s', MAKE = '%s', MODEL = '%s', "
+                + "CARYEAR = %d, REGISTEREDSTATUS = '%s' WHERE VIN = '%s'", licensePlate, make,
+                model, year, registeredStatus, vin);
+        
         databaseManager.executeUpdate(sqlQuery);
+        
         System.out.println("Vehicle edited");
     }
 
     public void deleteVehicle(String vin) {
+    	
         Vehicle vehicle = findVehicle(vin);
+        
         if (!inSystem(vehicle)) {
             return;
         }
-        String sqlDelete = String.format("DELETE FROM TCRS.VEHICLES WHERE VIN= '%s'", vin);
+        
+        String sqlDelete = String.format("DELETE FROM TCRS.VEHICLEINFO WHERE VIN= '%s'", vin);
+        
         databaseManager.executeUpdate(sqlDelete);
+        
         System.out.println("Vehicle " + vin + " removed from system");
     }
 
     public Vehicle findVehicle(String vin) {
+    	
         Vehicle vehicle = new Vehicle(this.databaseManager);
 
-        String sqlQuery = String.format("SELECT * FROM TCRS.VEHICLES WHERE VIN='%s'", vin);
+        String sqlQuery = String.format("SELECT * FROM TCRS.VEHICLEINFO WHERE VIN='%s'", vin);
 
         ResultSet result = databaseManager.executeQuery(sqlQuery);
 
@@ -102,7 +186,7 @@ public class Vehicle {
                 vehicle.licensePlate = result.getString("LICENSEPLATE");
                 vehicle.make = result.getString("MAKE");
                 vehicle.model = result.getString("MODEL");
-                vehicle.year = result.getInt("YEAR");
+                vehicle.year = result.getInt("CARYEAR");
                 vehicle.registeredStatus = result.getString("REGISTEREDSTATUS");
 
                 return vehicle;
@@ -164,19 +248,39 @@ public class Vehicle {
         return false;
     }
 
-    private boolean validVehicle(Vehicle vehicle) {
+    private boolean validVehicle(String vin) {
         InputDataValidation format = new InputDataValidation();
         RecordValidation records = new RecordValidation(this.databaseManager);
 
-        if (!format.validateVIN(vehicle.vin)) {
+        if (!format.validateVIN(vin)) {
             System.out.println("Unable to add vehicle to database!\nCheck VIN!");
             return false;
         }
 
-        if (records.checkVehicleRecordExistence(vehicle.vin)) {
+        if (records.checkVehicleRecordExistence(vin)) {
             return false;
         }
         return true;
+    }
+    
+    private boolean validVehicle(Vehicle vehicle) {
+        
+    	return validVehicle(vehicle.getVin());
+    }
+
+    private void editVehicle(String vin, Vehicle newVehicle) {
+        
+    	Vehicle vehicle = findVehicle(vin);
+
+        if (!inSystem(vehicle)) {
+            return;
+        }
+        
+        String sqlQuery = String.format("UPDATE TCRS.VEHICLEINFO SET LICENSEPLATE = '%s', MAKE = '%s', MODEL = '%s', "
+                + "YEAR = %d, REGISTEREDSTATUS = '%s' WHERE VIN = '%s'", newVehicle.licensePlate, newVehicle.make,
+                newVehicle.model, newVehicle.year, newVehicle.registeredStatus, vehicle.vin);
+        databaseManager.executeUpdate(sqlQuery);
+        System.out.println("Vehicle edited");
     }
 
     private boolean inSystem(Vehicle vehicle) {
@@ -186,4 +290,25 @@ public class Vehicle {
         }
         return true;
     }
+    
+    // Check if only numbers, with range
+   	private boolean isNumber(String str) {
+   	    
+   		return isNumber(str, 0, (str.length() - 1));
+   	}
+   	
+   	// Check if only numbers, with range
+   	private boolean isNumber(String str, int begin, int end) {
+   	    char[] c = str.toCharArray();
+
+   	    for (int i = begin; i < end; i++ ) {
+   	        if(!Character.isDigit(c[i])) {
+   	        	System.out.println("Non number was found!");
+   	            return false;
+   	        }
+   	    }
+
+   	    return true;
+   	}
+    	
 }

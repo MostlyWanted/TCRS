@@ -20,7 +20,7 @@ public class Report {
             System.out.println("Vehicle not found in the system!");
             return;
         }
-        logData(result);
+        logData(result, fields);
     }
 
     public void generateDriverReport(String[] tables, String[] fields, String license) {
@@ -30,7 +30,7 @@ public class Report {
             System.out.println("Driver not found in the system!");
             return;
         }
-        logData(result);
+        logData(result, fields);
     }
 
     public void generateDrivingRecord(String[] tables, String[] fields, String license,
@@ -42,7 +42,7 @@ public class Report {
             System.out.println("No driving records found for the given period!");
             return;
         }
-        logData(result);
+        logData(result, fields);
     }
 
     public void generateCitationSummary(String[] tables, String[] fields,
@@ -69,11 +69,11 @@ public class Report {
             System.out.println("No outstanding warrants found!");
             return;
         }
-        logData(result);
+        logData(result, fields);
     }
 
     // helper methods
-    private void logData(ResultSet result) {
+    private void logData(ResultSet result, String[] fields) {
         try {
             while (result.next()) {
                 for (String field : fields) {

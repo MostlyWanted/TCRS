@@ -8,15 +8,15 @@ public class TrafficSchool {
 
     private DatabaseManager databaseManager;
 
-    private int citationID;
-    private String session1Date;
-    private String session2Date;
-    private String session3Date;
-    private String session4Date;
-    private String session1Attendance;
-    private String session2Attendance;
-    private String session3Attendance;
-    private String session4Attendance;
+    public int citationID;
+    public String session1Date;
+    public String session2Date;
+    public String session3Date;
+    public String session4Date;
+    public String session1Attendance;
+    public String session2Attendance;
+    public String session3Attendance;
+    public String session4Attendance;
 
     public TrafficSchool(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;

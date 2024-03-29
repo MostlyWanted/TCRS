@@ -12,7 +12,13 @@ public class Test_Database {
 		InputDataValidation validate = new InputDataValidation();
 		RecordValidation valid = new RecordValidation(connection);
 		
-		connection.connectToDatabase();
+		connection.connectToTestDatabase();
+		
+		Vehicle driver = new Vehicle(connection);
+		
+		driver = driver.findVehicle("927840315QXPOWRUE");
+		
+		System.out.println(driver.toString());
 		
         connection.disconnectFromDatabase();
            

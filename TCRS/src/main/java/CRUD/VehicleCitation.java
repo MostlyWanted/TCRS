@@ -11,7 +11,7 @@ public class VehicleCitation {
 	
 	private DatabaseManager databaseManager;
 
-	private int citationId;
+	public int citationId;
 	public String vin;
 	public int issuingOfficerBadgeNumber;
 	public String dateIssued;
@@ -57,9 +57,29 @@ public class VehicleCitation {
 			
 		}
 		
-		public void setPaid(Boolean Paid) {
+		public void setfine(String fine) {
 			
-			this.Paid = Paid;
+			// Check if account Id is an number
+			if(!isNumber(fine)) {
+				System.out.println("Unable set demerit points! Demerit points number!");
+				return;
+			}
+			
+			double citFine = Double.valueOf(fine);
+		 		
+		 		this.fineAmount = citFine;
+			
+		}
+		
+		public void setPaid(String Paid) {
+			
+			Boolean PaidBool;
+			if (Paid.equalsIgnoreCase("Yes")) {
+				PaidBool = true;
+			}
+			else
+				PaidBool = false;
+			this.Paid = PaidBool;
 			
 		}
 		
@@ -99,28 +119,29 @@ public class VehicleCitation {
 			
 		}
 		
-		public Boolean getPaid() {
+		public String getfineamount() {
 			
-			return Paid;
+			return String.valueOf(fineAmount);
+			
+		}
+		
+		public String getPaid() {
+			
+			String PaidBool;
+			if (Paid) {
+				PaidBool = "Yes";
+			}
+			else
+				PaidBool = "No";
+			
+			return PaidBool;
 			
 		}
 	
 		//********** Database Methods **********//
 
-	public void insertVehicleCitation (VehicleCitation citation) {
-		
-		
-		String badgeNumber = String.valueOf(citation.issuingOfficerBadgeNumber);
-		String fine = String.valueOf(citation.fineAmount);
-		
-		insertVehicleCitation(citation.vin, badgeNumber, citation.dateIssued,
-				citation.reason, fine, citation.Paid);
-
-		
-	}
 	
-	public void insertVehicleCitation (String vin, String officer, String dateIssued, String reason,  String fine, boolean Paid) {		
-		VehicleCitation citation = new VehicleCitation(databaseManager);
+	public void insertVehicleCitation (String vin, String officer, String dateIssued, String reason,  String fine, String Paid) {		
 		
 		if(!isNumber(officer)) {
 			System.out.println("Invaild badge number account!");
@@ -131,108 +152,49 @@ public class VehicleCitation {
 			return;
 		}
 		
-		int officerBadge = Integer.valueOf(officer);
-		double fineAmount = Integer.valueOf(fine);
-		
-		citation.vin = vin;
-		citation.issuingOfficerBadgeNumber = officerBadge; 
-		citation.dateIssued = dateIssued;
-		citation.reason = reason;
-		citation.fineAmount = fineAmount; 
-		citation.Paid = Paid;
-
-		// Check if any fields are empty
-		if (emptyField(citation)) {
-			 return;
-		 }
-		
-		// Create validation object
-		InputDataValidation valid = new InputDataValidation();
-		
-		// Ensure the VIN is valid
-		if(!valid.validateVIN(vin)) {
-			return;
-		}
-		
-		// Check if the date is valid
-		if (!valid.validateDate(dateIssued)) {
-			return;
-		}
-		
-		
-		// Validate correct formats of input data
-		 if (!validBadgeNumber(officerBadge)) {
+		// Validate format and if officer is in the system
+		 if (!validBadgeNumber(Integer.valueOf(officer))) {
 			 System.out.println("Officer badge number not in the system!");
 			 return;
 		 }
 		 
-		 if (fineAmount < 0) {
+		 if (Double.valueOf(fine) < 0) {
 			 System.out.println("Invalid fine amount");
 			 return;
 		 }
-		
-		 
-		 // Create string from paid boolean
-		 String paidStr;
-		 
-		 if(Paid == true) {
-			 paidStr = "Yes";
-			 }
-		else {
-			 paidStr = "No";;
-			}
-		 
-		 
-		 fine = "$" + fine;
-		 
+				 
 		// Create SQL query string
 	    String sql = String.format("INSERT INTO TCRS.VEHICLECITATIONSMUN (ISSUINGOFFICERIDM , VINCITATIONM , "
 	    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS )"
-	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", officer, citation.vin, 
-				citation.reason, citation.dateIssued, fine, paidStr);
+	    		+ "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", officer, vin, 
+				reason, dateIssued, fine, Paid);
 	    
 	    // Pass prepared statement to databaseManager for execution
 	    databaseManager.executeUpdate(sql);
 	    
-	    System.out.println("Account added to the database!");
+	    System.out.println("Vehcile citation added to the database!");
 		
 	}
-	public void editVehicleCitation (String citID, VehicleCitation citationNew) {
+	
+	public void editVehicleCitation (String citID, String vin, String officer, String dateIssued, String reason,  String fine, String Paid) {
 		
 		if(!isNumber(citID)) {
 			System.out.println("Invaild vehicle citation, unable to edit account!");
 			return;
 		}
 		
-		int citationID = Integer.valueOf(citID);
-		
 		// First confirm account exist, and if so return account information
-		VehicleCitation citation = findCitation(citationID);
+		VehicleCitation citation = findCitation(Integer.valueOf(citID));
 		
 		// Check to see if the account is in the system
 		if (!inSystem(citation)) {
 			return;
 		}
 		
-		 // Create string from paid boolean
-		 String paidStr;
-		 
-		 if(Paid == true) {
-			 paidStr = "Yes";
-			 }
-		else {
-			 paidStr = "No";;
-			}
-		 
-		 // Convert numbers to string
-		 String badgenumber = Integer.toString(citationNew.issuingOfficerBadgeNumber);
-		 String fineStr = Double.toString(citationNew.fineAmount);
-		 fineStr = "$" + fineStr;
-		
 		// Build edit query in system based on citation ID
 		String sqlQuery = String.format("UPDATE TCRS.VEHICLECITATIONSMUN SET ISSUINGOFFICERIDM = '%s', VINCITATIONM = '%s', CITATIONREASON = '%s', "
 				+ "CITATIONDATE = '%s', FINEAMOUNT = '%s', PAYMENTSTATUS = '%s' WHERE CITATIONID = %d", 
-				 badgenumber, citationNew.vin, citationNew.reason, citationNew.dateIssued, fineStr, paidStr, citationNew.citationId);
+				officer, vin, reason, dateIssued, fine, Paid, Integer.valueOf(citID));
 
 		// Execute query
 		databaseManager.executeUpdate(sqlQuery);
@@ -320,8 +282,21 @@ public class VehicleCitation {
     	return logData(result, findCitation);
     	
 	}
+	//********* Object Methods ******
 	
+	public void insertVehicleCitation (VehicleCitation citation) {
+		
+		insertVehicleCitation(citation.getVin(), citation.getissuingOfficerBadgeNumber(), citation.getdateIssued(),
+				citation.getReason(), citation.getfineamount(), citation.getPaid());
+		
+	}
 	
+	public void editVehicleCitation (String citID, VehicleCitation citationNew) {
+		
+		editVehicleCitation ( citID,  citationNew.getVin(),  citationNew.getissuingOfficerBadgeNumber(),  citationNew.getdateIssued(),  citationNew.getReason(),   citationNew.getfineamount(),  citationNew.getPaid());
+
+		
+	}
 	//**************************** Private Helper Methods ********************************************
 	
 	private VehicleCitation logData(ResultSet result, VehicleCitation citation) {
