@@ -308,9 +308,9 @@ public class InputDataValidation {
 	private boolean dateFormat(String date) {
 		
 		char seperator = '-';
-		String monthString = date.substring(0,2);
-		String dayString = date.substring(3,5);
-		String yearString = date.substring(6);
+		String yearString = date.substring(0,3);
+		String dayString = date.substring(5,6);
+		String monthString = date.substring(8);
 		
 		int month = Integer.valueOf(monthString);
 		int day = Integer.valueOf(dayString);

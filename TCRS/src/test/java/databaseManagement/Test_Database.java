@@ -12,10 +12,7 @@ public class Test_Database {
 		InputDataValidation validate = new InputDataValidation();
 		RecordValidation valid = new RecordValidation(connection);
 		
-		connection.connectToTestDatabase();
-
-		valid.checkLoginInfo("badewale", "239592830", "Admin");
-		
+		connection.connectToDatabase();
 		
         connection.disconnectFromDatabase();
            

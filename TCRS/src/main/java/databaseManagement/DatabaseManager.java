@@ -4,8 +4,7 @@ import java.sql.*;
 
 public class DatabaseManager {
 	
-    private static final String URL = "jdbc:h2:~/src/main/resources/trcs_script"; // Database URL
-    private static final String URL_TEST = "jdbc:h2:~/src/test/resources/trcs_script"; // Test databsse URL
+    private static final String URL = "jdbc:h2:./src/main/resources/trcs_db"; // Database URL
     private static final String USER = "tcrs"; // Database user name
     private static final String PASSWORD = ""; // Database password
     public Connection connection;
@@ -98,79 +97,11 @@ public class DatabaseManager {
     	    	
     }
     
-    // Execute parameterized queries for security and flexibility
-    public void executeParameterizedUpdate(String sql, Object... params) {
-    	
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        	
-            // Set parameters dynamically
-            for (int i = 0; i < params.length; i++) {
-            	
-                statement.setObject(i + 1, params[i]);
-                
-            }
-            
-            statement.executeUpdate();
-            
-        } catch (SQLException e) {
-        	
-            handleSQLException(e);
-            
-        }
-    }
-    
-    // Execute parameterized queries for security and flexibility
-    public ResultSet executeParameterizedQuery(String sql, Object... params) {
-    	
-    	//Initialize resultSet for executing queries
-    	ResultSet resultSet = null;
-    	
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-        	
-            // Set parameters dynamically
-            //for (int i = 0; i < params.length; i++) {
-            	
-            //	 statement.setObject(i + 1, params[i]);
-            //}
-            
-            resultSet =  statement.executeQuery();
-            
-        } catch (SQLException e) {
-        	
-            handleSQLException(e);
-        }
-        
-        return resultSet;
-    }
-    
 
     
     public void handleSQLException(SQLException e) {
     	System.err.println("SQL Exception occurred:");
     	e.printStackTrace();
-    }
-    
-    // Only used for testing and developing methods, use the connectToDatabase for program database
-    public void connectToTestDatabase() {
-    	
-      	try {
-            // Load the H2 JDBC driver
-            Class.forName("org.h2.Driver");
-
-            // Establish connection
-            connection = DriverManager.getConnection(URL_TEST, USER, PASSWORD);
-            
-            // Use the connection to perform database operations
-            // Check if the connection is successful
-            if (connection != null) {
-                System.out.println("Connected to the database!");
-            } else {
-                System.out.println("Failed to connect to the database!");
-            }
-            
-    	} catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
     }
     
 
