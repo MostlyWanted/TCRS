@@ -153,7 +153,7 @@ public class VehicleCitation {
 		}
 		
 		// Validate format and if officer is in the system
-		 if (!validBadgeNumber(Integer.valueOf(officer))) {
+		 if (!validBadgeNumber(officer)) {
 			 System.out.println("Officer badge number not in the system!");
 			 return;
 		 }
@@ -394,7 +394,7 @@ public class VehicleCitation {
 	}
 	
 	// Check to ensure the account information is valid
-	private boolean validBadgeNumber(int badgeNumber) {
+	private boolean validBadgeNumber(String badgeNumber) {
 		
 		// Create validation objects
 		RecordValidation records = new RecordValidation(this.databaseManager);

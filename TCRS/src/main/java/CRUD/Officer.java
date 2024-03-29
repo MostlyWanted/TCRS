@@ -304,11 +304,9 @@ public class Officer {
 				 System.out.println("Unable to add account to database!\nCheck last name!");
 		        return false;
 		    }
-		    
-		    int badge = Integer.valueOf(badgeNumber);
-		    
+		    		    
 			// Check if already in the system
-			if(records.checkOfficerRecordExistence(badge)) {
+			if(records.checkOfficerRecordExistence(badgeNumber)) {
 			        return false;
 			}
 

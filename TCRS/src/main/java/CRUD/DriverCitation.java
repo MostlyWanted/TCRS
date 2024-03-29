@@ -178,24 +178,8 @@ public class DriverCitation {
 			return;
 		}
 		
-		// Create validation object
-		InputDataValidation valid = new InputDataValidation();
-		
-		int officerBadge = Integer.valueOf(officer);
-		double fineAmount = Integer.valueOf(fine);
-		
-		// Ensure the license is valid
-		if(!valid.validateLicenseNumber(license)) {
-			return;
-		}
-		
-		// Check if the date is valid
-		if (!valid.validateDate(dateIssued)) {
-			return;
-		}
-		
 		// Validate correct formats of input data
-		 if (!validBadgeNumber(officerBadge)) {
+		 if (!validBadgeNumber(officer)) {
 			 System.out.println("Officer badge number not in the system!");
 			 return;
 		 }
@@ -556,7 +540,7 @@ public class DriverCitation {
 	}
 	
 	// Check to ensure the account information is valid
-	private boolean validBadgeNumber(int badgeNumber) {
+	private boolean validBadgeNumber(String badgeNumber) {
 		
 		// Create validation objects
 		RecordValidation records = new RecordValidation(this.databaseManager);
