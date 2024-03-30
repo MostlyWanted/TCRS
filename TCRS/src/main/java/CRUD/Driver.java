@@ -101,11 +101,6 @@ public class Driver {
  	//********** Database Methods **********//
  	
 
-    public void insertDriver(Driver driver) {
-        insertDriver(driver.licenseNumber, driver.licensePlate, driver.firstName, driver.lastName, driver.licenseStatus,
-                driver.demeritPoints);
-    }
-
     public void insertDriver(String licenseNumber, String licensePlate, String firstName, String lastName,
             String licenseStatus, int demeritPoints) {
         Driver driver = new Driver(databaseManager);
@@ -132,7 +127,9 @@ public class Driver {
         System.out.println("Driver added to the database!");
     }
 
-    public void editDriver(String licenseNumber, Driver newDriver) {
+  public void editDriver(String licenseNumber, String licensePlate, String firstName, String lastName,
+          String licenseStatus, String demeritPoints) {
+    	
         Driver driver = findDriver(licenseNumber);
 
         if (!inSystem(driver)) {
@@ -141,13 +138,14 @@ public class Driver {
         String sqlQuery = String.format(
                 "UPDATE TCRS.DRIVERINFO SET LICENSEPLATE = '%s', FIRSTNAME = '%s', LASTNAME = '%s', "
                         + "LICENSESTATUS = '%s', DEMERITPOINTS = %d WHERE LICENSENUMBER = '%s'",
-                newDriver.licensePlate, newDriver.firstName,
-                newDriver.lastName, newDriver.licenseStatus, newDriver.demeritPoints, driver.licenseNumber);
+                licensePlate, firstName, lastName, licenseStatus, Integer.valueOf(demeritPoints), licenseNumber);
         databaseManager.executeUpdate(sqlQuery);
+        
         System.out.println("Driver edited");
     }
 
     public void deleteDriver(String licenseNumber) {
+    	
         Driver driver = findDriver(licenseNumber);
         if (!inSystem(driver)) {
             return;
@@ -317,5 +315,18 @@ public class Driver {
 
 	    return true;
 	}
+	
+	//********* Object Methods ********
+	
+    public void insertDriver(Driver driver) {
+        insertDriver(driver.licenseNumber, driver.licensePlate, driver.firstName, driver.lastName, driver.licenseStatus,
+                driver.demeritPoints);
+    }
+    
+  public void editDriver(String licenseNumber, Driver newDriver) {
+    	
+    	editDriver( licenseNumber,  newDriver.getlicensePlate(),  newDriver.getFirstName(),  newDriver.getLastName(),  newDriver.getLlicenseStatus(), newDriver.getdemeritPoints());
+        
+    }
  	
 }
