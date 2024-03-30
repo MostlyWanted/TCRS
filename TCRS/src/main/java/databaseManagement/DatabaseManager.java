@@ -45,7 +45,7 @@ public class DatabaseManager {
             ResultSet rs = connection.getMetaData().getSchemas();
             boolean schemaExists = false;
             while (rs.next()) {
-                if (rs.getString(1).equalsIgnoreCase("TCRS")) {
+                if (rs.getString(1).equalsIgnoreCase("your_schema_name")) {
                     schemaExists = true;
                     break;
                 }
@@ -54,7 +54,7 @@ public class DatabaseManager {
 
             if (!schemaExists) {
                 // Schema does not exist, load and execute script
-                InputStream inputStream = DatabaseManager.class.getResourceAsStream("/tcrs_db_script.sql");
+                InputStream inputStream = DatabaseManager.class.getResourceAsStream("/schema.sql");
                 InputStreamReader reader = new InputStreamReader(inputStream);
                 try (BufferedReader br = new BufferedReader(reader)) {
                     StringBuilder sb = new StringBuilder();

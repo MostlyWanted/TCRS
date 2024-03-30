@@ -1,7 +1,5 @@
 package databaseManagement;
 
-import java.io.IOException;
-
 import CRUD.*;
 
 public class Test_Database {
@@ -14,12 +12,7 @@ public class Test_Database {
 		InputDataValidation validate = new InputDataValidation();
 		RecordValidation valid = new RecordValidation(connection);
 		
-		try {
-			connection.connectToDatabase();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		connection.connectToTestDatabase();
 		
 		Vehicle driver = new Vehicle(connection);
 		
