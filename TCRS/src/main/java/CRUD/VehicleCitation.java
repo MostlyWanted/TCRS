@@ -35,7 +35,7 @@ public class VehicleCitation {
 		public void setIssuingOfficerBadgeNumber(String issuingOfficerBadgeNumber) {
 			
 			if(!isNumber(issuingOfficerBadgeNumber)) {
-				System.out.println("Invaild badge number account!");
+				System.out.println("Invaild badge number!");
 				return;
 			}
 						
@@ -158,11 +158,12 @@ public class VehicleCitation {
 			 return;
 		 }
 		 
-		 if (Double.valueOf(fine) < 0) {
-			 System.out.println("Invalid fine amount");
+		// Validate VIN number
+		 if (!valiadteVin(vin)) {
+			 System.out.println("Vin not in the system!");
 			 return;
 		 }
-				 
+		 
 		// Create SQL query string
 	    String sql = String.format("INSERT INTO TCRS.VEHICLECITATIONSMUN (ISSUINGOFFICERIDM , VINCITATIONM , "
 	    		+ "CITATIONREASON ,  CITATIONDATE , FINEAMOUNT, PAYMENTSTATUS )"
@@ -190,6 +191,18 @@ public class VehicleCitation {
 		if (!inSystem(citation)) {
 			return;
 		}
+		
+		// Validate format and if officer is in the system
+		 if (!validBadgeNumber(officer)) {
+			 System.out.println("Officer badge number not in the system!");
+			 return;
+		 }
+		 
+		// Validate VIN number
+		 if (!valiadteVin(vin)) {
+			 System.out.println("Vin not in the system!");
+			 return;
+		 }
 		
 		// Build edit query in system based on citation ID
 		String sqlQuery = String.format("UPDATE TCRS.VEHICLECITATIONSMUN SET ISSUINGOFFICERIDM = '%s', VINCITATIONM = '%s', CITATIONREASON = '%s', "
@@ -362,37 +375,6 @@ public class VehicleCitation {
     	
 	}
 	
-	// Helper method for empty field
-	private boolean emptyField(VehicleCitation citation) {
-		
-		return emptyField(citation.vin, citation.dateIssued, citation.reason);
-		
-	}
-	
-	// Helper method for empty field
-	private boolean emptyField(String vin, String dateIssued, String reason) {
-		
-		// Check if any of the fields (except accountID) are empty
-	    if (vin == null || vin.isEmpty()) {
-			 System.out.println(String.format("Cannot leave first name blank!"));
-	        return true;
-	    }
-	    if (dateIssued == null || dateIssued.isEmpty()) {
-			 System.out.println(String.format("Cannot leave last name blank!"));
-
-	        return true;
-	    }
-	    if (reason == null || reason.isEmpty()) {
-			 System.out.println(String.format("Cannot leave last name blank!"));
-
-	        return true;
-	    }
-
-	    
-	    // All fields are non-empty, so return true
-	    return false;
-	}
-	
 	// Check to ensure the account information is valid
 	private boolean validBadgeNumber(String badgeNumber) {
 		
@@ -406,6 +388,20 @@ public class VehicleCitation {
 
 	    return false;
 	}
+	
+	// Check to ensure the account information is valid
+		private boolean valiadteVin(String vin) {
+			
+			// Create validation objects
+			RecordValidation records = new RecordValidation(this.databaseManager);
+		    
+			// Check if already in the system
+			if(records.checkVehicleRecordExistence(vin)) {
+			        return true;
+			}
+
+		    return false;
+		}
 	
 	private boolean inSystem(VehicleCitation citation) {
 		

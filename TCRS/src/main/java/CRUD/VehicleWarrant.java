@@ -115,6 +115,12 @@ public class VehicleWarrant {
         if (!inSystem(vehicleWarrant)) {
             return;
         }
+        	 
+	// Validate VIN number
+	 if (!validVehicle(vin)) {
+		 System.out.println("Vin not in the system!");
+		 return;
+	 }
 
         String sqlQuery = String.format(
                 "UPDATE VEHICLE_WARRANTS SET VIN = '%s', DATE_ISSUED = '%s', WARRANT_REASON = '%s', OUTSTANDING = %b WHERE WARRANT_ID = %d",
@@ -251,6 +257,21 @@ public class VehicleWarrant {
             return false;
         }
 
+        return true;
+    }
+    
+    private boolean validVehicle(String vin) {
+        InputDataValidation format = new InputDataValidation();
+        RecordValidation records = new RecordValidation(this.databaseManager);
+
+        if (!format.validateVIN(vin)) {
+            System.out.println("Unable to add vehicle to database!\nCheck VIN!");
+            return false;
+        }
+
+        if (records.checkVehicleRecordExistence(vin)) {
+            return false;
+        }
         return true;
     }
     

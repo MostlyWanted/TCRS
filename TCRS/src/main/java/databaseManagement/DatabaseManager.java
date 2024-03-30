@@ -1,6 +1,11 @@
 package databaseManagement;
 
 import java.sql.*;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+
 
 public class DatabaseManager {
 	
@@ -18,7 +23,7 @@ public class DatabaseManager {
     }
     
     // Establish connection to database
-    public void connectToDatabase() {
+    public void connectToDatabase() throws IOException {
     	
       	try {
             // Load the H2 JDBC driver
@@ -35,7 +40,35 @@ public class DatabaseManager {
                 System.out.println("Failed to connect to the database!");
             }
             
-    	} catch (ClassNotFoundException | SQLException e) {
+            Statement stmt = connection.createStatement();
+         // Check if the schema exists
+            ResultSet rs = connection.getMetaData().getSchemas();
+            boolean schemaExists = false;
+            while (rs.next()) {
+                if (rs.getString(1).equalsIgnoreCase("your_schema_name")) {
+                    schemaExists = true;
+                    break;
+                }
+            }
+            
+
+            if (!schemaExists) {
+                // Schema does not exist, load and execute script
+                InputStream inputStream = DatabaseManager.class.getResourceAsStream("/schema.sql");
+                InputStreamReader reader = new InputStreamReader(inputStream);
+                try (BufferedReader br = new BufferedReader(reader)) {
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line).append("\n");
+                    }
+                    stmt.execute(sb.toString());
+                }
+                reader.close();
+                System.out.println("Schema created successfully.");
+            } else 
+                System.out.println("Schema already exists.");
+            } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }

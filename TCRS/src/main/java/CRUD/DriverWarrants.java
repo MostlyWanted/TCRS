@@ -140,6 +140,12 @@ public class DriverWarrants {
         if (!inSystem(driverWarrant)) {
             return;
         }
+     		
+		// Validate if license is in system
+		 if (!validLicenseNumber(licenseNumber)) {
+			 System.out.println("Licenser not in the system!");
+			 return;
+		 }
 
         String sqlQuery = String.format(
                 "UPDATE TCRS.DRIVERWARRANTSMUNICIPLE SET DRIVERIDWARRANTM = '%s', WARRANTDATE = '%s', REASON = '%s', OUTSTANDING = %b WHERE WARRANTID = %d",
@@ -361,4 +367,19 @@ public class DriverWarrants {
 
    	    return true;
    	}
+   	
+ // Check to ensure the account information is valid
+ 		private boolean validLicenseNumber(String license) {
+ 			
+ 			// Create validation objects
+ 			RecordValidation records = new RecordValidation(this.databaseManager);
+ 		    
+ 			// Check if already in the system
+ 			if(records.checkOfficerRecordExistence(license)) {
+ 			        return true;
+ 			}
+
+ 		    return false;
+ 		}
+ 	
 }

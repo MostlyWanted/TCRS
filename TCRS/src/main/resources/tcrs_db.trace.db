@@ -176,3 +176,50 @@ ALTER TABLE "TCRS"."TRAFFICSCHOOL" ADD CONSTRAINT "TCRS"."CONSTRAINT_E" PRIMARY 
 	at org.h2.server.web.WebThread.process(WebThread.java:190)
 	at org.h2.server.web.WebThread.run(WebThread.java:103)
 	at java.base/java.lang.Thread.run(Thread.java:1583)
+2024-03-29 19:04:00.658858-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO ""TCRS"".""DRIVINGCITATIONSPROV"" VALUES\000d\000a(1, '50', 'A12345678912345', 'Speeding', '2014-05-06', '150', 'Paid'),[*]"; expected "ROW (, (, DEFAULT, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+INSERT INTO "TCRS"."DRIVINGCITATIONSPROV" VALUES
+(1, '50', 'A12345678912345', 'Speeding', '2014-05-06', '150', 'Paid'), [42001-224]
+2024-03-29 19:04:39.666576-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO ""TCRS"".""DRIVINGCITATIONSMUNICIPLE"" VALUES\000d\000a(1, '50', 'A12345678912345', 'Speeding', '2014-05-06', '150', 'Paid', 'Yes'),[*]"; expected "ROW (, (, DEFAULT, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+INSERT INTO "TCRS"."DRIVINGCITATIONSMUNICIPLE" VALUES
+(1, '50', 'A12345678912345', 'Speeding', '2014-05-06', '150', 'Paid', 'Yes'), [42001-224]
+2024-03-29 19:05:54.325623-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "DRIVERCITATIONSMUNICIPLE" not found; SQL statement:
+INSERT INTO TCRS.DriverCitationsMuniciple ( licenseNumber, badgeNumber, reason, dateIssued, fineAmount, paymentStatus, reportable)
+VALUES 
+('A12345678912345', '50', 'Speeding', '2014-05-06', 150, 'Paid', 'Yes'), [42102-224]
+2024-03-29 19:06:06.842244-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "LICENSENUMBER" not found; SQL statement:
+INSERT INTO TCRS.DRIVINGCITATIONSMUNICIPLE  ( licenseNumber, badgeNumber, reason, dateIssued, fineAmount, paymentStatus, reportable)
+VALUES 
+('A12345678912345', '50', 'Speeding', '2014-05-06', 150, 'Paid', 'Yes'), [42122-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.table.Table.getColumn(Table.java:759)
+	at org.h2.command.Parser.parseColumn(Parser.java:1190)
+	at org.h2.command.Parser.parseColumnList(Parser.java:1175)
+	at org.h2.command.Parser.parseInsert(Parser.java:1549)
+	at org.h2.command.Parser.parsePrepared(Parser.java:719)
+	at org.h2.command.Parser.parse(Parser.java:592)
+	at org.h2.command.Parser.parse(Parser.java:564)
+	at org.h2.command.Parser.prepareCommand(Parser.java:483)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:639)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:559)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1166)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:245)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:231)
+	at org.h2.server.web.WebApp.getResult(WebApp.java:1345)
+	at org.h2.server.web.WebApp.query(WebApp.java:1143)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1109)
+	at org.h2.server.web.WebApp$1.next(WebApp.java:1096)
+	at org.h2.server.web.WebThread.process(WebThread.java:190)
+	at org.h2.server.web.WebThread.run(WebThread.java:103)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2024-03-29 19:06:31.125364-04:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO TCRS.DRIVINGCITATIONSMUNICIPLE  ( DRIVERIDCITATIONM , ISSUEINGOFFICERIDM , CITATIONREASON , CITATIONDATE , FINEAMOUNT , PAYMENTSTATUS , REPORTABLE )\000d\000aVALUES \000d\000a('A12345678912345', '50', 'Speeding', '2014-05-06', 150, 'Paid', 'Yes'),[*]"; expected "ROW (, (, DEFAULT, INTERSECTS (, NOT, EXISTS, UNIQUE, INTERSECTS"; SQL statement:
+INSERT INTO TCRS.DRIVINGCITATIONSMUNICIPLE  ( DRIVERIDCITATIONM , ISSUEINGOFFICERIDM , CITATIONREASON , CITATIONDATE , FINEAMOUNT , PAYMENTSTATUS , REPORTABLE )
+VALUES 
+('A12345678912345', '50', 'Speeding', '2014-05-06', 150, 'Paid', 'Yes'), [42001-224]

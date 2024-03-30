@@ -183,6 +183,12 @@ public class DriverCitation {
 			 System.out.println("Officer badge number not in the system!");
 			 return;
 		 }
+		
+		// Validate if license is in system
+		 if (!validLicenseNumber(license)) {
+			 System.out.println("Licenser not in the system!");
+			 return;
+		 }
 		 
 		 if (fineAmount < 0) {
 			 System.out.println("Invalid fine amount");
@@ -249,6 +255,18 @@ public class DriverCitation {
 		if (!inSystem(citation)) {
 			return;
 		}
+		
+		// Validate correct formats of input data
+		 if (!validBadgeNumber(ISSUINGOFFICERIDP)) {
+			 System.out.println("Officer badge number not in the system!");
+			 return;
+		 }
+		
+		// Validate correct formats of input data
+		 if (!validLicenseNumber(license)) {
+			 System.out.println("Licenser not in the system!");
+			 return;
+		 }
 		 
 		
 		// Build edit query in system based on citation ID
@@ -552,6 +570,20 @@ public class DriverCitation {
 
 	    return false;
 	}
+	
+	// Check to ensure the account information is valid
+		private boolean validLicenseNumber(String license) {
+			
+			// Create validation objects
+			RecordValidation records = new RecordValidation(this.databaseManager);
+		    
+			// Check if already in the system
+			if(records.checkOfficerRecordExistence(license)) {
+			        return true;
+			}
+
+		    return false;
+		}
 	
 	private boolean inSystem(DriverCitation citation) {
 		
